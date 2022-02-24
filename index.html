@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <html lang="fr-CA">
+    <title>Le Jeu du 10</title>
+    <meta name="author" content="Simon Janssen">
+    <meta name="description" content="Un simple jeu de mise que j'ai appris à l'université.">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+      main {
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+      }
+      #table {grid-column: 2; grid-row: 2;}
+      #mainjoueurbas {grid-column: 2; grid-row: 4;}
+      #discard {grid-column: 2; grid-row: 3;}
+      #discard {grid-column: 2; grid-row: 3;}
+      #mainjoueurhaut {grid-column: 2; grid-row: 1;}
+      #mainjoueurdroite {grid-column: 3; grid-row: 2;}
+      #mainjoueurgauche {grid-column: 1; grid-row: 2;}
+      .card {
+        border: none;
+        font-size: 4em;
+        background: none;
+        vertical-align:bottom;
+        padding-top: 0.5em;
+      }
+      .card:hover, .card:focus {
+        padding-bottom: 0.5em;
+        padding-top: 0em;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap; /* added line */
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>  <!-- le jeu en tant que tel -->
+      <section id="table">
+        <h1 class="sr-only">La table</h1>
+        <button class="card">🃚</button>
+        <button class="card">🃞</button>
+        <button class="card">🃟</button>
+        <button class="card">🃟</button>
+      </section>
+      <section id="mainjoueurbas"> <!-- la main du joueur -->
+        <h1 class="sr-only">Ta main</h1>
+        <button class="card">🃑</button>
+        <button class="card">🃕</button>
+        <button class="card">🂹</button>
+        <button class="card">🂥</button>
+      </section>
+      <section id="discard"> <!-- lorsque on mouseover/select, on voit les 4 cartes jouées lors de la partie précédente -->
+        <h1 class="sr-only">Cartes déjà joués</h1>
+        <button class="card">🃁</button>
+        <button class="card">🃆</button>
+        <button class="card">🃇</button>
+        <button class="card">🃈</button>
+        <button class="card">🂠</button>
+      </section>
+      <section id="mainjoueurhaut">
+        <h1 class="sr-only">Main du joueur 1</h1>
+        <button class="card">🂠</button>
+        <button class="card">🂠</button>
+        <button class="card">🂠</button>
+      </section>
+      <section id="mainjoueurdroite">
+        <h1 class="sr-only">Main du joueur 2</h1>
+        <button class="card">🂠</button>
+        <button class="card">🂠</button>
+        <button class="card">🂠</button>
+      </section>
+      <section id="mainjoueurgauche">
+        <h1 class="sr-only">Main du joueur 4</h1>
+        <button class="card">🂠</button>
+        <button class="card">🂠</button>
+        <button class="card">🂠</button>
+        <button class="card">🂠</button>
+      </section>
+    </main>
+  </body>
+</html>
