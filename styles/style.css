@@ -1,0 +1,63 @@
+@font-face {
+  font-family: "JuliaMonoCardSet";
+  src: url(fonts/JuliaMonoCardSet-Regular.woff2), format("woff2");
+}
+main {
+  font-family: serif;
+}
+section {
+  margin: 0 auto;
+}
+#informationsection {
+  text-align: center;
+}
+#bettingsection {
+  text-align: center;
+  display: none;
+}
+#gamesection {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  font-family: JuliaMonoCardSet;
+}
+#table {grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(3, auto);}
+#discard {grid-column: 2; grid-row: 3;}
+#mainjoueurhaut {grid-column: 2; grid-row: 1;}
+#carte-haut {grid-column:2; grid-row: 1; transform: rotate(180deg);}
+#mainjoueurdroite {grid-column: 3; grid-row: 2;}
+#carte-droite {grid-column:3; grid-row: 2; transform: rotate(270deg);}
+#mainjoueurbas {grid-column: 2; grid-row: 4;}
+#carte-bas {grid-column:2; grid-row: 3; transform: rotate(0deg);}
+#mainjoueurgauche {grid-column: 1; grid-row: 2;}
+#carte-gauche {grid-column:1; grid-row: 2; transform: rotate(90deg);}
+.card {
+  border: none;
+  font-family: inherit;
+  font-size: 4em;
+  background: white;
+  vertical-align:bottom;
+  padding: 0;
+  color: black;
+}
+.card:hover, .card:focus {
+  transform: translate(0, -50%);
+}
+.card:disabled {
+  color: black;
+}
+.card:active {
+  color: grey;
+}
+.card.inhand {
+  margin-right: -0.25em;
+}
+.card.inhand:hover, .card.inhand:focus {
+  margin-left: 0.25em;
+  margin-right: 0em;
+}
+.card.inhand.playerhand {
+  font-size: 6em;
+}
+.card.lastround {
+  visibility: hidden;
+}
