@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- TODO : comment on écrit les cartes?, final touches on UI, test accessibility, game status element that says what part of the game is live, current points, current turn, écran pour miser -->
 <html>
   <head>
     <meta charset="utf-8">
@@ -8,27 +9,51 @@
     <meta name="description" content="Un simple jeu de mise que j'ai appris à l'université.">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
+      @font-face {
+        font-family: "JuliaMonoCardSet";
+        src: url(JuliaMonoCardSet-Regular.woff2), format("woff2");
+      }
       main {
         display: grid;
         grid-template-columns: repeat(3, auto);
+        font-family: JuliaMonoCardSet;
       }
-      #table {grid-column: 2; grid-row: 2;}
-      #mainjoueurbas {grid-column: 2; grid-row: 4;}
-      #discard {grid-column: 2; grid-row: 3;}
+      section {
+        margin: 0 auto;
+      }
+      #table {grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(3, auto);}
       #discard {grid-column: 2; grid-row: 3;}
       #mainjoueurhaut {grid-column: 2; grid-row: 1;}
+      #carte-haut {grid-column:2; grid-row: 1; transform: rotate(180deg);}
       #mainjoueurdroite {grid-column: 3; grid-row: 2;}
+      #carte-droite {grid-column:3; grid-row: 2; transform: rotate(270deg);}
+      #mainjoueurbas {grid-column: 2; grid-row: 4;}
+      #carte-bas {grid-column:2; grid-row: 3; transform: rotate(0deg);}
       #mainjoueurgauche {grid-column: 1; grid-row: 2;}
+      #carte-gauche {grid-column:1; grid-row: 2; transform: rotate(90deg);}
       .card {
         border: none;
+        font-family: inherit;
         font-size: 4em;
-        background: none;
+        background: white;
         vertical-align:bottom;
-        padding-top: 0.5em;
+        padding: 0;
       }
       .card:hover, .card:focus {
-        padding-bottom: 0.5em;
-        padding-top: 0em;
+        transform: translate(0, -50%);
+      }
+      .card.inhand {
+        margin-right: -0.25em;
+      }
+      .card.inhand:hover, .card.inhand:focus {
+        margin-left: 0.25em;
+        margin-right: 0em;
+      }
+      .card.inhand.playerhand {
+        font-size: 6em;
+      }
+      .card.lastround {
+        visibility: hidden;
       }
       .sr-only {
         position: absolute;
@@ -45,46 +70,108 @@
   </head>
   <body>
     <main>  <!-- le jeu en tant que tel -->
-      <section id="table">
-        <h1 class="sr-only">La table</h1>
-        <button class="card">🃚</button>
-        <button class="card">🃞</button>
-        <button class="card">🃟</button>
-        <button class="card">🃟</button>
+      <section id="table" aria-label="La table">
+        <button id="carte-haut" class="card" aria-label="Carte joué par coéquipier" 
+          aria-description="10 de trèfle">
+          🃚
+        </button>
+        <button id="carte-droite" class="card" aria-label="Carte joué par joueur à ta droite" 
+          aria-description="Roi de trèfle">
+          🃞
+        </button>
+        <button id="carte-bas" class="card" aria-label="Carte que tu joues"
+          aria-description="Cette carte n'a pas encore été joué">
+          🃟
+        </button>
+        <button id="carte-gauche" class="card" aria-label="Carte joué par joueur à ta gauche"
+          aria-description="Cette carte n'a pas encore été joué">
+          🃟
+        </button>
       </section>
-      <section id="mainjoueurbas"> <!-- la main du joueur -->
-        <h1 class="sr-only">Ta main</h1>
-        <button class="card">🃑</button>
-        <button class="card">🃕</button>
-        <button class="card">🂹</button>
-        <button class="card">🂥</button>
+      <section id="mainjoueurbas" aria-label="Ta main"> <!-- la main du joueur -->
+        <button class="card inhand playerhand" aria-label="Carte que vous détennez"
+          aria-description="Ace de trèfle">
+          🃑
+        </button>
+        <button class="card inhand playerhand" aria-label="Carte que vous détennez"
+          aria-description="5 de trèfle">
+          🃕
+        </button>
+        <button class="card inhand playerhand" aria-label="Carte que vous détennez"
+          aria-description="9 de coeur">
+          🂹
+        </button>
+        <button class="card inhand playerhand" aria-label="Carte que vous détennez"
+          aria-description="5 de pic">
+          🂥
+        </button>
       </section>
-      <section id="discard"> <!-- lorsque on mouseover/select, on voit les 4 cartes jouées lors de la partie précédente -->
-        <h1 class="sr-only">Cartes déjà joués</h1>
-        <button class="card">🃁</button>
-        <button class="card">🃆</button>
-        <button class="card">🃇</button>
-        <button class="card">🃈</button>
-        <button class="card">🂠</button>
+      <section id="discard" aria-label="Défausse"> <!-- lorsque on mouseover/select, on voit les 4 cartes jouées lors de la partie précédente -->
+        <button id="lastroundhaut"  class="card lastround" aria-label="Carte joué au dernier tour par ton coéquipier"
+          aria-description="Ace de pic">
+          🃁
+        </button>
+        <button id="lastrounddroite" class="card lastround" aria-label="Carte joué au dernier tour par le joueur à ta droite"
+          aria-description="6 de pic">
+          🃆
+        </button>
+        <button id="lastroundbas" class="card lastround" aria-label="Carte joué au dernier tour par toi"
+          aria-description="7 de pic">
+          🃇
+        </button>
+        <button id="lastroundgauche" class="card lastround" aria-label="Carte joué au dernier tour par le joueur à ta gauche"
+          aria-description="8 de pic">
+          🃈
+        </button>
+        <button id="lastroundrevealer" class="card" aria-label="Révèle les cartes jouées au dernier tour">
+          🂠
+        </button>
       </section>
-      <section id="mainjoueurhaut">
-        <h1 class="sr-only">Main du joueur 1</h1>
-        <button class="card">🂠</button>
-        <button class="card">🂠</button>
-        <button class="card">🂠</button>
+      <section id="mainjoueurhaut" aria-label="Main de ton coéquipier">
+        <button class="card inhand" aria-label="Carte détenu par ton coéquipier"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
+        <button class="card inhand" aria-label="Carte détenu par ton coéquipier"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
+        <button class="card inhand" aria-label="Carte détenu par ton coéquipier"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
       </section>
-      <section id="mainjoueurdroite">
-        <h1 class="sr-only">Main du joueur 2</h1>
-        <button class="card">🂠</button>
-        <button class="card">🂠</button>
-        <button class="card">🂠</button>
+      <section id="mainjoueurdroite" aria-label="Main du joueur à ta droite">
+        <button class="card inhand" aria-label="Carte détenu par le joueur à ta droite"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
+        <button class="card inhand" aria-label="Carte détenu par le joueur à ta droite"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
+        <button class="card inhand" aria-label="Carte détenu par le joueur à ta droite"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
       </section>
-      <section id="mainjoueurgauche">
-        <h1 class="sr-only">Main du joueur 4</h1>
-        <button class="card">🂠</button>
-        <button class="card">🂠</button>
-        <button class="card">🂠</button>
-        <button class="card">🂠</button>
+      <section id="mainjoueurgauche" aria-label="Main du joueur à ta gauche">
+        <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
+        <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
+        <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
+        <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
+          aria-description="Tu ne peux pas voir la valeur de cette carte">
+          🂠
+        </button>
       </section>
     </main>
   </body>
