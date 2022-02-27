@@ -11,6 +11,13 @@ section {
 #informationsection {
   text-align: center;
 }
+#pointsthing{
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+}
+#teampoints{grid-column: 1; grid-row: 1;}
+#currentgameinstruction{grid-column: 2; grid-row: 1;}
+#adversarypoints{grid-column: 3; grid-row: 1;}
 #bettingsection {
   text-align: center;
   display: none;
