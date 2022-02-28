@@ -1,6 +1,6 @@
 @font-face {
   font-family: "JuliaMonoCardSet";
-  src: url(fonts/JuliaMonoCardSet-Regular.woff2), format("woff2");
+  src: url(../fonts/JuliaMonoCardSet-Regular.woff2) format("woff2");
 }
 main {
   font-family: serif;
@@ -45,6 +45,7 @@ section {
   vertical-align:bottom;
   padding: 0;
   color: black;
+  font-family: JuliaMonoCardSet;
 }
 .card:hover, .card:focus {
   transform: translate(0, -50%);
