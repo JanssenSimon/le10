@@ -47,7 +47,7 @@ section {
   color: black;
   font-family: JuliaMonoCardSet;
 }
-.card:hover, .card:focus {
+.card:hover {
   transform: translate(0, -50%);
 }
 .card:disabled {
