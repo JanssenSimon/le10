@@ -24,7 +24,7 @@ section {
 }
 #gamesection {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(3, 33%);
   font-family: JuliaMonoCardSet;
 }
 #table {grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(3, auto);}
