@@ -11,3 +11,4 @@ La commande pour lancer le serveur (il faut inclure le package `Network`) :
 ## Remerciements
 
 Merci, Alexis Janssen et Jérémie Dupuis, pour votre aide indispensable.
+Merci aussi à Stéphane et Laurier pour votre aide!

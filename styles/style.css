@@ -47,9 +47,6 @@ section {
   color: black;
   font-family: JuliaMonoCardSet;
 }
-.card:hover {
-  transform: translate(0, -50%);
-}
 .card:disabled {
   color: black;
 }
@@ -58,10 +55,15 @@ section {
 }
 .card.inhand {
   margin-right: -0.25em;
+  padding-top: 1em;
+  padding-bottom: 0;
 }
-.card.inhand:hover, .card.inhand:focus {
+.card.inhand:hover {
   margin-left: 0.25em;
   margin-right: 0em;
+  padding-top: 0;
+  padding-bottom: 1em;
+  transition-duration: 100ms;
 }
 .card.inhand.playerhand {
   font-size: 6em;
