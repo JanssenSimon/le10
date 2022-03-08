@@ -8,7 +8,7 @@ main : IO ()
 main = do 
   Right sock <- socket AF_INET Stream 0
     | Left fail => putStrLn "Failed to create socket :/"
-  _ <- bind sock (Just (IPv4Addr 127 0 0 1)) 80
+  _ <- bind sock (Just (IPv4Addr 0 0 0 0)) 80
   _ <- listen sock
   threadID <- fork (serve sock)
   threadWait threadID
