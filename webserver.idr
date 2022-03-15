@@ -21,8 +21,6 @@ runServer = do
       if res /= 0
          then pure . Left $ "Failed to listen on socket with error: " ++ show res
          else do threadID <- fork (serve sock)
-                 threadWait threadID
-                 close sock
                  pure $ Right port
   where
     serve : Socket -> IO ()
