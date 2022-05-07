@@ -68,6 +68,6 @@ section {
 .card.inhand.playerhand {
   font-size: 6em;
 }
-.card.lastround {
+.card.hidelastround {
   visibility: hidden;
 }
