@@ -15,3 +15,7 @@ lastroundrevealer.addEventListener("click", () => {
         c.classList.toggle("hidelastround");
     }
 })
+
+
+// Websocket networking playing game
+let ws = new WebSocket("ws://localhost:5000");
