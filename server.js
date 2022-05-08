@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std/http/mod.ts";
 
+let sockets = new Map();
+
 async function reqHandler(request) {
   if (request.headers.get("upgrade") != "websocket") {
     const { pathname: path } = new URL(request.url);
@@ -43,9 +45,22 @@ async function reqHandler(request) {
     //invalid path
     return new Response(null, { status: 404 });
   }
+
+  //upgrade websocket requested
   var websocketDetails = Deno.upgradeWebSocket(request);
   var response = websocketDetails.response;
   var websocket = websocketDetails.socket;
+
+  //add websocket to list of websockets
+  const identifier = crypto.randomUUID()
+  sockets.set(identifier, websocket);
+  console.log(sockets);
+
+  //dealing with messages from websocket
+  websocket.onclose = () => sockets.delete(identifier);
+
+  websocket.onmessage = (message) => console.log(message);
+
   return response;
 }
 
