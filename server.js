@@ -59,7 +59,18 @@ async function reqHandler(request) {
   //dealing with messages from websocket
   websocket.onclose = () => sockets.delete(identifier);
 
-  websocket.onmessage = (message) => console.log(message);
+  websocket.onmessage = (message) => {
+      console.log(message);
+      console.log("\n\nSockets:\n");
+      console.log(sockets);
+      console.log("\n");
+      sockets.forEach((ws, uid) => {
+        console.log("Sending to ");
+        console.log(ws);
+        ws.send("YEEHAW");
+      });
+      websocket.send("You are the progenitor");
+  }
 
   return response;
 }

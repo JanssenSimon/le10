@@ -20,6 +20,10 @@ lastroundrevealer.addEventListener("click", () => {
 // Websocket networking for playing game
 let ws = new WebSocket("ws://localhost:5000");
 
+ws.onmessage = (message) => {
+  console.log(message.data);
+}
+
 const playersCards = Array.from(document.getElementsByClassName("playerhand"));
 playersCards.forEach((c, index) => {
   c.addEventListener("click", (event) => {
