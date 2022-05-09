@@ -2,6 +2,11 @@ import { serve } from "https://deno.land/std/http/mod.ts";
 
 let sockets = new Map();
 let playerStates = new Map();   //should maybe make a single map with all data
+let playerNames = new Map();
+
+function isValidName(nameProspect) {
+  return (typeof nameProspect === 'string' || nameProspect instanceof String);    //TODO input sanitization
+}
 
 async function reqHandler(request) {
   if (request.headers.get("upgrade") != "websocket") {
@@ -62,12 +67,26 @@ async function reqHandler(request) {
   websocket.onclose = () => {
     sockets.delete(identifier);
     playerStates.delete(identifier);
+    //TODO tell game room to return to waiting for players
   }
 
   websocket.onmessage = (message) => {
-      //parse message (what state is the uid in? q without name, q with name, in game)
-      //if in game, validate message
-      //if valid message, update game state according to message
+    //parse message (what state is the uid in? q without name, q with name, in game)
+    //if in game, validate message
+    //if valid message, update game state according to message
+
+    if (playerStates.get(identifier) === "inqueuewoname" && isValidName(message.data)) {
+
+      console.log("Association UID " + identifier + " with name " + message.data);
+      playerNames.set(identifier, message.data);
+      playerStates.set(identifier, "inqueuewithname");
+
+    } else if (playerStates.get(identifier) === "inqueuewithname") {
+
+      console.log("This is not my beautiful wife")
+
+    } else {
+
       console.log(message);
 
       //if in game, send updated game state to all players
@@ -76,6 +95,8 @@ async function reqHandler(request) {
         console.log(ws);
         ws.send("YEEHAW");
       });
+
+    }
   }
 
   return response;

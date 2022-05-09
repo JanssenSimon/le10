@@ -31,3 +31,16 @@ playersCards.forEach((c, index) => {
     console.log(index);
   });
 });
+
+function generateRandomName() {
+  let firstnames = ["Marie", "Jean", "Jeanne", "Pierre", "Françoise", "Michel",
+                    "Monique", "André", "Catherine", "Philippe", "Nat", "Louis"];
+  let lastnames = ["Cool", "Bon", "Vière", "Bière", "Nice", "Bonne", "Arbre"];
+  return firstnames[Math.floor(Math.random() * firstnames.length)] + " " +
+         lastnames[Math.floor(Math.random() * lastnames.length)];
+}
+
+let suggestedName = generateRandomName()
+let name = prompt("Quel est ton nom?", suggestedName);
+if (name == null || name == "") name = suggestedName;
+ws.send(name);
