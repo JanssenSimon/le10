@@ -36,6 +36,16 @@ function distributePlayingCards() {  //assigns playing cards randomly to four pl
 }
 distributePlayingCards();
 let whoToPlay = 0;
+let thisRoundPlayedCards = [];
+let lastRoundPlayedCards = [];
+function testNoSuit(cardArr, suit) {
+  //returns true if array of cards doesn't contain suit
+  var noSuit = true;
+  cardArr.forEach((card) => {
+    if (card.charAt(0) == suit) noSuit = false;
+  });
+  return noSuit;
+}
 
 
 
@@ -109,10 +119,6 @@ async function reqHandler(request) {
   }
 
   websocket.onmessage = (message) => {
-    //parse message (what state is the uid in? q without name, q with name, in game)
-    //if in game, validate message
-    //if valid message, update game state according to message
-
     if (playerStates.get(identifier) === "inqueuewoname" && isValidName(message.data)) {
 
       console.log("Associating UID " + identifier + " with name " + message.data + ".");
@@ -157,16 +163,45 @@ async function reqHandler(request) {
     } else if (playerStates.get(identifier) === "ingame") {
 
       if (gameSeats.get("Player"+(whoToPlay+1)) === identifier && isGameFull()) {
-        console.log(message.data);
+        console.log(playerNames.get(identifier) + " plays the card at index " + message.data + " of their hand.");
 
-        //send updated game state to all players
-        sockets.forEach((ws, uid) => {
-          //console.log("Sending to " + playerNames.get(uid));
-          ws.send("YEEHAW");
-        });
+        //update game state
+        const cartejouee = playerCards.get("Player"+(whoToPlay+1)).splice(parseInt(message.data),1)[0];
+        //verify that played card is ok
+        let validation = lastRoundPlayedCards.length === 0
+                      || lastRoundPlayedCards[0].charAt(0) === cartejouee.charAt(0)
+                      || testNoSuit(playerCards.get("Player"+(whoToPlay+1)), lastRoundPlayedCards[0].charAt(0));
+        if (validation) {
+          lastRoundPlayedCards.push(cartejouee);
 
-        whoToPlay = ((whoToPlay + 1) % 4);
-        console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");
+          //verify if four cards have been played
+
+          //send updated game state to all players
+          sockets.forEach((ws, uid) => {
+            //console.log("Sending to " + playerNames.get(uid));
+            var AAAAA = null;
+            gameSeats.forEach((id, playernumber) => {
+              if (id === uid) {
+                AAAAA = playernumber;
+              }
+            });
+            ws.send(JSON.stringify({
+              player1cards: playerCards.get("Player1").length,
+              player2cards: playerCards.get("Player2").length,
+              player3cards: playerCards.get("Player3").length,
+              player4cards: playerCards.get("Player4").length,
+              currentplayercards: playerCards.get(AAAAA),
+              thisroundplayedcards: thisRoundPlayedCards,
+              lastroundplayedcards: lastRoundPlayedCards,
+            }));
+          });
+
+          whoToPlay = ((whoToPlay + 1) % 4);
+          console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");
+        } else {
+          console.log(playerNames.get(identifier) + " tried to play a card they weren't allowed to.");
+          playerCards.get("Player"+(whoToPlay+1)).splice(parseInt(message.data),0,cartejouee);
+        }
       } else {
         console.log(playerNames.get(identifier) + " tried to play a card but it was not their turn or the game wasn't full.");
       }

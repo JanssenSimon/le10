@@ -27,7 +27,7 @@ ws.onmessage = (message) => {
 const playersCards = Array.from(document.getElementsByClassName("playerhand"));
 playersCards.forEach((c, index) => {
   c.addEventListener("click", (event) => {
-    ws.send(JSON.stringify({ index }));
+    ws.send(index);
     console.log(index);
   });
 });
