@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std/http/mod.ts";
 
 let sockets = new Map();
+let playerStates = new Map();   //should maybe make a single map with all data
 
 async function reqHandler(request) {
   if (request.headers.get("upgrade") != "websocket") {
@@ -54,22 +55,27 @@ async function reqHandler(request) {
   //add websocket to list of websockets
   const identifier = crypto.randomUUID()
   sockets.set(identifier, websocket);
-  console.log(sockets);
+  //console.log(sockets);
+  playerStates.set(identifier, "inqueuewoname");
 
   //dealing with messages from websocket
-  websocket.onclose = () => sockets.delete(identifier);
+  websocket.onclose = () => {
+    sockets.delete(identifier);
+    playerStates.delete(identifier);
+  }
 
   websocket.onmessage = (message) => {
+      //parse message (what state is the uid in? q without name, q with name, in game)
+      //if in game, validate message
+      //if valid message, update game state according to message
       console.log(message);
-      console.log("\n\nSockets:\n");
-      console.log(sockets);
-      console.log("\n");
+
+      //if in game, send updated game state to all players
       sockets.forEach((ws, uid) => {
         console.log("Sending to ");
         console.log(ws);
         ws.send("YEEHAW");
       });
-      websocket.send("You are the progenitor");
   }
 
   return response;
