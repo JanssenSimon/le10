@@ -64,8 +64,4 @@ async function reqHandler(request) {
   return response;
 }
 
-const gameConnection = async (websocket) => {
-  console.log("new socket connection");
-}
-
 serve(reqHandler, { port: 5000 });

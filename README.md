@@ -6,7 +6,7 @@ Une simple implémentation d'un jeu de mise que j'ai appris à l'université.
 
 La commande pour lancer le serveur : 
 
-`deno --allow-network --allow-read server.js`
+`deno run --allow-net --allow-read server.js`
 
 ## Remerciements
 
