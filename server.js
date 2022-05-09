@@ -15,6 +15,27 @@ let gameSeats = new Map();
 function isGameFull() {
   return gameSeats.has("Player1") && gameSeats.has("Player2") && gameSeats.has("Player3") && gameSeats.has("Player4");
 }
+let playerCards = new Map();
+function distributePlayingCards() {  //assigns playing cards randomly to four players
+  let arrs = [[],[],[],[]];
+  const suits = ["♠","♡","♢","♣"];
+  const values = ["5","6","7","8","9","10","J","Q","K","A"];
+  suits.forEach((s) => {
+    values.forEach((v) => {
+      do {
+        var selectedHand = Math.floor(Math.random() * arrs.length);
+      } while (arrs[selectedHand].length >= 10);
+      arrs[selectedHand].push(s+v);
+    });
+  });
+  console.log(arrs);
+  playerCards.set("Player1", arrs[0]);
+  playerCards.set("Player2", arrs[1]);
+  playerCards.set("Player3", arrs[2]);
+  playerCards.set("Player4", arrs[3]);
+}
+distributePlayingCards();
+
 
 
 //To handle requests
