@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std/http/mod.ts";
 
+//To handle player states
 let sockets = new Map();
 let playerStates = new Map();   //should maybe make a single map with all data
 let playerNames = new Map();
@@ -8,6 +9,12 @@ function isValidName(nameProspect) {
   return (typeof nameProspect === 'string' || nameProspect instanceof String);    //TODO input sanitization
 }
 
+
+//To handle game state
+let isGameFull = false;
+
+
+//To handle requests
 async function reqHandler(request) {
   if (request.headers.get("upgrade") != "websocket") {
     const { pathname: path } = new URL(request.url);
@@ -68,6 +75,7 @@ async function reqHandler(request) {
     sockets.delete(identifier);
     playerStates.delete(identifier);
     //TODO tell game room to return to waiting for players
+    //Look in queue of named players to fill empty spot
   }
 
   websocket.onmessage = (message) => {
@@ -77,24 +85,34 @@ async function reqHandler(request) {
 
     if (playerStates.get(identifier) === "inqueuewoname" && isValidName(message.data)) {
 
-      console.log("Association UID " + identifier + " with name " + message.data);
+      console.log("Associating UID " + identifier + " with name " + message.data + ".");
       playerNames.set(identifier, message.data);
-      playerStates.set(identifier, "inqueuewithname");
+      if (isGameFull) {
+        playerStates.set(identifier, "inqueuewithname");
+        console.log(playerNames.get(identifier) + " enters queue to play.")
+      } else {
+        playerStates.set(identifier, "ingame");
+        console.log(playerNames.get(identifier) + " enters game.")
+      }
 
     } else if (playerStates.get(identifier) === "inqueuewithname") {
 
       console.log("This is not my beautiful wife")
 
-    } else {
+    } else if (playerStates.get(identifier) === "ingame") {
 
       console.log(message);
-
-      //if in game, send updated game state to all players
+      //send updated game state to all players
       sockets.forEach((ws, uid) => {
         console.log("Sending to ");
         console.log(ws);
         ws.send("YEEHAW");
       });
+
+    } else {
+
+      console.log("ERROR");
+      console.log(message);
 
     }
   }
@@ -102,4 +120,5 @@ async function reqHandler(request) {
   return response;
 }
 
+//Start server
 serve(reqHandler, { port: 5000 });
