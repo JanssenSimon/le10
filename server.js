@@ -35,6 +35,7 @@ function distributePlayingCards() {  //assigns playing cards randomly to four pl
   playerCards.set("Player4", arrs[3]);
 }
 distributePlayingCards();
+let whoToPlay = 0;
 
 
 
@@ -155,13 +156,20 @@ async function reqHandler(request) {
 
     } else if (playerStates.get(identifier) === "ingame") {
 
-      console.log(message.data);
-      //send updated game state to all players
-      sockets.forEach((ws, uid) => {
-        console.log("Sending to ");
-        console.log(ws);
-        ws.send("YEEHAW");
-      });
+      if (gameSeats.get("Player"+(whoToPlay+1)) === identifier && isGameFull()) {
+        console.log(message.data);
+
+        //send updated game state to all players
+        sockets.forEach((ws, uid) => {
+          //console.log("Sending to " + playerNames.get(uid));
+          ws.send("YEEHAW");
+        });
+
+        whoToPlay = ((whoToPlay + 1) % 4);
+        console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");
+      } else {
+        console.log(playerNames.get(identifier) + " tried to play a card but it was not their turn or the game wasn't full.");
+      }
 
     } else {
 
