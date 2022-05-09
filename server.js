@@ -11,7 +11,10 @@ function isValidName(nameProspect) {
 
 
 //To handle game state
-let isGameFull = false;
+let gameSeats = new Map();
+function isGameFull() {
+  return gameSeats.has("Player1") && gameSeats.has("Player2") && gameSeats.has("Player3") && gameSeats.has("Player4");
+}
 
 
 //To handle requests
@@ -74,6 +77,11 @@ async function reqHandler(request) {
   websocket.onclose = () => {
     sockets.delete(identifier);
     playerStates.delete(identifier);
+    playerNames.delete(identifier);
+    gameSeats.forEach((uid, playernumber) => {
+      if (uid === identifier)
+        gameSeats.delete(playernumber);
+    });
     //TODO tell game room to return to waiting for players
     //Look in queue of named players to fill empty spot
   }
@@ -87,12 +95,37 @@ async function reqHandler(request) {
 
       console.log("Associating UID " + identifier + " with name " + message.data + ".");
       playerNames.set(identifier, message.data);
-      if (isGameFull) {
+      if (isGameFull()) {
         playerStates.set(identifier, "inqueuewithname");
         console.log(playerNames.get(identifier) + " enters queue to play.")
       } else {
-        playerStates.set(identifier, "ingame");
-        console.log(playerNames.get(identifier) + " enters game.")
+        if (gameSeats.has("Player1")) {
+          if (gameSeats.has("Player2")) {
+            if (gameSeats.has("Player3")) {
+              if (gameSeats.has("Player4")) {
+                  //game is actually full
+                  playerStates.set(identifier, "inqueuewithname");
+                  console.log(playerNames.get(identifier) + " enters queue to play.");
+              } else {
+                gameSeats.set("Player4", identifier);
+                playerStates.set(identifier, "ingame");
+                console.log(playerNames.get(identifier) + " enters game as player 4.");
+              }
+            } else {
+              gameSeats.set("Player3", identifier);
+              playerStates.set(identifier, "ingame");
+              console.log(playerNames.get(identifier) + " enters game as player 3.");
+            }
+          } else {
+            gameSeats.set("Player2", identifier);
+            playerStates.set(identifier, "ingame");
+            console.log(playerNames.get(identifier) + " enters game as player 2.");
+          }
+        } else {
+          gameSeats.set("Player1", identifier);
+          playerStates.set(identifier, "ingame");
+          console.log(playerNames.get(identifier) + " enters game as player 1.");
+        }
       }
 
     } else if (playerStates.get(identifier) === "inqueuewithname") {
@@ -101,7 +134,7 @@ async function reqHandler(request) {
 
     } else if (playerStates.get(identifier) === "ingame") {
 
-      console.log(message);
+      console.log(message.data);
       //send updated game state to all players
       sockets.forEach((ws, uid) => {
         console.log("Sending to ");
