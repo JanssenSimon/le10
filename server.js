@@ -99,20 +99,21 @@ let startingPlayer = "Player1";
 
 
 let waitingForEveryoneToSeeCards = false;
-function switchCards() {
+function switchCards(winningPlayer) {
   return new Promise (resolve => {
     setTimeout(() => {
       lastRoundPlayedCards = thisRoundPlayedCards;
       thisRoundPlayedCards = [];
       waitingForEveryoneToSeeCards = false;
-      sendGameUpdate();
+      startingPlayer = winningPlayer; //TODO consolidate startingPlayer and whoToPlay into a single variable
+      sendGameUpdate("gameUpdate");
     }, 3000);               //give 3 seconds for players to acknowledge round
   });
 }
-async function switchToNextCards() {    // async caller function
-  await switchCards();
+async function switchToNextCards(winningPlayer) {    // async caller function
+  await switchCards(winningPlayer);
 }
-function sendGameUpdate() {
+function sendGameUpdate(flag) {
   //send updated game state to all players
   sockets.forEach((ws, uid) => {
     //console.log("Sending to " + playerNames.get(uid));
@@ -146,7 +147,8 @@ function sendGameUpdate() {
       lastroundplayedcards: lastRoundPlayedCards,
       yourteampoints: yourTeamPoints,
       otherteampoints: otherTeamPoints,
-      currentplayer: AAAAA
+      currentplayer: AAAAA,
+      startingplayeroffset: parseInt(startingPlayer.charAt(6))-1
     }));
   });
 }
@@ -256,11 +258,12 @@ async function reqHandler(request) {
           playerStates.set(identifier, "ingame");
           console.log(playerNames.get(identifier) + " enters game as player 1.");
         }
+        sendGameUpdate("onConnect");
       }
 
     } else if (playerStates.get(identifier) === "inqueuewithname") {
 
-      console.log("This is not my beautiful wife")
+      console.log("This is not my beautiful wife")  //TODO something with this and when people disconnect
 
     } else if (playerStates.get(identifier) === "ingame") {
 
@@ -286,7 +289,10 @@ async function reqHandler(request) {
             let winningCard = thisRoundPlayedCards.reduce(
               (previousMax, maxCandidate) => greaterCard(previousMax, maxCandidate, demandee, atout)
             );
-            let winningPlayer = "Player"+((parseInt(startingPlayer.charAt(6)) - 1 + thisRoundPlayedCards.indexOf(winningCard))%4+1);
+            whoToPlay = (parseInt(startingPlayer.charAt(6)) - 1 + thisRoundPlayedCards.indexOf(winningCard))%4-1;
+              //TODO above sets whoToPlay to person before winner because it will be incremented at end of handling message
+              //below it therefore does +2; correct this and make it more concise
+            let winningPlayer = "Player"+(whoToPlay+2);
             console.log("Round over! Winning card : " + winningCard);
             console.log("Winning player : " + winningPlayer);
             //Count points
@@ -309,11 +315,11 @@ async function reqHandler(request) {
             console.log("Team1: " + team1points + " \tTeam2: " + team2points);
             //Move this round's cards to past round after giving enough time for players to see it
             waitingForEveryoneToSeeCards = true;
-            switchToNextCards();
+            switchToNextCards(winningPlayer);  //TODO winning player has to be given as argument because the display of the cards in the right order depends on it, fix it
           }
 
           //send updated game state to all players
-          sendGameUpdate();
+          sendGameUpdate("gameUpdate");
 
           whoToPlay = ((whoToPlay + 1) % 4);
           console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");

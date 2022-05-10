@@ -1,13 +1,13 @@
-1. mettre à jour client lors de réception de message                            DONE
-1.25. corriger le problème du premier joueur qui joue
-1.5. envoyer des messages relevant à certains joueurs à des moments relevant
-        ex: quand iel se connecte, y envoyer le game state, et envoyer aux autres son nom
+1. envoyer des messages relevant à certains joueurs à des moments relevant
+   exemple: quand iel se connecte, y envoyer le game state, et envoyer aux autres son nom
             quand iel joue un carte illégale, envoyer un message comme quoi on peut pas
                 jouer cte carte la et pourquoi
             quand c'est leur tour de jouer, leur dire
 2. partir des nouvelles games quand les anciennes finissent
 3. ajouter le principe de mises
-4. ajouter AI
-5. ajouter plusieurs salles de jeu
-6. mettre à jour aria-descriptions (TRES IMPORTANT)
-7. penser à facon de joindre une salle spécifique.
+4 Ajouter les noms
+5. ajouter AI
+6 Cleanup the stinky code (EW GROSS)
+7. ajouter plusieurs salles de jeu et fix la queue
+8. mettre à jour aria-descriptions (TRES IMPORTANT)
+9. penser à facon de joindre une salle spécifique.

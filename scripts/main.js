@@ -76,42 +76,47 @@ function activatePlayerHandButtons() {
 function update(message) {
   message = JSON.parse(message);
   currentPlayer = message.currentplayer;
+  let offset = message.startingplayeroffset - 4;
+  let cartehaut = "";
+  let cartedroite = "";
+  let cartegauche = "";
+  let cartebas = "";
   switch(currentPlayer) {
     case "Player1":
       joueurhautnbcartes = message.player3cards;
-      cartehaut = cardStringToChar(message.thisroundplayedcards[2]);
+      cartehaut = cardStringToChar(message.thisroundplayedcards[(2-offset)%4]);
       joueurdroitenbcartes = message.player4cards;
-      cartedroite = cardStringToChar(message.thisroundplayedcards[3]);
+      cartedroite = cardStringToChar(message.thisroundplayedcards[(3-offset)%4]);
       joueurgauchenbcartes = message.player2cards;
-      cartegauche = cardStringToChar(message.thisroundplayedcards[1]);
-      cartebas = cardStringToChar(message.thisroundplayedcards[0]);
+      cartegauche = cardStringToChar(message.thisroundplayedcards[(1-offset)%4]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[(0-offset)%4]);
       break;
     case "Player2":
       joueurhautnbcartes = message.player4cards;
-      cartehaut = cardStringToChar(message.thisroundplayedcards[3]);
+      cartehaut = cardStringToChar(message.thisroundplayedcards[(3-offset)%4]);
       joueurdroitenbcartes = message.player1cards;
-      cartedroite = cardStringToChar(message.thisroundplayedcards[0]);
+      cartedroite = cardStringToChar(message.thisroundplayedcards[(0-offset)%4]);
       joueurgauchenbcartes = message.player3cards;
-      cartegauche = cardStringToChar(message.thisroundplayedcards[2]);
-      cartebas = cardStringToChar(message.thisroundplayedcards[1]);
+      cartegauche = cardStringToChar(message.thisroundplayedcards[(2-offset)%4]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[(1-offset)%4]);
       break;
     case "Player3":
       joueurhautnbcartes = message.player1cards;
-      cartehaut = cardStringToChar(message.thisroundplayedcards[0]);
+      cartehaut = cardStringToChar(message.thisroundplayedcards[(0-offset)%4]);
       joueurdroitenbcartes = message.player2cards;
-      cartedroite = cardStringToChar(message.thisroundplayedcards[1]);
+      cartedroite = cardStringToChar(message.thisroundplayedcards[(1-offset)%4]);
       joueurgauchenbcartes = message.player4cards;
-      cartegauche = cardStringToChar(message.thisroundplayedcards[3]);
-      cartebas = cardStringToChar(message.thisroundplayedcards[2]);
+      cartegauche = cardStringToChar(message.thisroundplayedcards[(3-offset)%4]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[(2-offset)%4]);
       break;
     case "Player4":
       joueurhautnbcartes = message.player2cards;
-      cartehaut = cardStringToChar(message.thisroundplayedcards[1]);
+      cartehaut = cardStringToChar(message.thisroundplayedcards[(1-offset)%4]);
       joueurdroitenbcartes = message.player3cards;
-      cartedroite = cardStringToChar(message.thisroundplayedcards[2]);
+      cartedroite = cardStringToChar(message.thisroundplayedcards[(2-offset)%4]);
       joueurgauchenbcartes = message.player1cards;
-      cartegauche = cardStringToChar(message.thisroundplayedcards[0]);
-      cartebas = cardStringToChar(message.thisroundplayedcards[3]);
+      cartegauche = cardStringToChar(message.thisroundplayedcards[(0-offset)%4]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[(3-offset)%4]);
       break;
     default:
       console.log("ERROR : insufficient information received");
