@@ -59,8 +59,18 @@ function cardStringToChar(cardString) {
     default:
       code = code + cardString.substring(1);
   }
-  console.log("Unicode code: " + code);
+  //console.log("Unicode code: " + code);
   return String.fromCodePoint(parseInt(code));
+}
+
+function activatePlayerHandButtons() {
+  const playersCards = Array.from(document.getElementsByClassName("playerhand"));
+  playersCards.forEach((c, index) => {
+    c.addEventListener("click", (event) => {
+      ws.send(index);
+      console.log(index);
+    });
+  });
 }
 
 function update(message) {
@@ -114,6 +124,29 @@ function update(message) {
   document.getElementById("carte-droite").innerHTML=cartedroite;
   document.getElementById("carte-gauche").innerHTML=cartegauche;
   document.getElementById("carte-bas").innerHTML=cartebas;
+
+  let newPlayerHandHTML = "";
+  message.currentplayercards.forEach((card) => {
+    newPlayerHandHTML=newPlayerHandHTML+'<button class="card inhand playerhand" aria-label="Carte que vous détennez"aria-description="Ace de trèfle">'
+                                       +cardStringToChar(card)
+                                       +'</button>';
+  });
+  document.getElementById("mainjoueurbas").innerHTML=newPlayerHandHTML;
+  activatePlayerHandButtons();
+
+  if (message.lastroundplayedcards.length > 0) {
+    document.getElementById("lastroundrevealer").classList.remove("hidelastround");
+    document.getElementById("lastroundhaut").innerHTML=cardStringToChar(message.lastroundplayedcards[0]);
+    document.getElementById("lastrounddroite").innerHTML=cardStringToChar(message.lastroundplayedcards[1]);
+    document.getElementById("lastroundbas").innerHTML=cardStringToChar(message.lastroundplayedcards[2]);
+    document.getElementById("lastroundgauche").innerHTML=cardStringToChar(message.lastroundplayedcards[3]);
+  } else {
+    document.getElementById("lastroundrevealer").classList.add("hidelastround");
+    document.getElementById("lastroundhaut").classList.add("hidelastround");
+    document.getElementById("lastrounddroite").classList.add("hidelastround");
+    document.getElementById("lastroundbas").classList.add("hidelastround");
+    document.getElementById("lastroundgauche").classList.add("hidelastround");
+  }
 }
 
 ws.onmessage = (message) => {
@@ -122,13 +155,7 @@ ws.onmessage = (message) => {
   update(message.data);
 }
 
-const playersCards = Array.from(document.getElementsByClassName("playerhand"));
-playersCards.forEach((c, index) => {
-  c.addEventListener("click", (event) => {
-    ws.send(index);
-    console.log(index);
-  });
-});
+activatePlayerHandButtons();
 
 function generateRandomName() {
   let firstnames = ["Marie", "Jean", "Jeanne", "Pierre", "Françoise", "Michel",
