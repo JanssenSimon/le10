@@ -19,9 +19,13 @@
         </div>
         <h3 id="feedback">Vous n'avez pas le droit de regarder la valeur des cartes d'un autre joueur!</h3>
       </div>
-      <div id="bettingsection">
-        <h2>Combien voulez vous miser?</h2>
-        <input type="number" id="bet"/>
+      <div id="bettingsection" class="yeeted">
+        <h2 id="betamount">La mise est à 50 en ce moment</h2>
+        <form id="betform">
+          <h2>Combien voulez vous miser?</h2>
+          <input type="number" id="bet" value="50"/>
+          <div><button id="foldbutton" type="button">PASSER</button><button id="submitbutton" type="button">CONFIRMER</button></div>
+        </form>
       </div>
       <div id="gamesection">
         <section id="table" aria-label="La table">

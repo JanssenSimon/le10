@@ -73,6 +73,15 @@ function activatePlayerHandButtons() {
   });
 }
 
+document.getElementById("submitbutton").addEventListener("click", () => {
+  ws.send(document.getElementById("bet").value)
+  console.log(document.getElementById("bet").value)
+});
+document.getElementById("foldbutton").addEventListener("click", () => {
+  ws.send("fold");
+  console.log("fold");
+});
+
 function update(message) {
   message = JSON.parse(message);
   currentPlayer = message.currentplayer;
@@ -159,6 +168,20 @@ function update(message) {
   document.getElementById("adversarypoints").innerHTML="Équipe adverse: "
                                                       +message.otherteampoints
                                                       +" point(s)";
+
+  if (message.mise) {
+    document.getElementById("bettingsection").classList.remove("yeeted");
+    if (message.winthreshold >= 50)
+      document.getElementById("betamount").innerHTML="La mise est à " + message.winthreshold + " en ce moment";
+    else
+      document.getElementById("betamount").innerHTML="Personne n'a encore misé";
+    if (message.bettingplayer == currentPlayer)
+      document.getElementById("betform").classList.remove("yotted");
+    else
+      document.getElementById("betform").classList.add("yotted");
+  } else {
+    document.getElementById("bettingsection").classList.add("yeeted");
+  }
 }
 
 ws.onmessage = (message) => {

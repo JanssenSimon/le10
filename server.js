@@ -95,7 +95,44 @@ function cardToPoints(card) {
   }
 }
 let startingPlayer = "Player1";
-
+//relating to mise
+let mise = true;
+let winThreshold = 45;//how much was bet, number of points needed to win
+let whoToMise = 0;
+let playerBets = new Map();
+function validateBet(amount) {
+  if (amount === "fold")
+    return true;
+  if (amount % 5 != 0 || amount < 50 || amount > 100 || amount < winThreshold)
+    return false;
+  return true;
+}
+function everyoneFolded() {
+  let winner = null;
+  if (!(playerBets.has("Player1") && playerBets.has("Player2")
+     && playerBets.has("Player3") && playerBets.has("Player4")))  //otherwise first better always wins
+    return false;
+  let stillbetters = false;
+  playerBets.forEach((bet, player) => {
+    if (bet != "fold") {
+      if (winner == null) {
+        winner = player;
+      } else {
+        stillbetters = true;
+      }
+    }
+  });
+  if (stillbetters)
+    return false;
+  if (winner != null) {
+    startingPlayer = winner;
+    whoToPlay = parseInt(winner.charAt(6))-1;
+    if (winThreshold < 50)
+      winThreshold = 50;
+    console.log(winner + " won the bet with " + winThreshold + " and therefore will start");
+  }
+  return true;
+}
 
 
 let waitingForEveryoneToSeeCards = false;
@@ -148,7 +185,10 @@ function sendGameUpdate(flag) {
       yourteampoints: yourTeamPoints,
       otherteampoints: otherTeamPoints,
       currentplayer: AAAAA,
-      startingplayeroffset: parseInt(startingPlayer.charAt(6))-1
+      startingplayeroffset: parseInt(startingPlayer.charAt(6))-1,
+      mise: mise,
+      winthreshold: winThreshold,
+      bettingplayer: "Player"+(whoToMise+1)
     }));
   });
 }
@@ -267,70 +307,115 @@ async function reqHandler(request) {
 
     } else if (playerStates.get(identifier) === "ingame") {
 
-      if (gameSeats.get("Player"+(whoToPlay+1)) === identifier && isGameFull() && !waitingForEveryoneToSeeCards) {
-
-        console.log(playerNames.get(identifier) + " plays the card at index " + message.data + " of their hand.");
-
-        //update game state
-        const cartejouee = playerCards.get("Player"+(whoToPlay+1)).splice(parseInt(message.data),1)[0];
-        //verify that played card is ok
-        let validation = thisRoundPlayedCards.length === 0
-                      || thisRoundPlayedCards[0].charAt(0) === cartejouee.charAt(0)
-                      || testNoSuit(playerCards.get("Player"+(whoToPlay+1)), thisRoundPlayedCards[0].charAt(0));
-        if (validation) {
-          thisRoundPlayedCards.push(cartejouee);
-
-          if (atout == null)
-            atout = cartejouee.charAt(0);
-
-          if (thisRoundPlayedCards.length === 4) {
-            //End of round, check who wins
-            let demandee = thisRoundPlayedCards[0].charAt(0);
-            let winningCard = thisRoundPlayedCards.reduce(
-              (previousMax, maxCandidate) => greaterCard(previousMax, maxCandidate, demandee, atout)
-            );
-            whoToPlay = (parseInt(startingPlayer.charAt(6)) - 1 + thisRoundPlayedCards.indexOf(winningCard))%4-1;
-              //TODO above sets whoToPlay to person before winner because it will be incremented at end of handling message
-              //below it therefore does +2; correct this and make it more concise
-            let winningPlayer = "Player"+(whoToPlay+2);
-            console.log("Round over! Winning card : " + winningCard);
-            console.log("Winning player : " + winningPlayer);
-            //Count points
-            let pointTotal = thisRoundPlayedCards.reduce(
-              (sum, card) => sum + cardToPoints(card), 0
-            );
-            switch (winningPlayer) {
-              case "Player1":
-              case "Player3":
-                team1points += pointTotal;
-                break;
-              case "Player2":
-              case "Player4":
-                team2points += pointTotal;
-                break;
-              default:
-                console.log("ERROR: Points won by player who doesn't exist")
+      if (mise) {
+        if (gameSeats.get("Player"+(whoToMise+1)) === identifier && isGameFull()) {
+          if (validateBet(message.data)) {
+            if (message.data === "fold") {
+              console.log(playerNames.get(identifier) + " folds");
+              playerBets.set("Player"+(whoToMise+1), "fold");
+            } else {
+              console.log(playerNames.get(identifier) + " bets " + message.data);
+              playerBets.set("Player"+(whoToMise+1), parseInt(message.data));
+              winThreshold = parseInt(message.data);
             }
-            console.log("Points won this round : " + pointTotal);
-            console.log("Team1: " + team1points + " \tTeam2: " + team2points);
-            //Move this round's cards to past round after giving enough time for players to see it
-            waitingForEveryoneToSeeCards = true;
-            switchToNextCards(winningPlayer);  //TODO winning player has to be given as argument because the display of the cards in the right order depends on it, fix it
+            if (winThreshold === 100 || everyoneFolded()){  //Check if betting finished
+              mise = false;
+              sendGameUpdate("gameUpdate");
+            } else {
+              //Let next person bet
+              do {
+                whoToMise = (whoToMise+1)%4;
+              } while (playerBets.has("Player"+(whoToMise+1)) && playerBets.get("Player"+(whoToMise+1)) == "fold"); //skip to next betting player
+              console.log("It's Player" + (whoToMise+1) + "'s turn to bet");
+              sendGameUpdate("gameUpdate");
+            }
+          } else {
+            console.log("Mise qqchose qui a du bon sens");
           }
-
-          //send updated game state to all players
-          sendGameUpdate("gameUpdate");
-
-          whoToPlay = ((whoToPlay + 1) % 4);
-          console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");
         } else {
-          console.log(playerNames.get(identifier) + " tried to play a card they weren't allowed to.");
-          playerCards.get("Player"+(whoToPlay+1)).splice(parseInt(message.data),0,cartejouee);
+          console.log("C'est le temps de miser et on a fait qqchose de pas correct")
         }
       } else {
-        console.log(playerNames.get(identifier) + " tried to play a card but it was not their turn or the game wasn't full.");
-      }
+        if (gameSeats.get("Player"+(whoToPlay+1)) === identifier && isGameFull() && !waitingForEveryoneToSeeCards && 0 <= parseInt(message.data) && parseInt(message.data) < 10) {
 
+          console.log(playerNames.get(identifier) + " plays the card at index " + message.data + " of their hand.");
+
+          //update game state
+          const cartejouee = playerCards.get("Player"+(whoToPlay+1)).splice(parseInt(message.data),1)[0];
+          //verify that played card is ok
+          let validation = thisRoundPlayedCards.length === 0
+                        || thisRoundPlayedCards[0].charAt(0) === cartejouee.charAt(0)
+                        || testNoSuit(playerCards.get("Player"+(whoToPlay+1)), thisRoundPlayedCards[0].charAt(0));
+          if (validation) {
+            thisRoundPlayedCards.push(cartejouee);
+
+            if (atout == null)
+              atout = cartejouee.charAt(0);
+
+            if (thisRoundPlayedCards.length === 4) {
+              //End of round, check who wins
+              let demandee = thisRoundPlayedCards[0].charAt(0);
+              let winningCard = thisRoundPlayedCards.reduce(
+                (previousMax, maxCandidate) => greaterCard(previousMax, maxCandidate, demandee, atout)
+              );
+              whoToPlay = (parseInt(startingPlayer.charAt(6)) - 1 + thisRoundPlayedCards.indexOf(winningCard))%4-1;
+                //TODO above sets whoToPlay to person before winner because it will be incremented at end of handling message
+                //below it therefore does +2; correct this and make it more concise
+              let winningPlayer = "Player"+(whoToPlay+2);
+              console.log("Round over! Winning card : " + winningCard);
+              console.log("Winning player : " + winningPlayer);
+              //Count points
+              let pointTotal = thisRoundPlayedCards.reduce(
+                (sum, card) => sum + cardToPoints(card), 0
+              );
+              switch (winningPlayer) {
+                case "Player1":
+                case "Player3":
+                  team1points += pointTotal;
+                  break;
+                case "Player2":
+                case "Player4":
+                  team2points += pointTotal;
+                  break;
+                default:
+                  console.log("ERROR: Points won by player who doesn't exist")
+              }
+              console.log("Points won this round : " + pointTotal);
+              console.log("Team1: " + team1points + " \tTeam2: " + team2points);
+              //Move this round's cards to past round after giving enough time for players to see it
+              waitingForEveryoneToSeeCards = true;
+              switchToNextCards(winningPlayer);  //TODO winning player has to be given as argument because the display of the cards in the right order depends on it, fix it
+            }
+
+            //send updated game state to all players
+            sendGameUpdate("gameUpdate");
+
+            whoToPlay = ((whoToPlay + 1) % 4);
+            console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");
+
+            //Check if game is finished
+            if (playerCards.get("Player"+(whoToPlay+1)).length <= 0) {
+              console.log("Game finished, starting new one...");
+              distributePlayingCards();
+              thisRoundPlayedCards = [];
+              lastRoundPlayedCards = [];
+              team1points = 0;
+              team2points = 0;
+              atout = null;
+              mise = true;
+              winThreshold = 45;//how much was bet, number of points needed to win
+              playerBets = new Map();
+              sendGameUpdate("gameUpdate");
+            }
+          } else {
+            console.log(playerNames.get(identifier) + " tried to play a card they weren't allowed to.");
+            playerCards.get("Player"+(whoToPlay+1)).splice(parseInt(message.data),0,cartejouee);
+          }
+        } else {
+          console.log(playerNames.get(identifier) + " tried to play a card but it was not their turn or the game wasn't full.");
+        }
+
+      }
     } else {
 
       console.log("ERROR");

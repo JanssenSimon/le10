@@ -21,7 +21,6 @@ section {
 #adversarypoints{grid-column: 3; grid-row: 1;}
 #bettingsection {
   text-align: center;
-  display: none;
 }
 #gamesection {
   display: grid;
@@ -72,3 +71,5 @@ section {
 .card.hidelastround {
   visibility: hidden;
 }
+.yeeted {display: none;}
+.yotted {visibility: hidden;}
