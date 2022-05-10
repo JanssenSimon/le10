@@ -28,7 +28,7 @@ function distributePlayingCards() {  //assigns playing cards randomly to four pl
       arrs[selectedHand].push(s+v);
     });
   });
-  console.log(arrs);
+  //console.log(arrs);
   playerCards.set("Player1", arrs[0]);
   playerCards.set("Player2", arrs[1]);
   playerCards.set("Player3", arrs[2]);
@@ -290,7 +290,8 @@ async function reqHandler(request) {
               thisroundplayedcards: thisRoundPlayedCards,
               lastroundplayedcards: lastRoundPlayedCards,
               yourteampoints: yourTeamPoints,
-              otherteampoints: otherTeamPoints
+              otherteampoints: otherTeamPoints,
+              currentplayer: AAAAA
             }));
           });
 

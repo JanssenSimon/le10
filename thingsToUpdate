@@ -20,6 +20,14 @@ and it has to be update with 🃚 (or other) or this 🃟 if empty
 ALSO IT IS IMPORTANT TO UPDATE ARIA-DESCRIPTION
 also hide lastroundrevealer if no cards were played last round
 
+also update teampoints with
+"Ton équipe: <X> point(s)"
+and adversarypoints with
+"Équipe adverse: <Y> point(s)"
+
+
+THE FOLLOWING IS DONE ALREADY
+
 update
 mainjoueurhaut
 mainjoueurdroite
@@ -29,8 +37,3 @@ with appropriate number of
   aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
   🂠
 </button>
-
-also update teampoints with
-"Ton équipe: <X> point(s)"
-and adversarypoints with
-"Équipe adverse: <Y> point(s)"

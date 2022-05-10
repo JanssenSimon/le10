@@ -20,9 +20,42 @@ lastroundrevealer.addEventListener("click", () => {
 // Websocket networking for playing game
 let ws = new WebSocket("ws://localhost:5000");
 
+function update(message) {
+  message = JSON.parse(message);
+  currentPlayer = message.currentplayer;
+  switch(currentPlayer) {
+    case "Player1":
+      joueurhautnbcartes = message.player3cards;
+      joueurdroitenbcartes = message.player4cards;
+      joueurgauchenbcartes = message.player2cards;
+      break;
+    case "Player2":
+      joueurhautnbcartes = message.player4cards;
+      joueurdroitenbcartes = message.player1cards;
+      joueurgauchenbcartes = message.player3cards;
+      break;
+    case "Player3":
+      joueurhautnbcartes = message.player1cards;
+      joueurdroitenbcartes = message.player2cards;
+      joueurgauchenbcartes = message.player4cards;
+      break;
+    case "Player4":
+      joueurhautnbcartes = message.player2cards;
+      joueurdroitenbcartes = message.player3cards;
+      joueurgauchenbcartes = message.player1cards;
+      break;
+    default:
+      console.log("ERROR : insufficient information received");
+  }
+  document.getElementById("mainjoueurhaut").innerHTML='<button class="card inhand" aria-label="Carte détenu par le joueur à ta droite" aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>🂠</button>'.repeat(joueurhautnbcartes);
+  document.getElementById("mainjoueurdroite").innerHTML='<button class="card inhand" aria-label="Carte détenu par le joueur à ta droite" aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>🂠</button>'.repeat(joueurdroitenbcartes);
+  document.getElementById("mainjoueurgauche").innerHTML='<button class="card inhand" aria-label="Carte détenu par le joueur à ta droite" aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>🂠</button>'.repeat(joueurgauchenbcartes);
+}
+
 ws.onmessage = (message) => {
   console.log(message.data);
   //update DOM
+  update(message.data);
 }
 
 const playersCards = Array.from(document.getElementsByClassName("playerhand"));

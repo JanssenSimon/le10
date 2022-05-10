@@ -1,4 +1,9 @@
 1. mettre à jour client lors de réception de message
+1.5. envoyer des messages relevant à certains joueurs à des moments relevant
+        ex: quand iel se connecte, y envoyer le game state, et envoyer aux autres son nom
+            quand iel joue un carte illégale, envoyer un message comme quoi on peut pas
+                jouer cte carte la et pourquoi
+            quand c'est leur tour de jouer, leur dire
 2. partir des nouvelles games quand les anciennes finissent
 3. ajouter le principe de mises
 4. ajouter AI
