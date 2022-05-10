@@ -98,6 +98,59 @@ let startingPlayer = "Player1";
 
 
 
+let waitingForEveryoneToSeeCards = false;
+function switchCards() {
+  return new Promise (resolve => {
+    setTimeout(() => {
+      lastRoundPlayedCards = thisRoundPlayedCards;
+      thisRoundPlayedCards = [];
+      waitingForEveryoneToSeeCards = false;
+      sendGameUpdate();
+    }, 3000);               //give 3 seconds for players to acknowledge round
+  });
+}
+async function switchToNextCards() {    // async caller function
+  await switchCards();
+}
+function sendGameUpdate() {
+  //send updated game state to all players
+  sockets.forEach((ws, uid) => {
+    //console.log("Sending to " + playerNames.get(uid));
+    var AAAAA = null;
+    var yourTeamPoints = null;
+    var otherTeamPoints = null;
+    gameSeats.forEach((id, playernumber) => {
+      if (id === uid) {
+        AAAAA = playernumber;
+      }
+    });
+    switch (AAAAA) {
+      case "Player1":
+      case "Player3":
+        yourTeamPoints = team1points;
+        otherTeamPoints = team2points;
+        break;
+      case "Player2":
+      case "Player4":
+        yourTeamPoints = team2points;
+        otherTeamPoints = team1points;
+        break;
+    }
+    ws.send(JSON.stringify({
+      player1cards: playerCards.get("Player1").length,
+      player2cards: playerCards.get("Player2").length,
+      player3cards: playerCards.get("Player3").length,
+      player4cards: playerCards.get("Player4").length,
+      currentplayercards: playerCards.get(AAAAA),
+      thisroundplayedcards: thisRoundPlayedCards,
+      lastroundplayedcards: lastRoundPlayedCards,
+      yourteampoints: yourTeamPoints,
+      otherteampoints: otherTeamPoints,
+      currentplayer: AAAAA
+    }));
+  });
+}
+
 //To handle requests
 async function reqHandler(request) {
   if (request.headers.get("upgrade") != "websocket") {
@@ -211,7 +264,8 @@ async function reqHandler(request) {
 
     } else if (playerStates.get(identifier) === "ingame") {
 
-      if (gameSeats.get("Player"+(whoToPlay+1)) === identifier && isGameFull()) {
+      if (gameSeats.get("Player"+(whoToPlay+1)) === identifier && isGameFull() && !waitingForEveryoneToSeeCards) {
+
         console.log(playerNames.get(identifier) + " plays the card at index " + message.data + " of their hand.");
 
         //update game state
@@ -253,47 +307,13 @@ async function reqHandler(request) {
             }
             console.log("Points won this round : " + pointTotal);
             console.log("Team1: " + team1points + " \tTeam2: " + team2points);
-            //Move this round's cards to past round
-            lastRoundPlayedCards = thisRoundPlayedCards;
-            thisRoundPlayedCards = [];
+            //Move this round's cards to past round after giving enough time for players to see it
+            waitingForEveryoneToSeeCards = true;
+            switchToNextCards();
           }
 
           //send updated game state to all players
-          sockets.forEach((ws, uid) => {
-            //console.log("Sending to " + playerNames.get(uid));
-            var AAAAA = null;
-            var yourTeamPoints = null;
-            var otherTeamPoints = null;
-            gameSeats.forEach((id, playernumber) => {
-              if (id === uid) {
-                AAAAA = playernumber;
-              }
-            });
-            switch (AAAAA) {
-              case "Player1":
-              case "Player3":
-                yourTeamPoints = team1points;
-                otherTeamPoints = team2points;
-                break;
-              case "Player2":
-              case "Player4":
-                yourTeamPoints = team2points;
-                otherTeamPoints = team1points;
-                break;
-            }
-            ws.send(JSON.stringify({
-              player1cards: playerCards.get("Player1").length,
-              player2cards: playerCards.get("Player2").length,
-              player3cards: playerCards.get("Player3").length,
-              player4cards: playerCards.get("Player4").length,
-              currentplayercards: playerCards.get(AAAAA),
-              thisroundplayedcards: thisRoundPlayedCards,
-              lastroundplayedcards: lastRoundPlayedCards,
-              yourteampoints: yourTeamPoints,
-              otherteampoints: otherTeamPoints,
-              currentplayer: AAAAA
-            }));
-          });
+          sendGameUpdate();
 
           whoToPlay = ((whoToPlay + 1) % 4);
           console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");

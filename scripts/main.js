@@ -20,29 +20,88 @@ lastroundrevealer.addEventListener("click", () => {
 // Websocket networking for playing game
 let ws = new WebSocket("ws://localhost:5000");
 
+function cardStringToChar(cardString) {
+  if (typeof cardString === 'undefined')
+    return "🃟";
+  let code = "0x1F0"
+  switch (cardString.charAt(0)) {
+    case "♠":
+      code = code + "A";
+      break;
+    case "♡":
+      code = code + "B";
+      break;
+    case "♢":
+      code = code + "C";
+      break;
+    case "♣":
+      code = code + "D";
+      break;
+    default:
+      console.log("ERROR: card string is invalid, make sure it follows <suit><value> convention");
+  }
+  switch (cardString.substring(1)) {
+    case "A":
+      code = code + "1";
+      break;
+    case "K":
+      code = code + "E";
+      break;
+    case "Q":
+      code = code + "D";
+      break;
+    case "J":
+      code = code + "B";
+      break;
+    case "10":
+      code = code + "A";
+      break;
+    default:
+      code = code + cardString.substring(1);
+  }
+  console.log("Unicode code: " + code);
+  return String.fromCodePoint(parseInt(code));
+}
+
 function update(message) {
   message = JSON.parse(message);
   currentPlayer = message.currentplayer;
   switch(currentPlayer) {
     case "Player1":
       joueurhautnbcartes = message.player3cards;
+      cartehaut = cardStringToChar(message.thisroundplayedcards[2]);
       joueurdroitenbcartes = message.player4cards;
+      cartedroite = cardStringToChar(message.thisroundplayedcards[3]);
       joueurgauchenbcartes = message.player2cards;
+      cartegauche = cardStringToChar(message.thisroundplayedcards[1]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[0]);
       break;
     case "Player2":
       joueurhautnbcartes = message.player4cards;
+      cartehaut = cardStringToChar(message.thisroundplayedcards[3]);
       joueurdroitenbcartes = message.player1cards;
+      cartedroite = cardStringToChar(message.thisroundplayedcards[0]);
       joueurgauchenbcartes = message.player3cards;
+      cartegauche = cardStringToChar(message.thisroundplayedcards[2]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[1]);
       break;
     case "Player3":
       joueurhautnbcartes = message.player1cards;
+      cartehaut = cardStringToChar(message.thisroundplayedcards[0]);
       joueurdroitenbcartes = message.player2cards;
+      cartedroite = cardStringToChar(message.thisroundplayedcards[1]);
       joueurgauchenbcartes = message.player4cards;
+      cartegauche = cardStringToChar(message.thisroundplayedcards[3]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[2]);
       break;
     case "Player4":
       joueurhautnbcartes = message.player2cards;
+      cartehaut = cardStringToChar(message.thisroundplayedcards[1]);
       joueurdroitenbcartes = message.player3cards;
+      cartedroite = cardStringToChar(message.thisroundplayedcards[2]);
       joueurgauchenbcartes = message.player1cards;
+      cartegauche = cardStringToChar(message.thisroundplayedcards[0]);
+      cartebas = cardStringToChar(message.thisroundplayedcards[3]);
       break;
     default:
       console.log("ERROR : insufficient information received");
@@ -50,6 +109,11 @@ function update(message) {
   document.getElementById("mainjoueurhaut").innerHTML='<button class="card inhand" aria-label="Carte détenu par le joueur à ta droite" aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>🂠</button>'.repeat(joueurhautnbcartes);
   document.getElementById("mainjoueurdroite").innerHTML='<button class="card inhand" aria-label="Carte détenu par le joueur à ta droite" aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>🂠</button>'.repeat(joueurdroitenbcartes);
   document.getElementById("mainjoueurgauche").innerHTML='<button class="card inhand" aria-label="Carte détenu par le joueur à ta droite" aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>🂠</button>'.repeat(joueurgauchenbcartes);
+
+  document.getElementById("carte-haut").innerHTML=cartehaut;
+  document.getElementById("carte-droite").innerHTML=cartedroite;
+  document.getElementById("carte-gauche").innerHTML=cartegauche;
+  document.getElementById("carte-bas").innerHTML=cartebas;
 }
 
 ws.onmessage = (message) => {
