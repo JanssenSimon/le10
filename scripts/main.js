@@ -147,6 +147,13 @@ function update(message) {
     document.getElementById("lastroundbas").classList.add("hidelastround");
     document.getElementById("lastroundgauche").classList.add("hidelastround");
   }
+
+  document.getElementById("teampoints").innerHTML="Ton équipe: "
+                                                 +message.yourteampoints
+                                                 +" point(s)";
+  document.getElementById("adversarypoints").innerHTML="Équipe adverse: "
+                                                      +message.otherteampoints
+                                                      +" point(s)";
 }
 
 ws.onmessage = (message) => {

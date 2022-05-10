@@ -1,4 +1,5 @@
-1. mettre à jour client lors de réception de message
+1. mettre à jour client lors de réception de message                            DONE
+1.25. corriger le problème du premier joueur qui joue
 1.5. envoyer des messages relevant à certains joueurs à des moments relevant
         ex: quand iel se connecte, y envoyer le game state, et envoyer aux autres son nom
             quand iel joue un carte illégale, envoyer un message comme quoi on peut pas

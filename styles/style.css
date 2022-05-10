@@ -16,7 +16,8 @@ section {
   grid-template-columns: repeat(3, auto);
 }
 #teampoints{grid-column: 1; grid-row: 1;}
-#currentgameinstruction{grid-column: 2; grid-row: 1;}
+#currentgameinstruction{grid-column: 2; grid-row: 1;display: none;}/*TODO update this eventually*/
+#feedback{display: none;}/*TODO update this eventually*/
 #adversarypoints{grid-column: 3; grid-row: 1;}
 #bettingsection {
   text-align: center;
