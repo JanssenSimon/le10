@@ -1,11 +1,8 @@
 1. envoyer des messages relevant à certains joueurs à des moments relevant
-   exemple: quand iel se connecte, y envoyer le game state, et envoyer aux autres son nom
-            quand iel joue un carte illégale, envoyer un message comme quoi on peut pas
+   exemple: quand iel joue un carte illégale, envoyer un message comme quoi on peut pas
                 jouer cte carte la et pourquoi
-            quand c'est leur tour de jouer, leur dire
-3 Ajouter les noms
-4. ajouter AI
-5 Cleanup the stinky code (EW GROSS)
-6. ajouter plusieurs salles de jeu et fix la queue
-7. mettre à jour aria-descriptions (TRES IMPORTANT)
-8. penser à facon de joindre une salle spécifique.et de choisir un siege specifique
+2. ajouter IAs
+3. Cleanup the stinky code (EW GROSS)
+4. ajouter plusieurs salles de jeu et fix la queue
+5. mettre à jour aria-descriptions (TRES IMPORTANT)
+6. penser à facon de joindre une salle spécifique.et de choisir un siege specifique

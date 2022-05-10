@@ -155,11 +155,15 @@ function sendGameUpdate(flag) {
   sockets.forEach((ws, uid) => {
     //console.log("Sending to " + playerNames.get(uid));
     var AAAAA = null;
+    var nameofwhosturnitis = null;
     var yourTeamPoints = null;
     var otherTeamPoints = null;
     gameSeats.forEach((id, playernumber) => {
       if (id === uid) {
         AAAAA = playernumber;
+      }
+      if (playernumber === ("Player"+(whoToPlay+1))) {
+        nameofwhosturnitis = playerNames.get(id);
       }
     });
     switch (AAAAA) {
@@ -193,7 +197,8 @@ function sendGameUpdate(flag) {
       mise: mise,
       winthreshold: winThreshold,
       bettingplayer: "Player"+(whoToMise+1),
-      names: nameArray
+      names: nameArray,
+      whosturn: nameofwhosturnitis
     }));
   });
 }
@@ -392,11 +397,12 @@ async function reqHandler(request) {
               switchToNextCards(winningPlayer);  //TODO winning player has to be given as argument because the display of the cards in the right order depends on it, fix it
             }
 
-            //send updated game state to all players
-            sendGameUpdate("gameUpdate");
 
             whoToPlay = ((whoToPlay + 1) % 4);
             console.log("It is now Player"+(whoToPlay+1)+"'s turn to play.");
+
+            //send updated game state to all players
+            sendGameUpdate("gameUpdate");
 
             //Check if game is finished
             if (playerCards.get("Player"+(whoToPlay+1)).length <= 0) {

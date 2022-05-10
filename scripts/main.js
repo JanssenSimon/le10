@@ -196,7 +196,10 @@ function update(message) {
                                                       +message.otherteampoints
                                                       +" point(s)";
 
+  document.getElementById("currentgameinstruction").innerHTML = "C'est à " + message.whosturn + " de jouer";
+
   if (message.mise) {
+    document.getElementById("currentgameinstruction").classList.add("yeeted");
     document.getElementById("bettingsection").classList.remove("yeeted");
     if (message.winthreshold >= 50)
       document.getElementById("betamount").innerHTML="La mise est à " + message.winthreshold + " en ce moment";
@@ -208,6 +211,7 @@ function update(message) {
       document.getElementById("betform").classList.add("yotted");
   } else {
     document.getElementById("bettingsection").classList.add("yeeted");
+    document.getElementById("currentgameinstruction").classList.remove("yeeted");
   }
 }
 
