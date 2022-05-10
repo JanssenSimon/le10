@@ -1,0 +1,36 @@
+carte-haut
+carte-droite
+carte-bas
+carte-gauche
+and it has to be update with 🃚 (or other) or this 🃟 if empty
+ALSO IT IS IMPORTANT TO UPDATE ARIA-DESCRIPTION
+
+update mainjoueurbas with
+<button class="card inhand playerhand" aria-label="Carte que vous détennez"
+  aria-description="Ace de trèfle">
+  🃑
+</button>
+
+update
+lastroundhaut
+lastrounddroite
+lastroundbas
+lastroundgauche
+and it has to be update with 🃚 (or other) or this 🃟 if empty
+ALSO IT IS IMPORTANT TO UPDATE ARIA-DESCRIPTION
+also hide lastroundrevealer if no cards were played last round
+
+update
+mainjoueurhaut
+mainjoueurdroite
+mainjoueurgauche
+with appropriate number of
+<button class="card inhand" aria-label="Carte détenu par le joueur à ta droite"
+  aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
+  🂠
+</button>
+
+also update teampoints with
+"Ton équipe: <X> point(s)"
+and adversarypoints with
+"Équipe adverse: <Y> point(s)"
