@@ -46,6 +46,55 @@ function testNoSuit(cardArr, suit) {
   });
   return noSuit;
 }
+let atout = null;
+function valueToInt(value) {    //converts card value to integer value for comparison
+  switch (value) {
+    case "A":
+      return 14;
+    case "K":
+      return 13;
+    case "Q":
+      return 12;
+    case "J":
+      return 11;
+    default:
+      return parseInt(value);
+  }
+}
+function greaterCard(card1, card2, demandee, atout) {   //comparing cards to find win
+  switch (card1.charAt(0)) {
+    case atout:
+      if (card2.charAt(0) === atout) {
+        return (valueToInt(card1.substring(1)) < valueToInt(card2.substring(1)) ? card2 : card1);
+      } else {
+        return card1;
+      }
+    case demandee:
+      if (card2.charAt(0) === atout) {
+        return card2;
+      } else if (card2.charAt(0) === demandee) {
+        return (valueToInt(card1.substring(1)) < valueToInt(card2.substring(1)) ? card2 : card1);
+      } else {
+        return card1;
+      }
+    default:
+      console.log("ERROR, cannot compare cards");
+  }
+}
+let team1points = 0;            //for tracking team points
+let team2points = 0;
+function cardToPoints(card) {
+  switch (card.substring(1)) {
+    case "A":
+    case "10":
+      return 10;
+    case "5":
+      return 5;
+    default:
+      return 0;
+  }
+}
+let startingPlayer = "Player1";
 
 
 
@@ -168,23 +217,70 @@ async function reqHandler(request) {
         //update game state
         const cartejouee = playerCards.get("Player"+(whoToPlay+1)).splice(parseInt(message.data),1)[0];
         //verify that played card is ok
-        let validation = lastRoundPlayedCards.length === 0
-                      || lastRoundPlayedCards[0].charAt(0) === cartejouee.charAt(0)
-                      || testNoSuit(playerCards.get("Player"+(whoToPlay+1)), lastRoundPlayedCards[0].charAt(0));
+        let validation = thisRoundPlayedCards.length === 0
+                      || thisRoundPlayedCards[0].charAt(0) === cartejouee.charAt(0)
+                      || testNoSuit(playerCards.get("Player"+(whoToPlay+1)), thisRoundPlayedCards[0].charAt(0));
         if (validation) {
-          lastRoundPlayedCards.push(cartejouee);
+          thisRoundPlayedCards.push(cartejouee);
 
-          //verify if four cards have been played
+          if (atout == null)
+            atout = cartejouee.charAt(0);
+
+          if (thisRoundPlayedCards.length === 4) {
+            //End of round, check who wins
+            let demandee = thisRoundPlayedCards[0].charAt(0);
+            let winningCard = thisRoundPlayedCards.reduce(
+              (previousMax, maxCandidate) => greaterCard(previousMax, maxCandidate, demandee, atout)
+            );
+            let winningPlayer = "Player"+((parseInt(startingPlayer.charAt(6)) - 1 + thisRoundPlayedCards.indexOf(winningCard))%4+1);
+            console.log("Round over! Winning card : " + winningCard);
+            console.log("Winning player : " + winningPlayer);
+            //Count points
+            let pointTotal = thisRoundPlayedCards.reduce(
+              (sum, card) => sum + cardToPoints(card), 0
+            );
+            switch (winningPlayer) {
+              case "Player1":
+              case "Player3":
+                team1points += pointTotal;
+                break;
+              case "Player2":
+              case "Player4":
+                team2points += pointTotal;
+                break;
+              default:
+                console.log("ERROR: Points won by player who doesn't exist")
+            }
+            console.log("Points won this round : " + pointTotal);
+            console.log("Team1: " + team1points + " \tTeam2: " + team2points);
+            //Move this round's cards to past round
+            lastRoundPlayedCards = thisRoundPlayedCards;
+            thisRoundPlayedCards = [];
+          }
 
           //send updated game state to all players
           sockets.forEach((ws, uid) => {
             //console.log("Sending to " + playerNames.get(uid));
             var AAAAA = null;
+            var yourTeamPoints = null;
+            var otherTeamPoints = null;
             gameSeats.forEach((id, playernumber) => {
               if (id === uid) {
                 AAAAA = playernumber;
               }
             });
+            switch (AAAAA) {
+              case "Player1":
+              case "Player3":
+                yourTeamPoints = team1points;
+                otherTeamPoints = team2points;
+                break;
+              case "Player2":
+              case "Player4":
+                yourTeamPoints = team2points;
+                otherTeamPoints = team1points;
+                break;
+            }
             ws.send(JSON.stringify({
               player1cards: playerCards.get("Player1").length,
               player2cards: playerCards.get("Player2").length,
@@ -193,6 +289,8 @@ async function reqHandler(request) {
               currentplayercards: playerCards.get(AAAAA),
               thisroundplayedcards: thisRoundPlayedCards,
               lastroundplayedcards: lastRoundPlayedCards,
+              yourteampoints: yourTeamPoints,
+              otherteampoints: otherTeamPoints
             }));
           });
 
