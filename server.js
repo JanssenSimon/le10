@@ -174,6 +174,10 @@ function sendGameUpdate(flag) {
         otherTeamPoints = team1points;
         break;
     }
+    let nameArray = [];
+    playerNames.forEach((name, id) => {
+      nameArray.push(name);
+    });
     ws.send(JSON.stringify({
       player1cards: playerCards.get("Player1").length,
       player2cards: playerCards.get("Player2").length,
@@ -188,7 +192,8 @@ function sendGameUpdate(flag) {
       startingplayeroffset: parseInt(startingPlayer.charAt(6))-1,
       mise: mise,
       winthreshold: winThreshold,
-      bettingplayer: "Player"+(whoToMise+1)
+      bettingplayer: "Player"+(whoToMise+1),
+      names: nameArray
     }));
   });
 }
