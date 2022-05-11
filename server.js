@@ -1,54 +1,47 @@
 import { serve } from "https://deno.land/std@0.138.0/http/mod.ts";
 
+// For debugging
 var debugprint = (printable, flag) => {if (flag) console.log(printable);}
+const staticFilesFlag = false;
 
 async function reqHandler(request) {
   if (request.headers.get("upgrade") != "websocket") {
 
     //Client is requesting static files
 
-    const { pathname: path } = new URL(request.url);
-    debugprint(path, staticFilesFlag);
+    let resourceFromPath = new Map([
+        [ /^\/$/, "./index.html"],              //detects root, a single "/"
+        [ /^\/styles\/[\w\/-]+\.css$/, "PATH"], //matches css files in /styles/
+        [ /^\/scripts\/[\w\/-]+\.js$/, "PATH"], //matches js files in /scripts/
+        [ /^\/fonts\/[\w\/-]+\.woff2$/, "PATH"],//matches font files
+    ]);
+    let mimeTypeFromExtension = new Map([
+        [".html", { "content-type": "text/html; charset=utf-8" }],
+        [".css", { "content-type": "text/css" }],
+        [".js", { "content-type": "application/javascript" }],
+        [".woff2", { "content-type": "application/x-font-woff2" }],
+    ]);
 
-    if (path === "/") {
-      //serve index page
-      const index = await Deno.readFile("./index.html");
-      return new Response(index, {
-        status: 200,
-        headers: {
-          "content-type": "text/html; charset=utf-8"
-        }
-      });
-    } else if (path === "/styles/style.css") {
-      const index = await Deno.readFile("./styles/style.css");
-      return new Response(index, {
-        status: 200,
-        headers: {
-          "content-type": "text/css"          //TODO make this prettier with macros or smtg
-        }
-      });
-    } else if (path === "/scripts/main.js") {
-      const index = await Deno.readFile("./scripts/main.js");
-      return new Response(index, {
-        status: 200,
-        headers: {
-          "content-type": "application/javascript"
-        }
-      });
-    } else if (path === "/fonts/JuliaMonoCardSet-Regular.woff2") {
-      const index = await Deno.readFile("./fonts/JuliaMonoCardSet-Regular.woff2");
-      return new Response(index, {
-        status: 200,
-        headers: {
-          "content-type": "application/x-font-woff2"
-        }
-      });
+    const { pathname: path } = new URL(request.url);
+    debugprint("Path: "+path, staticFilesFlag);
+
+    for (const key of resourceFromPath.keys()) {
+      if (key.test(path)) {
+        let resource = resourceFromPath.get(key);
+        resource = resource === "PATH" ? "."+path : resource;
+        let fileExtension = resource.match(/\.\w+$/)[0];
+        const body = await Deno.readFile(resource);
+        return new Response(body, {
+            status: 200,
+            headers: mimeTypeFromExtension.get(fileExtension)
+        });
+        break;
+      }
     } //TODO what about the favicon?
 
-    //invalid path
-    return new Response(null, { status: 404 });
+    return new Response(null, { status: 404 }); //invalid path
   }
-    
+
   //upgrade websocket requested
   var websocketDetails = Deno.upgradeWebSocket(request);
   var response = websocketDetails.response;
