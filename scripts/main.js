@@ -18,7 +18,7 @@ lastroundrevealer.addEventListener("click", () => {
 
 
 // Websocket networking for playing game
-let ws = new WebSocket("ws://localhost:5000");
+let ws = new WebSocket("ws://" + location.host);
 
 function cardStringToChar(cardString) {
   if (typeof cardString === 'undefined')
@@ -68,18 +68,18 @@ function activatePlayerHandButtons() {
   playersCards.forEach((c, index) => {
     c.addEventListener("click", (event) => {
       ws.send(index);
-      console.log(index);
+      //console.log(index);
     });
   });
 }
 
 document.getElementById("submitbutton").addEventListener("click", () => {
   ws.send(document.getElementById("bet").value)
-  console.log(document.getElementById("bet").value)
+  //console.log(document.getElementById("bet").value)
 });
 document.getElementById("foldbutton").addEventListener("click", () => {
   ws.send("fold");
-  console.log("fold");
+  //console.log("fold");
 });
 
 //taken from k0m0r on stackoverflow, thanks k0m0r
@@ -216,7 +216,7 @@ function update(message) {
 }
 
 ws.onmessage = (message) => {
-  console.log(message.data);
+  //console.log(message.data);
   //update DOM
   update(message.data);
 }
