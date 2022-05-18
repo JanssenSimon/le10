@@ -1,3 +1,11 @@
+-1. UI redesign de Jej (ajouter des couleurs,
+                        ajuster les teintes,
+                        police de cartes custom,
+                        mettre la levée des 4 dernières cartes jouées proche du gagnant)
+0. Demander confirmation pour données importantes comme le nom
+   augmenter délai à la suite d'un round.
+   reset le jeu après 4 déconnections seulement quand tout le monde aura déconnecté
+   vérifier condition de victoire, faire un écran de victoire
 1. envoyer des messages relevant à certains joueurs à des moments relevant
    exemple: quand iel joue un carte illégale, envoyer un message comme quoi on peut pas
                 jouer cte carte la et pourquoi
