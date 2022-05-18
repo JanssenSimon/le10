@@ -8,28 +8,17 @@ export var messageHasName = (message) => {
   }
 }
 
-export var recordName = (name) => {}   //modifies state of games, must be overloaded
-
-export var nameSelectionErrorFunction = () => {
-  console.log("ERROR : Expected a name, received something else;");
-}
-
 export var messageHasGameChoice = (message) => {
   console.log("Validating if message has game choice");
   try {
     message = JSON.parse(message);
     if (message.hasOwnProperty("gamechoice"))
-      return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(message); // thanks, Ωmega from SO
+      return message.gamechoice === "newgame" ||
+             /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(message.gamechoice); // thanks, Ωmega from SO
     return false;
   } catch (e) {
     return false;
   }
-}
-
-export var joinGame = (game) => {}     //modifies state of games, must be overloaded
-
-export var gameSelectionErrorFunction = () => {
-  console.log("ERROR : Expected a name or game choice, received something else;");
 }
 
 export var messageHasBet = (message) => {
@@ -46,8 +35,6 @@ export var messageHasBet = (message) => {
   }
 }
 
-export var bet = (amount) => {}        //modifies state of games, must be overloaded
-
 export var messageHasCardChoice = (message) => {
   console.log("Validating if message has card choice");
   try {
@@ -61,8 +48,6 @@ export var messageHasCardChoice = (message) => {
   }
 }
 
-export var playCard = (card) => {}     //modifies state of games, must be overloaded
-
 export var messageHasExitGame = (message) => {
   console.log("Validating if message has exit game");
   try {
@@ -73,7 +58,23 @@ export var messageHasExitGame = (message) => {
   }
 }
 
+export var recordName = (name) => {}   //modifies state of games, must be overloaded
+
+export var joinGame = (game) => {}     //modifies state of games, must be overloaded
+
+export var bet = (amount) => {}        //modifies state of games, must be overloaded
+
+export var playCard = (card) => {}     //modifies state of games, must be overloaded
+
 export var exitGame = () => {}         //modifies state of games, must be overloaded
+
+export var nameSelectionErrorFunction = () => {
+  console.log("ERROR : Expected a name, received something else;");
+}
+
+export var gameSelectionErrorFunction = () => {
+  console.log("ERROR : Expected a name or game choice, received something else;");
+}
 
 export var inGameErrorFunction = () => {
   console.log("ERROR : Expected a bet, a card choice, or an exit request, received something else;");
