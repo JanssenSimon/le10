@@ -1,142 +1,185 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <html lang="fr-CA">
-    <title>Le Jeu du 10</title>
-    <meta name="author" content="Simon Janssen">
-    <meta name="description" content="Un simple jeu de mise que j'ai appris à l'université.">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link href="styles/style.css" rel="stylesheet">
-    <script defer src="scripts/main.js"></script>
-  </head>
-  <body>
-    <main>  <!-- le jeu en tant que tel -->
-      <div id="informationsection">
-        <div id="pointsthing">
-          <h2 id="teampoints">Ton équipe: 15 points</h2>
-          <h2 id="currentgameinstruction">C'est à votre tour de jouer une carte</h2>
-          <h2 id="adversarypoints">Équipe adverse: 25 points</h2>
-        </div>
-        <h3 id="feedback">Vous n'avez pas le droit de regarder la valeur des cartes d'un autre joueur!</h3>
-      </div>
-      <div id="bettingsection" class="yeeted">
-        <h2 id="betamount">La mise est à 50 en ce moment</h2>
-        <form id="betform">
-          <h2>Combien voulez vous miser?</h2>
-          <input type="number" id="bet" value="50" step="5" max="100" min="50"/>
-          <div><button id="foldbutton" type="button">PASSER</button><button id="submitbutton" type="button">CONFIRMER</button></div>
-        </form>
-      </div>
-      <div id="gamesection">
-        <section id="table" aria-label="La table">
-          <button id="carte-haut" class="card" aria-label="Carte jouée par coéquipier" 
-            aria-description="10 de trèfle">
-            🃚
-          </button>
-          <button id="carte-droite" class="card" aria-label="Carte jouée par joueur à ta droite" 
-            aria-description="Roi de trèfle">
-            🃞
-          </button>
-          <button id="carte-bas" class="card" aria-label="Carte que tu as jouée"
-            aria-description="Cette carte n'a pas encore été joué">
-            🃟
-          </button>
-          <button id="carte-gauche" class="card" aria-label="Carte jouée par joueur à ta gauche"
-            aria-description="Cette carte n'a pas encore été joué">
-            🃟
-          </button>
-        </section>
-        <section id="mainjoueurbas" aria-label="Ta main"> <!-- la main du joueur -->
-          <h2 id="nomjoueurbas">Alexis</h2>
-          <button class="card inhand playerhand" aria-label="Carte que vous détennez"
-            aria-description="Ace de trèfle">
-            🃑
-          </button>
-          <button class="card inhand playerhand" aria-label="Carte que vous détennez"
-            aria-description="5 de trèfle">
-            🃕
-          </button>
-          <button class="card inhand playerhand" aria-label="Carte que vous détennez"
-            aria-description="9 de coeur">
-            🂹
-          </button>
-          <button class="card inhand playerhand" aria-label="Carte que vous détennez"
-            aria-description="5 de pic">
-            🂥
-          </button>
-        </section>
-        <section id="discard" aria-label="Défausse"> <!-- lorsque on mouseover/select, on voit les 4 cartes jouées lors de la partie précédente -->
-          <button id="lastroundhaut"  class="card hidelastround" aria-label="Carte joué au dernier tour"
-            aria-description="Ace de pic">
-            🃁
-          </button>
-          <button id="lastrounddroite" class="card hidelastround" aria-label="Carte joué au dernier tour"
-            aria-description="6 de pic">
-            🃆
-          </button>
-          <button id="lastroundbas" class="card hidelastround" aria-label="Carte joué au dernier tour"
-            aria-description="7 de pic">
-            🃇
-          </button>
-          <button id="lastroundgauche" class="card hidelastround" aria-label="Carte joué au dernier tour"
-            aria-description="8 de pic">
-            🃈
-          </button>
-          <button id="lastroundrevealer" class="card" aria-label="Révèle les cartes jouées au dernier tour">
-            🂠
-          </button>
-        </section>
-        <section id="mainjoueurhaut" aria-label="Main de ton coéquipier">
-          <h2 id="nomjoueurhaut">Jérémie</h2>
-          <button class="card inhand" aria-label="Carte détenu par ton coéquipier"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-          <button class="card inhand" aria-label="Carte détenu par ton coéquipier"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-          <button class="card inhand" aria-label="Carte détenu par ton coéquipier"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-        </section>
-        <section id="mainjoueurdroite" aria-label="Main du joueur à ta droite">
-          <h2 id="nomjoueurdroite">Stefan</h2>
-          <button class="card inhand" aria-label="Carte détenu par le joueur à ta droite"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-          <button class="card inhand" aria-label="Carte détenu par le joueur à ta droite"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-          <button class="card inhand" aria-label="Carte détenu par le joueur à ta droite"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-        </section>
-        <section id="mainjoueurgauche" aria-label="Main du joueur à ta gauche">
-          <h2 id="nomjoueurgauche">Laurier</h2>
-          <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-          <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-          <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-          <button class="card inhand" aria-label="Carte détenu par le joueur à ta gauche"
-            aria-description="Tu ne peux pas voir la valeur de cette carte" disabled>
-            🂠
-          </button>
-        </section>
-      </div>
-    </main>
-  </body>
+<html lang="fr-CA">
+  
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Le Jeu du 10</title>
+	<meta name="author" content="Simon Janssen">
+	<meta name="description" content="Un simple jeu de mise que j’ai appris à l’université.">
+
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+	<link href="styles/power.css" rel="stylesheet">
+	<link href="styles/style.css" rel="stylesheet">
+
+	<script src="scripts/main.js" defer></script>
+</head>
+
+<body>
+	<header>
+		<h1>Le Jeu du <em>10</em></h1>
+	</header>
+
+	<nav>
+		<button class="link">Résumé de la partie</button>
+		<button class="link">Aide et infos</button>
+		<button class="link">Quitter la partie</button>
+	</nav>
+
+	<aside>
+		<div class="trump-color">
+			<label>Atout</label>
+			<div class="card medium diamonds"></div>
+		</div>
+		<div class="score">
+			<label for="points-home">Votre équipe</label>
+			<output id="points-home">50 pts</output>
+			<div class="bid"></div>
+		</div>
+		<div class="score">
+			<label for="points-away">Équipe adverse</label>
+			<output id="points-away">50 pts</output>
+			<div class="bid">Mise: 65 pts</div>
+		</div>
+	</aside>
+
+	<main>
+
+		<section class="player current-turn">
+			<h2>Jérémie</h2>
+			<ol class="card-hand">
+				<button class="card jack hearts"></button>
+				<button class="card queen hearts"></button>
+				<button class="card ace hearts"></button>
+				<button class="card ten clubs"></button>
+				<button class="card king clubs"></button>
+				<button class="card ace clubs"></button>
+				<button class="card seven diamonds"></button>
+				<button class="card nine diamonds"></button>
+				<button class="card king diamonds"></button>
+				<button class="card queen spades"></button>
+			</ol>
+			<button class="card face-down" id="last-play"></button>
+		</section>
+
+		<section class="player">
+			<h2>Marie</h2>
+			<ol class="card-hand">
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+			</ol>
+		</section>
+
+		<section class="player">
+			<h2>Fred</h2>
+			<ol class="card-hand">
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+			</ol>
+		</section>
+
+		<section class="player">
+			<h2>Coralie</h2>
+			<ol class="card-hand">
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+				<div class="card face-down"></div>
+			</ol>
+		</section>
+
+		<section class="table-center">
+			<p id="table-state">C’est votre tour</p>
+			<div class="card placeholder"></div>
+			<div class="card placeholder"></div>
+			<div class="card placeholder"></div>
+			<div class="card placeholder"></div>
+		</section>
+
+	</main>
+
+	<dialog id="help">
+		<button class="close">
+			<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke=var(--color-text) stroke-width="1">
+				<line x2="12" y2="12"/>
+				<line x1="12" y2="12"/>
+			</svg>
+		</button>
+		<h2>Comment jouer</h2>
+		<p>Vous êtes en équipe avec la personne en face de vous.</p>
+		<p>Le but du jeu est de faire le score que vous avez misé en début de partie. L’équipe qui fait plus de points que son adversaire, mais qui n’atteint pas sa mise, perd la partie.</p>
+		<p>La <em>mise</em> est déterminée en tour de table et le joueur avec la plus haute mise commence la partie.</p>
+		<p>Chaque tour, chacun des joueurs présente une carte aux autres. Le premier joueur détermine la <em>couleur demandée</em>. Les joueurs suivants doivent absolument jouer cette couleur s’ils peuvent. S’ils ne peuvent pas, ils doivent jouer n’importe quelle autre couleur.</p>
+		<p>Celui qui a la carte la plus haute remporte la manche et gagne tous les points en jeu. Les <span class="card small five"></span> valent 5 points. Les <span class="card small ten"></span> et <span class="card small ace"></span> valent 10 points.</p>
+		<p>L’<em>atout</em> de la partie est la couleur de la toute première carte jouée. Il remporte sur toutes les autres couleurs. Lorsqu’un joueur n’a pas de carte de la couleur demandée et qu’il joue de l’atout à la place, on dit qu’il <em>coupe</em>.</p>
+		<footer><p class="small">Le <em>Jeu du 10</em> est un jeu propre au <a href="">Département d’informatique et de recherche opérationnelle</a> de l’Université de Montréal. Cette version web réalisée par <a href="">Simon Janssen</a> est sous <a href="">licence libre</a> et son code source est disponible sur <a href="">GitHub</a>.</p></footer>
+	</dialog>
+
+	<dialog id="table-select">
+		<h2>Rejoindre une partie</h2>
+		<p>Choisissez votre nom et sélectionnez une table.</p>
+		<div class="input-group">
+			<label for="player-name">Nom</label>
+			<input type="text" id="player-name">
+		</div>
+		<div class="table-select">
+			<div class="table-slot">
+				<h3>#1</h3>
+				<output class="full">4/4 joueurs</output>
+				<button class="button" disabled>Rejoindre</button>
+			</div>
+			<div class="table-slot">
+				<h3>#2</h3>
+				<output>1/4 joueurs</output>
+				<button class="button">Rejoindre</button>
+			</div>
+			<div class="table-slot">
+				<h3>#3</h3>
+				<output>2/4 joueurs</output>
+				<button class="button">Rejoindre</button>
+			</div>
+			<div class="table-slot">
+				<h3>#4</h3>
+				<output>0/4 joueurs</output>
+				<button class="button">Rejoindre</button>
+			</div>
+		</div>
+		<div class="input-group">
+			<input type="checkbox" id="spectator-mode">
+			<label for="spectator-mode">Rejoindre en tant que spectateur.</label>
+		</div>
+	</dialog>
+
+	<dialog id="bid">
+		<h2>Mise</h2>
+		<input type="number" id="bid-amount" value="50" step="5" min="50" max="100" autofocus>
+		<button class="button">Suivre</button>
+	</dialog>
+
+</body>
+
 </html>
