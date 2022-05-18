@@ -1,3 +1,9 @@
+import { debugprint } from "./debug.js";
+
+// For debugging
+const gameFlag = true;
+
+// Validators
 export var messageHasName = (message) => {
   console.log("Validating if message has name");
   try {
@@ -7,7 +13,6 @@ export var messageHasName = (message) => {
     return false;
   }
 }
-
 export var messageHasGameChoice = (message) => {
   console.log("Validating if message has game choice");
   try {
@@ -20,7 +25,6 @@ export var messageHasGameChoice = (message) => {
     return false;
   }
 }
-
 export var messageHasBet = (message) => {
   console.log("Validating if message has bet");
   try {
@@ -34,7 +38,6 @@ export var messageHasBet = (message) => {
     return false;
   }
 }
-
 export var messageHasCardChoice = (message) => {
   console.log("Validating if message has card choice");
   try {
@@ -47,7 +50,6 @@ export var messageHasCardChoice = (message) => {
     return false;
   }
 }
-
 export var messageHasExitGame = (message) => {
   console.log("Validating if message has exit game");
   try {
@@ -58,24 +60,38 @@ export var messageHasExitGame = (message) => {
   }
 }
 
-export var recordName = (name) => {}   //modifies state of games, must be overloaded
+// State changing methods
+export var recordName = (uid, message, sockets, games) => {
+  sockets.get(uid).name = message.name; //message contains name
+  //debugprint("Socket " + uid + " changed associated name to " + sockets.get(uid).name, gameFlag);
+};
+export var joinGame = (uid, message, sockets, games) => {
+  if (message.game === "newgame") { //message contains game uid or newgame
+    //TODO create a new game
+    //debugprint("Socket " + uid + " requested creation of new game", gameFlag);
+  }
+  sockets.get(uid).game = message.game;
+  //debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
+  games.get(sockets.get(uid).game).addPlayer(uid);
+};
+export var bet = (uid, message, sockets, games) => {
+  games.get(sockets.get(uid).game).bet(uid, message.bet) //message contains amount
+};
+export var playCard = (uid, message, sockets, games) => {
+  games.get(sockets.get(uid).game).playCard(uid, message.cardchoice) //message contains chosen card index
+};
+export var exitGame = (uid, message, sockets, games) => {
+  //debugprint("Socket " + uid + " exits from game " + sockets.get(uid).game, gameFlag);
+  games.get(sockets.get(uid).game).exits(uid);
+};
 
-export var joinGame = (game) => {}     //modifies state of games, must be overloaded
-
-export var bet = (amount) => {}        //modifies state of games, must be overloaded
-
-export var playCard = (card) => {}     //modifies state of games, must be overloaded
-
-export var exitGame = () => {}         //modifies state of games, must be overloaded
-
+// Error functions
 export var nameSelectionErrorFunction = () => {
   console.log("ERROR : Expected a name, received something else;");
 }
-
 export var gameSelectionErrorFunction = () => {
   console.log("ERROR : Expected a name or game choice, received something else;");
 }
-
 export var inGameErrorFunction = () => {
   console.log("ERROR : Expected a bet, a card choice, or an exit request, received something else;");
 }

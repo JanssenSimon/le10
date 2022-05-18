@@ -1,41 +1,15 @@
 import { serve } from "https://deno.land/std@0.138.0/http/mod.ts";
 import * as state_machine from "./state_machine.js";
+import { debugprint } from "./debug.js";
 
 // For debugging
-var debugprint = (printable, flag) => {if (flag) console.log(printable);}
 const staticFilesFlag = false;
 const websocketFlag = false;
 const socketstateFlag = false;
-const gameFlag = true;
 
 // State
 let sockets = new Map();    //contains objects with socket and state of socket
 let games = new Map();      //contains game objects
-
-// Overload state changing methods
-state_machine.recordName = (uid, message) => {
-  sockets.get(uid).name = message.name; //message contains name
-  debugprint("Socket " + uid + " changed associated name to " + sockets.get(uid).name, gameFlag);
-};
-state_machine.joinGame = (uid, message) => {
-  if (message.game === "newgame") { //message contains game uid or newgame
-    //TODO create a new game
-    debugprint("Socket " + uid + " requested creation of new game", gameFlag);
-  }
-  sockets.get(uid).game = message.game;
-  debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
-  games.get(sockets.get(uid).game).addPlayer(uid);
-};
-state_machine.bet = (uid, message) => {
-  games.get(sockets.get(uid).game).bet(uid, message.bet) //message contains amount
-};
-state_machine.playCard = (uid, message) => {
-  games.get(sockets.get(uid).game).playCard(uid, message.cardchoice) //message contains chosen card index
-};
-state_machine.exitGame = (uid, message) => {
-  debugprint("Socket " + uid + " exits from game " + sockets.get(uid).game, gameFlag);
-  games.get(sockets.get(uid).game).exits(uid);
-};
 
 // Server request handler, handles requests to the server
 async function reqHandler(request) {
@@ -90,7 +64,7 @@ async function reqHandler(request) {
 
   //dealing with messages from websocket
   websocket.onclose = () => {
-    exitGame();     // Call exitGame so there are no zombies if disconnections
+    state_machine.exitGame();  // Call exitGame so there are no zombies if disconnections
     sockets.delete(identifier);
     debugprint("Websocket " + identifier + " closed.", websocketFlag);
   }
@@ -109,7 +83,7 @@ async function reqHandler(request) {
       if (obj.validator(message.data)) {
         debugprint("Validated message: " + message.data, socketstateFlag);
         debugprint("Calling method based on message...", socketstateFlag);
-        obj.method();
+        obj.method(identifier, message.data, sockets, games);
         noMethodCalled = false;
         sockets.get(identifier).state = obj.nextState;
         debugprint("State changing to " + obj.nextState + "...", socketstateFlag);
