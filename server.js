@@ -31,12 +31,14 @@ async function reqHandler(request) {
         [ /^\/styles\/[\w\/-]+\.css$/, "PATH"], //matches css files in /styles/
         [ /^\/scripts\/[\w\/-]+\.js$/, "PATH"], //matches js files in /scripts/
         [ /^\/fonts\/[\w\/-]+\.woff2$/, "PATH"],//matches font files
+        [ /^\/graphics\/[\w\/-]+\.svg$/, "PATH"], //matches svg files
     ]);
     let mimeTypeFromExtension = new Map([
         [".html", { "content-type": "text/html; charset=utf-8" }],
         [".css", { "content-type": "text/css" }],
         [".js", { "content-type": "application/javascript" }],
         [".woff2", { "content-type": "application/x-font-woff2" }],
+        [".svg", { "content-type": "image/svg+xml" }],
     ]);
 
     const { pathname: path } = new URL(request.url);
