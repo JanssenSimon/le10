@@ -1,8 +1,13 @@
 import { serve } from "https://deno.land/std@0.138.0/http/mod.ts";
+import * as state_machine from "./state_machine.js";
 
 // For debugging
 var debugprint = (printable, flag) => {if (flag) console.log(printable);}
 const staticFilesFlag = false;
+const websocketFlag = true;
+const socketstateFlag = true;
+
+let sockets = new Map(); //contains objects with socket and state of socket
 
 async function reqHandler(request) {
   if (request.headers.get("upgrade") != "websocket") {
@@ -49,14 +54,42 @@ async function reqHandler(request) {
 
   //add websocket to list of websockets
   const identifier = crypto.randomUUID()
-  sockets.set(identifier, websocket);
+  sockets.set(identifier, {socket: websocket, state: "NameSelection"});
+  debugprint("New websocket connection", websocketFlag);
+  debugprint("Websocket given identifier " + identifier, websocketFlag);
   debugprint(sockets, websocketFlag);
-  playerStates.set(identifier, "inqueuewoname");
 
   //dealing with messages from websocket
-  websocket.onclose = () => {}
+  websocket.onclose = () => {
+    exitGame();     // Call exitGame so there are no zombies if disconnections
+    sockets.delete(identifier);
+    debugprint("Websocket " + identifier + " closed.", websocketFlag);
+  }
 
-  websocket.onmessage = (message) => {}
+  websocket.onmessage = (message) => {
+    debugprint("Message received from socket " + identifier, websocketFlag);
+    debugprint(message.data, websocketFlag);
+
+    // Use state machine to evaluate message appropriately
+    let socketState = state_machine.STATES.get(sockets.get(identifier).state);
+    debugprint("Socket's current state", websocketFlag);
+    debugprint(socketState, socketstateFlag);
+
+    let noMethodCalled = true;
+    socketState.methods.forEach((obj) => {
+      if (obj.validator(message.data)) {
+        debugprint("Validated message: " + message.data, socketstateFlag);
+        debugprint("Calling method based on message...", socketstateFlag);
+        obj.method();
+        noMethodCalled = false;
+        sockets.get(identifier).state = obj.nextState;
+        debugprint("State changing to " + obj.nextState + "...", socketstateFlag);
+        debugprint("State changed to " + sockets.get(identifier).state, socketstateFlag);
+      }
+    });
+    if (socketState.methods.length === 0 || noMethodCalled)
+      socketState.error();
+  }
 
   return response;
 }

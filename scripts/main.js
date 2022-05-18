@@ -1,13 +1,6 @@
-// Websocket networking for playing game
-let ws = new WebSocket("ws://" + location.host);
-
 // For debugging
 var debugprint = (printable, flag) => {if (flag) console.log(printable);}
-const webSocketFlag = true;
-
-ws.onmessage = (message) => {
-  debugprint(message.data, webSocketFlag);
-}
+const websocketFlag = true;
 
 function generateRandomName() {
   let firstnames = ["Marie", "Jean", "Jeanne", "Pierre", "Françoise", "Michel",
@@ -17,3 +10,10 @@ function generateRandomName() {
          lastnames[Math.floor(Math.random() * lastnames.length)];
 }
 let suggestedName = generateRandomName()
+
+// Websocket networking for playing game
+let ws = new WebSocket("ws://" + location.host);
+
+ws.onmessage = (message) => {
+  debugprint(message.data, websocketFlag);
+}
