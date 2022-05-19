@@ -1,3 +1,8 @@
+import { debugprint } from "./debug.js"
+import { Game } from "./game.js";
+
+const gameFlag = true;
+
 // ----------------------------------------------------------------------------
 // State machine
 // ----------------------------------------------------------------------------
@@ -61,25 +66,34 @@ export var messageHasExitGame = (message) => {
 
 // State changing methods
 export var recordName = (uid, message, sockets, games) => {
+  message = JSON.parse(message);
   sockets.get(uid).name = message.name; //message contains name
   debugprint("Socket " + uid + " changed associated name to " + sockets.get(uid).name, gameFlag);
 };
 export var joinGame = (uid, message, sockets, games) => {
-  if (message.game === "newgame") { //message contains game uid or newgame
-    //TODO create a new game
+  message = JSON.parse(message);
+  if (message.gamechoice === "newgame") { //message contains game uid or newgame
+    // Create a new game
+    const gameid = crypto.randomUUID()
+    games.set(gameid, new Game());
+    sockets.get(uid).game = gameid;
     debugprint("Socket " + uid + " requested creation of new game", gameFlag);
+  } else {
+    sockets.get(uid).game = message.gamechoice;
+    debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
   }
-  sockets.get(uid).game = message.game;
-  debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
   games.get(sockets.get(uid).game).addPlayer(uid);
 };
 export var bet = (uid, message, sockets, games) => {
+  message = JSON.parse(message);
   games.get(sockets.get(uid).game).bet(uid, message.bet) //message contains amount
 };
 export var playCard = (uid, message, sockets, games) => {
+  message = JSON.parse(message);
   games.get(sockets.get(uid).game).playCard(uid, message.cardchoice) //message contains chosen card index
 };
 export var exitGame = (uid, message, sockets, games) => {
+  message = JSON.parse(message);
   debugprint("Socket " + uid + " exits from game " + sockets.get(uid).game, gameFlag);
   games.get(sockets.get(uid).game).exits(uid);
 };
