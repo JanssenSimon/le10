@@ -2,7 +2,7 @@ import { debugprint } from "./debug.js"
 import { Game } from "./game.js";
 
 const validationFlag = false;
-const gameFlag = false;
+const gameFlag = true;
 
 // ----------------------------------------------------------------------------
 // State machine
@@ -35,10 +35,11 @@ export var messageHasBet = (message) => {
   try {
     message = JSON.parse(message);
     return message.hasOwnProperty("bet") &&
-           Number.isFinite(message.bet) &&
+           ((Number.isFinite(message.bet) &&
            message.bet >= 50 &&
            message.bet <= 100 &&
-           (message.bet % 5 === 0);
+           (message.bet % 5 === 0)) || (
+           message.bet === "fold"));
   } catch (e) {
     return false;
   }
@@ -79,6 +80,8 @@ export var joinGame = (uid, message, sockets, games) => {
     games.set(gameid, new Game());
     sockets.get(uid).game = gameid;
     debugprint("Socket " + uid + " requested creation of new game", gameFlag);
+    debugprint("New game given uid: " + gameid, gameFlag);
+    //TODO send updated game list to all players
   } else {
     sockets.get(uid).game = message.gamechoice;
     debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
@@ -102,12 +105,15 @@ export var exitGame = (uid, message, sockets, games) => {
 // Error functions
 export var nameSelectionErrorFunction = () => {
   console.log("ERROR : Expected a name, received something else;");
+  //TODO send error to player, let them know they need to be named
 }
 export var gameSelectionErrorFunction = () => {
   console.log("ERROR : Expected a name or game choice, received something else;");
+  //TODO send error to player
 }
 export var inGameErrorFunction = () => {
   console.log("ERROR : Expected a bet, a card choice, or an exit request, received something else;");
+  //TODO send error to player
 }
 
 export var STATES = new Map([

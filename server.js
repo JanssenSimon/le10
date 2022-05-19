@@ -72,10 +72,13 @@ async function reqHandler(request) {
   debugprint("Websocket given identifier " + identifier, websocketFlag);
   debugprint(sockets, websocketFlag);
 
+  //TODO send to socket initial info about what game exist
+  //TODO send to socket initial info about what state the client is on (choosing name)
+
   //dealing with messages from websocket
   websocket.onclose = () => {
     if (sockets.get(identifier).state === "InGame")
-      state_machine.exitGame(identifier, {command: "EXIT"}, sockets, games);  // no zombies if disconnections
+      state_machine.exitGame(identifier, JSON.stringify({command: "EXIT"}), sockets, games);  // no zombies if disconnections
     sockets.delete(identifier);
     debugprint("Websocket " + identifier + " closed.", websocketFlag);
   }
