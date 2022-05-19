@@ -1,6 +1,7 @@
 import { debugprint } from "./debug.js"
 import { Game } from "./game.js";
 
+const validationFlag = false;
 const gameFlag = false;
 
 // ----------------------------------------------------------------------------
@@ -9,7 +10,7 @@ const gameFlag = false;
 
 // Validators
 export var messageHasName = (message) => {
-  console.log("Validating if message has name");
+  debugprint("Validating if message has name", validationFlag);
   try {
     message = JSON.parse(message);
     return message.hasOwnProperty("name") && (typeof message.name === 'string' || message.name instanceof String);
@@ -18,7 +19,7 @@ export var messageHasName = (message) => {
   }
 }
 export var messageHasGameChoice = (message) => {
-  console.log("Validating if message has game choice");
+  debugprint("Validating if message has game choice", validationFlag);
   try {
     message = JSON.parse(message);
     if (message.hasOwnProperty("gamechoice"))
@@ -30,7 +31,7 @@ export var messageHasGameChoice = (message) => {
   }
 }
 export var messageHasBet = (message) => {
-  console.log("Validating if message has bet");
+  debugprint("Validating if message has bet", validationFlag);
   try {
     message = JSON.parse(message);
     return message.hasOwnProperty("bet") &&
@@ -43,7 +44,7 @@ export var messageHasBet = (message) => {
   }
 }
 export var messageHasCardChoice = (message) => {
-  console.log("Validating if message has card choice");
+  debugprint("Validating if message has card choice", validationFlag);
   try {
     message = JSON.parse(message);
     return message.hasOwnProperty("cardchoice") &&
@@ -55,7 +56,7 @@ export var messageHasCardChoice = (message) => {
   }
 }
 export var messageHasExitGame = (message) => {
-  console.log("Validating if message has exit game");
+  debugprint("Validating if message has exit game", validationFlag);
   try {
     message = JSON.parse(message);
     return message.hasOwnProperty("command") && message.command === "EXIT";
