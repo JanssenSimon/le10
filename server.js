@@ -5,8 +5,7 @@ import * as state_machine from "./state_machine.js";
 // For debugging
 const staticFilesFlag = false;
 const websocketFlag = false;
-const socketstateFlag = true;
-const gameFlag = true;
+const socketstateFlag = false;
 
 
 // ----------------------------------------------------------------------------

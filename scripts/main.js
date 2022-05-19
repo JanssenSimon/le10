@@ -17,3 +17,19 @@ let ws = new WebSocket("ws://" + location.host);
 ws.onmessage = (message) => {
   debugprint(message.data, websocketFlag);
 }
+
+/*
+ * STATE: awaitingName
+ * valid messages: ws.send(JSON.stringify({name: "Benjamin"}))
+ *
+ * STATE: gameSelection
+ * valid messages: ws.send(JSON.stringify({name: "Benjamin"}))
+ * valid messages: ws.send(JSON.stringify({gamechoice: "newgame"}))
+ * valid messages: ws.send(JSON.stringify({gamechoice: "<UUID>"}))
+ *
+ * STATE: inGame
+ * valid messages: ws.send(JSON.stringify({command: "EXIT"}))
+ * valid messages: ws.send(JSON.stringify({bet: <amount>}))
+ * valid messages: ws.send(JSON.stringify({cardchoice: <card_index>}))
+ *
+ */

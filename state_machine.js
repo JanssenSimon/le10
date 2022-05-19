@@ -1,7 +1,7 @@
 import { debugprint } from "./debug.js"
 import { Game } from "./game.js";
 
-const gameFlag = true;
+const gameFlag = false;
 
 // ----------------------------------------------------------------------------
 // State machine
@@ -82,7 +82,7 @@ export var joinGame = (uid, message, sockets, games) => {
     sockets.get(uid).game = message.gamechoice;
     debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
   }
-  games.get(sockets.get(uid).game).addPlayer(uid);
+  games.get(sockets.get(uid).game).addPlayer(uid, sockets.get(uid).name);
 };
 export var bet = (uid, message, sockets, games) => {
   message = JSON.parse(message);
