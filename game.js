@@ -18,6 +18,7 @@ export class Game {
 
     this.seatToBet = 0;
     this.highestBet = null;
+    this.highestBetter = 3;
     this.betters = [];  //players that can still bet, if empty not betting time
 
     this.startingPlayer = 3;
@@ -50,7 +51,7 @@ export class Game {
     debugprint(this.players, gameFlag);
     //TODO send message to all players containing updated players
   }
-  
+
   exits(uid) {
     debugprint("Player " + uid + " exits game", gameFlag);
     this.seats.get(this.players.get(uid).seat).playerID = null;
@@ -85,7 +86,7 @@ export class Game {
         debugprint("They are out of the betting process.", gameFlag);
       } else if (!(this.highestBet) || amount > this.highestBet) {
         this.highestBet = amount;
-        this.startingPlayer = this.seatToBet;
+        this.highestBetter = this.seatToBet;
         debugprint(amount + " is the new highest bet.", gameFlag);
       } else {
         //bet invalid, TODO send response to player
@@ -94,6 +95,9 @@ export class Game {
       }
       if (this.betters.length <= 1) { //betting over?
         this.betters = [];
+        if (!(this.highestBet))
+          this.highestBet = 50;     //if nobody bets, 50 points required to win
+        this.startingPlayer = this.highestBetter;
         debugprint("Betting is over.", gameFlag);
         debugprint("It is seat " + this.startingPlayer + "'s turn to play.", gameFlag);
         //TODO update everyone with the fact that the betting is over
@@ -120,7 +124,9 @@ export class Game {
   resetGame() {
     this.distributePlayingCards();
     this.betters = [0, 1, 2, 3];
-    this.startingPlayer = (this.seatToBet + 3) % 4;
+    this.startingPlayer = (this.seatToBet + 3) % 4; //if no one bets, the last player starts
+    this.highestBetter = this.startingPlayer;
+    this.highestBet = null;
   }
 
   distributePlayingCards() {  //assigns playing cards randomly to four players
