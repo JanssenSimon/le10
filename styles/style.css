@@ -1,9 +1,11 @@
 :root {
 	--color-lightest: #EEE;
+	--color-lightest-highlight: #E6E6E6;
 	--color-light: #DDD;
 	--color-light-highlight: #CCC;
 	--color-grey: #808080;
 	--color-darkest: #111;
+	--color-darkest-highlight: #181818;
 	--color-dark: #222;
 	--color-dark-highlight: #333;
 	--color-red: #E24;
@@ -11,6 +13,7 @@
 	--color-text: var(--color-darkest);
 	--color-background: var(--color-lightest);
 	--color-secondary: var(--color-light);
+	--color-tertiary: var(--color-lightest-highlight);
 	--color-highlight: var(--color-light-highlight);
 
 	--color-card-face: var(--color-lightest);
@@ -39,6 +42,7 @@
 		--color-text: var(--color-lightest);
 		--color-background: var(--color-darkest);
 		--color-secondary: var(--color-dark);
+		--color-tertiary: var(--color-darkest-highlight);
 		--color-highlight: var(--color-dark-highlight);
 		--color-card-border: #FFF;
 	}
@@ -113,12 +117,12 @@ button {
 	cursor: pointer;
 }
 
-footer {
+.colophon {
 	font-size: .75rem;
 	color: var(--color-grey);
 }
 
-* + footer {
+* + .colophon {
 	margin-top: 4em;
 }
 
@@ -391,6 +395,7 @@ input {
 }
 
 .button {
+	font-weight: bold;
 	height: 40px;
 	padding: 0 16px;
 }
@@ -429,40 +434,57 @@ input[type="checkbox"] {
 }
 
 * + .input-group {
-	margin-top: 24px;
+	margin-top: 1.5rem;
 }
 
 .table-select {
-	display: flex;
-	gap: 16px;
-	margin-top: 24px;
-}
-
-.table-slot {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 32px 24px;
+	display: grid;
+	align-content: start;
+	width: max-content;
+	height: 16rem;
+	margin-top: 1.5rem;
 	background-color: var(--color-background);
 	border: 2px solid var(--color-highlight);
 	border-radius: 8px;
+	overflow: scroll;
+}
+
+.table-select>li {
+	display: grid;
+	grid-template-columns: minmax(12ch, 1fr) auto 1fr auto;
+	gap: 2rem;
+	align-items: center;
+	height: 3.5rem;
+	padding: 0 1rem 0 2rem;
+}
+
+.table-select>li:nth-last-child(2n+1) {
+	background-color: var(--color-tertiary);
 }
 
 h3 {
-	font-size: 32px;
 	font-weight: bold;
 }
 
-.table-slot>output {
-	margin-bottom: 40px;
+.table-select .secondary {
+	color: var(--color-grey);
 }
 
-output.full {
+.full output {
 	color: var(--color-red);
 }
 
-.table-slot .button {
+.table-select .button {
+	height: 2.25rem;
+	padding: 0 1rem;
 	background-color: var(--color-secondary);
+}
+
+dialog>footer {
+	display: flex;
+	justify-content: space-between;
+	gap: 2rem;
+	margin-top: 1.5rem;
 }
 
 #bid[open] {
