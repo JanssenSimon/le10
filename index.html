@@ -2,193 +2,193 @@
 <html lang="fr-CA">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Le Jeu du 10</title>
-	<meta name="author" content="Simon Janssen">
-	<meta name="description" content="Un simple jeu de mise que j’ai appris à l’université.">
+  <title>Le Jeu du 10</title>
+  <meta name="author" content="Simon Janssen">
+  <meta name="description" content="Un simple jeu de mise que j’ai appris à l’université.">
 
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-	<link href="styles/power.css" rel="stylesheet">
-	<link href="styles/style.css" rel="stylesheet">
+  <link href="styles/power.css" rel="stylesheet">
+  <link href="styles/style.css" rel="stylesheet">
 
   <script src="scripts/interface.js" async></script>
-	<script src="scripts/main.js" defer></script>
+  <script src="scripts/main.js" defer></script>
 </head>
 
 <body>
-	<header>
-		<h1>Le Jeu du <em>10</em></h1>
-	</header>
+  <header>
+    <h1>Le Jeu du <em>10</em></h1>
+  </header>
 
-	<nav>
-		<button class="link" id="nav-game-log">Résumé de la partie</button>
-		<button class="link" id="nav-tutorial">Aide et infos</button>
-		<button class="link" id="nav-quit">Quitter la partie</button>
-	</nav>
+  <nav>
+    <button class="link" id="nav-game-log">Résumé de la partie</button>
+    <button class="link" id="nav-tutorial">Aide et infos</button>
+    <button class="link" id="nav-quit">Quitter la partie</button>
+  </nav>
 
-	<aside>
-		<div class="trump-color">
-			<label>Atout</label>
-			<div class="card medium diamonds"></div>
-		</div>
-		<div class="score">
-			<label for="points-home">Votre équipe</label>
-			<output id="points-home">50 pts</output>
-			<div class="bid"></div>
-		</div>
-		<div class="score">
-			<label for="points-away">Équipe adverse</label>
-			<output id="points-away">50 pts</output>
-			<div class="bid">Mise: 65 pts</div>
-		</div>
-	</aside>
+  <aside>
+    <div class="trump-color">
+      <label>Atout</label>
+      <div class="card medium diamonds"></div>
+    </div>
+    <div class="score">
+      <label for="points-home">Votre équipe</label>
+      <output id="points-home">50 pts</output>
+      <div class="bid"></div>
+    </div>
+    <div class="score">
+      <label for="points-away">Équipe adverse</label>
+      <output id="points-away">50 pts</output>
+      <div class="bid">Mise: 65 pts</div>
+    </div>
+  </aside>
 
-	<main>
+  <main>
 
-		<section class="player current-turn">
-			<h2>Jérémie</h2>
-			<ol class="card-hand">
-				<button class="card jack hearts"></button>
-				<button class="card queen hearts"></button>
-				<button class="card ace hearts"></button>
-				<button class="card ten clubs"></button>
-				<button class="card king clubs"></button>
-				<button class="card ace clubs"></button>
-				<button class="card seven diamonds"></button>
-				<button class="card nine diamonds"></button>
-				<button class="card king diamonds"></button>
-				<button class="card queen spades"></button>
-			</ol>
-			<button class="card face-down" id="last-play"></button>
-		</section>
+    <section class="player current-turn">
+      <h2>Jérémie</h2>
+      <ol class="card-hand">
+        <button class="card jack hearts"></button>
+        <button class="card queen hearts"></button>
+        <button class="card ace hearts"></button>
+        <button class="card ten clubs"></button>
+        <button class="card king clubs"></button>
+        <button class="card ace clubs"></button>
+        <button class="card seven diamonds"></button>
+        <button class="card nine diamonds"></button>
+        <button class="card king diamonds"></button>
+        <button class="card queen spades"></button>
+      </ol>
+      <button class="card face-down" id="last-play"></button>
+    </section>
 
-		<section class="player">
-			<h2>Marie</h2>
-			<ol class="card-hand">
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-			</ol>
-		</section>
+    <section class="player">
+      <h2>Marie</h2>
+      <ol class="card-hand">
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+      </ol>
+    </section>
 
-		<section class="player">
-			<h2>Fred</h2>
-			<ol class="card-hand">
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-			</ol>
-		</section>
+    <section class="player">
+      <h2>Fred</h2>
+      <ol class="card-hand">
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+      </ol>
+    </section>
 
-		<section class="player">
-			<h2>Coralie</h2>
-			<ol class="card-hand">
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-				<div class="card face-down"></div>
-			</ol>
-		</section>
+    <section class="player">
+      <h2>Coralie</h2>
+      <ol class="card-hand">
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+        <div class="card face-down"></div>
+      </ol>
+    </section>
 
-		<section class="table-center">
-			<p id="table-state">C’est votre tour</p>
-			<div class="card placeholder"></div>
-			<div class="card placeholder"></div>
-			<div class="card placeholder"></div>
-			<div class="card placeholder"></div>
-		</section>
+    <section class="table-center">
+      <p id="table-state">C’est votre tour</p>
+      <div class="card placeholder"></div>
+      <div class="card placeholder"></div>
+      <div class="card placeholder"></div>
+      <div class="card placeholder"></div>
+    </section>
 
-	</main>
+  </main>
 
-	<dialog id="tutorial">
-		<button class="close" id="tutorial-close">
-			<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke=var(--color-text) stroke-width="1">
-				<line x2="12" y2="12"/>
-				<line x1="12" y2="12"/>
-			</svg>
-		</button>
-		<h2>Comment jouer</h2>
-		<p>Vous êtes en équipe avec la personne en face de vous.</p>
-		<p>Le but du jeu est de faire le score que vous avez misé en début de partie. L’équipe qui fait plus de points que son adversaire, mais qui n’atteint pas sa mise, perd la partie.</p>
-		<p>La <em>mise</em> est déterminée en tour de table et le joueur avec la plus haute mise commence la partie.</p>
-		<p>Chaque tour, chacun des joueurs présente une carte aux autres. Le premier joueur détermine la <em>couleur demandée</em>. Les joueurs suivants doivent absolument jouer cette couleur s’ils peuvent. S’ils ne peuvent pas, ils doivent jouer n’importe quelle autre couleur.</p>
-		<p>Celui qui a la carte la plus haute remporte la manche et gagne tous les points en jeu. Les <span class="card small five"></span> valent 5 points. Les <span class="card small ten"></span> et <span class="card small ace"></span> valent 10 points.</p>
-		<p>L’<em>atout</em> de la partie est la couleur de la toute première carte jouée. Il remporte sur toutes les autres couleurs. Lorsqu’un joueur n’a pas de carte de la couleur demandée et qu’il joue de l’atout à la place, on dit qu’il <em>coupe</em>.</p>
-		<footer class="colophon"><p>Le <em>Jeu du 10</em> est un jeu propre au <a href="">Département d’informatique et de recherche opérationnelle</a> de l’Université de Montréal. Cette version web réalisée par <a href="">Simon Janssen</a> est sous <a href="">licence libre</a> et son code source est disponible sur <a href="">GitHub</a>.</p></footer>
-	</dialog>
+  <dialog id="tutorial">
+    <button class="close" id="tutorial-close">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke=var(--color-text) stroke-width="1">
+        <line x2="12" y2="12"/>
+        <line x1="12" y2="12"/>
+      </svg>
+    </button>
+    <h2>Comment jouer</h2>
+    <p>Vous êtes en équipe avec la personne en face de vous.</p>
+    <p>Le but du jeu est de faire le score que vous avez misé en début de partie. L’équipe qui fait plus de points que son adversaire, mais qui n’atteint pas sa mise, perd la partie.</p>
+    <p>La <em>mise</em> est déterminée en tour de table et le joueur avec la plus haute mise commence la partie.</p>
+    <p>Chaque tour, chacun des joueurs présente une carte aux autres. Le premier joueur détermine la <em>couleur demandée</em>. Les joueurs suivants doivent absolument jouer cette couleur s’ils peuvent. S’ils ne peuvent pas, ils doivent jouer n’importe quelle autre couleur.</p>
+    <p>Celui qui a la carte la plus haute remporte la manche et gagne tous les points en jeu. Les <span class="card small five"></span> valent 5 points. Les <span class="card small ten"></span> et <span class="card small ace"></span> valent 10 points.</p>
+    <p>L’<em>atout</em> de la partie est la couleur de la toute première carte jouée. Il remporte sur toutes les autres couleurs. Lorsqu’un joueur n’a pas de carte de la couleur demandée et qu’il joue de l’atout à la place, on dit qu’il <em>coupe</em>.</p>
+    <footer class="colophon"><p>Le <em>Jeu du 10</em> est un jeu propre au <a href="">Département d’informatique et de recherche opérationnelle</a> de l’Université de Montréal. Cette version web réalisée par <a href="">Simon Janssen</a> est sous <a href="">licence libre</a> et son code source est disponible sur <a href="">GitHub</a>.</p></footer>
+  </dialog>
 
-	<dialog id="quit">
-		<h2>Voulez-vous vraiment quitter la table?</h2>
+  <dialog id="quit">
+    <h2>Voulez-vous vraiment quitter la table?</h2>
     <footer>
       <button class="button" id="quit-cancel">Annuler</button>
-  		<button class="button" id="quit-confirm">Quitter la table</button>
+      <button class="button" id="quit-confirm">Quitter la table</button>
     </footer>
-	</dialog>
+  </dialog>
 
-	<dialog id="table-select">
-		<h2>Rejoindre une partie</h2>
-		<p>Choisissez votre nom et sélectionnez une table.</p>
-		<div class="input-group">
-			<label for="player-name">Nom</label>
-			<input type="text" id="player-name" placeholder="Canard Malade" required>
-		</div>
-		<ul class="table-select">
-			<li>
-				<h3>Table de Jérémie</h3>
-				<output>3/4 joueurs</output>
-				<output class="secondary">Jérémie, Coralie, Marie</output>
-				<button class="button">Rejoindre</button>
-			</li>
-			<li>
-				<h3>Table de Laurent</h3>
-				<output>2/4 joueurs</output>
-				<output class="secondary">Laurent, Fred</output>
-				<button class="button">Rejoindre</button>
-			</li>
-			<li class="full">
-				<h3>Table de Simon</h3>
-				<output>4/4 joueurs</output>
-				<output class="secondary">Simon, Alexis, Florence, Marianne</output>
-				<button class="button" disabled>Rejoindre</button>
-			</li>
-		</ul>
-		<footer>
-			<div class="input-group">
-				<input type="checkbox" id="spectator-mode">
-				<label for="spectator-mode">Rejoindre en tant que spectateur.</label>
-			</div>
-			<button class="button" id="newTable">Créer une nouvelle table</button>
-		</footer>
-	</dialog>
+  <dialog id="table-select">
+    <h2>Rejoindre une partie</h2>
+    <p>Choisissez votre nom et sélectionnez une table.</p>
+    <div class="input-group">
+      <label for="player-name">Nom</label>
+      <input type="text" id="player-name" placeholder="Canard Malade" required>
+    </div>
+    <ul class="table-select">
+      <li>
+        <h3>Table de Jérémie</h3>
+        <output>3/4 joueurs</output>
+        <output class="secondary">Jérémie, Coralie, Marie</output>
+        <button class="button">Rejoindre</button>
+      </li>
+      <li>
+        <h3>Table de Laurent</h3>
+        <output>2/4 joueurs</output>
+        <output class="secondary">Laurent, Fred</output>
+        <button class="button">Rejoindre</button>
+      </li>
+      <li class="full">
+        <h3>Table de Simon</h3>
+        <output>4/4 joueurs</output>
+        <output class="secondary">Simon, Alexis, Florence, Marianne</output>
+        <button class="button" disabled>Rejoindre</button>
+      </li>
+    </ul>
+    <footer>
+      <div class="input-group">
+        <input type="checkbox" id="spectator-mode">
+        <label for="spectator-mode">Rejoindre en tant que spectateur.</label>
+      </div>
+      <button class="button" id="newTable">Créer une nouvelle table</button>
+    </footer>
+  </dialog>
 
-	<dialog id="bid">
-		<h2>Mise</h2>
-		<input type="number" id="bid-amount" value="50" step="5" min="50" max="100" autofocus>
-		<button class="button">Suivre</button>
-	</dialog>
+  <dialog id="bid">
+    <h2>Mise</h2>
+    <input type="number" id="bid-amount" value="50" step="5" min="50" max="100" autofocus>
+    <button class="button">Suivre</button>
+  </dialog>
 
 </body>
 

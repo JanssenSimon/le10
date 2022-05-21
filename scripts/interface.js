@@ -5,7 +5,7 @@ function whenDOMReady(callback, options = { once: true, passive: true }) {
 }
 
 
-//holds references to interface elements.
+// Holds references to interface elements.
 const view = {
   nav: {
     tutorialLink: undefined,
@@ -67,10 +67,12 @@ whenDOMReady(() => {
 });
 
 
-//dialog opener utility
-//el is the dialog element.
-//set trap to true to disable automatic exit methods (esc and background click).
-//must use closeModal() to close.
+/*
+ * Wrapper for dialog.show().
+ * Dialogs opened with this must use closeModal().
+ * *el* is the dialog HTML element to be opened.
+ * *trap* is whether to allow automatic exit methods (escape key and background click)
+ */
 function openModal(el, trap = false) {
   el.show();
 
@@ -97,8 +99,10 @@ function openModal(el, trap = false) {
 
 }
 
-//dialog close utility
-//must be used with dialogs opened with openModal().
+/*
+ * Wrapper for dialog.close().
+ * *el* is the dialog HTML element to be closed.
+ */
 function closeModal(el) {
   el.abortCloseWithClick?.abort();
   el.abortCloseWithEscape?.abort();
