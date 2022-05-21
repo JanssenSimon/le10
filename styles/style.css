@@ -279,9 +279,10 @@ h2::before {
 .card::before {
 	display: inline-block;
 	position: absolute;
-	top: 50%;
+	top: 25%;
 	left: 50%;
-	transform: translate(-50%, -125%);
+	transform: translate(-50%, -50%);
+  line-height: 1;
 	font-size: 1.5rem;
 	font-weight: bold;
 	color: var(--color-card-black);
@@ -290,16 +291,16 @@ h2::before {
 
 .card.small::before {
 	font-size: .625rem;
-	transform: translate(-50%, -50%);
+	top: 50%;
 }
 
 .card::after {
 	content: "";
 	display: inline-block;
 	position: absolute;
-	top: 50%;
+	top: 66%;
 	left: 50%;
-	transform: translate(-50%, -12.5%);
+	transform: translate(-50%, -50%);
 	width: 2.375rem;
 	height: 2.375rem;
 	background-size: 100%;
@@ -309,7 +310,7 @@ h2::before {
 .card.medium::after {
 	width: 1.5rem;
 	height: 1.5rem;
-	transform: translate(-50%, -50%);
+  top: 50%;
 }
 
 .card:is(.hearts, .diamonds)::before {
