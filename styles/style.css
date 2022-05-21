@@ -81,7 +81,8 @@ aside output {
 	color: var(--color-grey);
 }
 
-:focus {
+:focus-visible {
+	outline: auto;
 	outline-offset: 2px;
 }
 

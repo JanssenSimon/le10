@@ -19,11 +19,6 @@
 	box-sizing: border-box;
 }
 
-/* Accessible by default. */
-:focus {
-	outline: auto;
-}
-
 /* Set display: none; elements. These should never appear. */
 head, base, link, meta, title, script, source, style, template, dialog {
 	display: none;
