@@ -337,6 +337,17 @@ h2::before {
 .card.hearts::after { background-image: url(../graphics/hearts.svg); }
 .card.spades::after { background-image: url(../graphics/spades.svg); }
 
+
+.inert {
+  pointer-events: none;
+  user-select: none;
+}
+
+.inert dialog {
+  pointer-events: auto;
+  user-select: text;
+}
+
 dialog {
 	position: absolute;
 	top: 50%;
