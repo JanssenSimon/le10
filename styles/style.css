@@ -105,8 +105,15 @@ em {
 
 a, .link {
 	text-decoration: underline;
+	text-decoration-color: var(--color-grey);
 	cursor: pointer;
 	border-radius: 2px;
+	transition: .2s ease all;
+}
+
+:is(a, .link):hover {
+	color: var(--color-text);
+	text-decoration-color: currentColor;
 }
 
 * + p {
@@ -133,6 +140,7 @@ body {
 	grid-template-columns: auto auto;
 	grid-template-rows: auto 1fr;
 	align-items: baseline;
+	justify-items: start;
 	height: 100%;
 }
 
@@ -228,6 +236,14 @@ h2::before {
 
 .card-hand {
 	display: flex;
+}
+
+.card-hand>.card {
+	transition: .2s ease transform;
+}
+
+.card-hand>.card:hover {
+	transform: translateY(-1rem);
 }
 
 .card-hand>.card:not(:first-child) {
@@ -392,6 +408,12 @@ dialog>.close>svg {
 input, .button {
 	background-color: var(--color-secondary);
 	border-radius: 4px;
+	user-select: none;
+	transition: .2s ease background-color;
+}
+
+.button:hover {
+	background-color: var(--color-tertiary);
 }
 
 dialog :is(input, .button) {
@@ -419,17 +441,27 @@ input:is([type="text"], [type="number"]) {
 }
 
 input[type="checkbox"] {
+	position: relative;
 	width: 1.5rem;
 	height: 1.5rem;
 }
 
-:checked {
+input[type="checkbox"]::before {
+	content: "";
+	position: absolute;
+	width: 100%;
+	height: 100%;
 	background-image: url(../graphics/check-light.svg);
 	background-position: 50% 50%;
+	background-size: 112.5% 112.5%;
+	opacity: 0;
+	transition: .2s ease opacity;
 }
 
+input[type="checkbox"]:checked::before { opacity: 1; }
+
 @media (prefers-color-scheme: dark) {
-	:checked {
+	input[type="checkbox"]::before {
 		background-image: url(../graphics/check-dark.svg);
 	}
 }
