@@ -340,16 +340,13 @@ dialog {
 	transform: translate(-50%, -50%);
 	background-color: var(--color-secondary);
 	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, .25),
+				0 0 0 200vw rgba(0, 0, 0, .66);
 }
 
 dialog[open] {
 	display: block;
 	z-index: 10;
-}
-
-::backdrop {
-	background: rgba(0, 0, 0, .5);
 }
 
 dialog>.close {
