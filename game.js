@@ -21,7 +21,8 @@ export class Game {
     this.highestBetter = 3;
     this.betters = [];  //players that can still bet, if empty not betting time
 
-    this.startingPlayer = 3;
+    this.seatToPlay = 3;
+    this.gamePaused = false;
 
     this.resetGame();
   }
@@ -97,11 +98,11 @@ export class Game {
         this.betters = [];
         if (!(this.highestBet))
           this.highestBet = 50;     //if nobody bets, 50 points required to win
-        this.startingPlayer = this.highestBetter;
+        this.seatToPlay = this.highestBetter;
         debugprint("Betting is over.", gameFlag);
-        debugprint("It is seat " + this.startingPlayer + "'s turn to play.", gameFlag);
+        debugprint("It is seat " + this.seatToPlay + "'s turn to play.", gameFlag);
         //TODO update everyone with the fact that the betting is over
-        //TODO update everyone with the fact that it's startingPlayers's turn to play
+        //TODO update everyone with the fact that it's seatToPlay's turn to play
       } else {
         //if not update who's turn it is to bet
         this.seatToBet = this.betters[betrsIndx] === this.seatToBet ? this.betters[(betrsIndx + 1) % this.betters.length] : this.betters[(betrsIndx) % this.betters.length];
@@ -119,13 +120,23 @@ export class Game {
 
   playCard(uid, cardChoice) {
     debugprint("Player " + uid + " choosing card " + cardChoice, gameFlag);
+    if (this.allSeatsFilled()) {
+    //verify that player is allowed to bet
+    if (this.seats.get(this.seatToPlay).playerID === uid && this.betters.length === 0 && !this.gamePaused) {
+    } else {
+      //TODO update player with fact it is not time for them to play
+      debugprint("But it is not time for them to play.", gameFlag);
+    }} else {
+      //TODO update player with fact there aren't enough players for them to play
+      debugprint("There aren't enough seated players to play a card.", gameFlag);
+    }
   }
 
   resetGame() {
     this.distributePlayingCards();
     this.betters = [0, 1, 2, 3];
-    this.startingPlayer = (this.seatToBet + 3) % 4; //if no one bets, the last player starts
-    this.highestBetter = this.startingPlayer;
+    this.seatToPlay = (this.seatToBet + 3) % 4; //if no one bets, the last player starts
+    this.highestBetter = this.seatToPlay;
     this.highestBet = null;
   }
 
