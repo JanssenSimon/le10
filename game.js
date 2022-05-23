@@ -9,12 +9,19 @@ const gameFlag = true;
 export class Game {
   constructor() {
     this.seats = new Map([
-      [0, {hand: null, playerID: null}],
-      [1, {hand: null, playerID: null}],
-      [2, {hand: null, playerID: null}],
-      [3, {hand: null, playerID: null}]
+      [0, {hand: null, playerID: null, points: 0}],
+      [1, {hand: null, playerID: null, points: 0}],
+      [2, {hand: null, playerID: null, points: 0}],
+      [3, {hand: null, playerID: null, points: 0}]
     ]);
     this.players = new Map();
+
+    this.table = new Map([
+      [0, null],
+      [1, null],
+      [2, null],
+      [3, null]
+    ]);
 
     this.seatToBet = 0;
     this.highestBet = null;
@@ -118,11 +125,39 @@ export class Game {
     }
   }
 
+  isOkToPlay(seatToPlay, cardChoice) {
+    // TODO make sure that, according to the rules, the chosen card is chill to play
+    return false;
+  }
+
   playCard(uid, cardChoice) {
     debugprint("Player " + uid + " choosing card " + cardChoice, gameFlag);
     if (this.allSeatsFilled()) {
-    //verify that player is allowed to bet
+    //verify that player is allowed to play a card
     if (this.seats.get(this.seatToPlay).playerID === uid && this.betters.length === 0 && !this.gamePaused) {
+      //verify played card choice is valid
+      if (cardChoice < this.seats.get(this.seatToPlay).hand.length && this.isOkToPlay(this.seatToPlay, cardChoice)) {
+        chosenCard = this.seats.get(this.seatToPlay).hand.splice(cardChoice,1);
+        debugprint("Seat " + this.seatToPlay + " plays " + chosenCard, gameFlag);
+        this.table.set(this.seatToPlay, chosenCard);
+
+        //check if four cards have been played
+        if (this.table.get(0) && this.table.get(1) && this.table.get(2) && this.table.get(3)) {
+          //TODO do the whole thing when the round is over
+          //if yes check winning card and affect points to correct player
+          //check if last round of game
+          //    if yes announce winners of game
+          //set startingPlayer to winning player
+          //start a timer for pausing the game so people can check their cards
+        }else{
+          //TODO update players with new player to play and card that been played
+          this.seatToPlay = (this.seatToPlay + 1) % 4;
+          debugprint("It is now seat " + this.seatToPlay + "'s turn to play", gameFlag);
+        }
+      } else {
+        //TODO update player with fact they've played the wrong card
+        debugprint("Seat " + this.seatToPlay + " cannot play " + chosenCard, gameFlag);
+      }
     } else {
       //TODO update player with fact it is not time for them to play
       debugprint("But it is not time for them to play.", gameFlag);
@@ -138,6 +173,13 @@ export class Game {
     this.seatToPlay = (this.seatToBet + 3) % 4; //if no one bets, the last player starts
     this.highestBetter = this.seatToPlay;
     this.highestBet = null;
+    this.seats.forEach((seat, key) => {seat.points = 0;});
+    this.table = new Map([
+      [0, null],
+      [1, null],
+      [2, null],
+      [3, null]
+    ]);
   }
 
   distributePlayingCards() {  //assigns playing cards randomly to four players

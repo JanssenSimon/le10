@@ -24,12 +24,12 @@ validate if player can play a card at that moment                       DONE
     it is their turn to play a card                                     DONE
     the delay after having played a round has finished is over          DONE
     the betting process is over                                         DONE
-add card to table
-check if four cards have been played
+add card to table                                                       DONE
+check if four cards have been played                                    DONE
     if yes check winning card and affect points to correct player
     check if last round of game
         if yes announce winners of game
     set startingPlayer to winning player
     start a timer for pausing the game so people can check their cards
 
-    if no, set playerTurn to next player
+    if no, set playerTurn to next player                                DONE
