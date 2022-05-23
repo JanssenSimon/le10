@@ -149,6 +149,95 @@ export class Game {
     }
   }
 
+  valueToInt(value) {    //converts card value to integer value for comparison
+    switch (value) {
+      case "A":
+        return 14;
+      case "K":
+        return 13;
+      case "Q":
+        return 12;
+      case "J":
+        return 11;
+      default:
+        return parseInt(value);
+    }
+  }
+
+  isStronger(card1, card2, demandee, atout) {   //comparing cards to find win
+    switch (card1.charAt(0)) {
+      case atout:
+        if (card2.charAt(0) === atout) {
+          return !(this.valueToInt(card1.substring(1)) < this.valueToInt(card2.substring(1)));
+        } else {
+          return true;
+        }
+      case demandee:
+        if (card2.charAt(0) === atout) {
+          return false;
+        } else if (card2.charAt(0) === demandee) {
+          return !(this.valueToInt(card1.substring(1)) < this.valueToInt(card2.substring(1)));
+        } else {
+          return true;
+        }
+      default:
+        console.log("ERROR, cannot compare cards");
+    }
+  }
+
+  getWinningSeat() {
+    let winningSeat = null;
+    let winningCard = null;
+    this.table.forEach((card, seatnum) => {
+      if (!(winningCard) || this.isStronger(card, winningCard, this.sorteDemandee, this.atout)) {
+        winningSeat = seatnum;
+        winningCard = card;
+      }
+    });
+    debugprint("Winningseat: " + winningSeat, gameFlag);
+    return winningSeat;
+  }
+
+  cardToPoints(card) {
+    switch (card.substring(1)) {
+      case "A":
+      case "10":
+        return 10;
+      case "5":
+        return 5;
+      default:
+        return 0;
+    }
+  }
+
+  getPointsOnTable() {
+    let points = 0;
+    this.table.forEach((card, seatnum) => {points += this.cardToPoints(card);});
+    return points;
+  }
+
+  getTeamPoints() {return {team1: this.seats.get(0).points+this.seats.get(2).points, team2: this.seats.get(1).points+this.seats.get(3).points};}
+
+  switchCards() {
+    return new Promise (resolve => {
+      setTimeout(() => {
+        this.sorteDemandee = null;
+        this.lastFourCards = this.table;
+        this.table = new Map([
+          [0, null],
+          [1, null],
+          [2, null],
+          [3, null]
+        ]);
+        //TODO send to players updated table
+        this.gamePaused = false;
+      }, 5000);               //give 5 seconds for players to acknowledge round
+    });
+  }
+  async switchToNextCards() {    // async caller function
+    await this.switchCards();
+  }
+
   playCard(uid, cardChoice) {
     debugprint("Player " + uid + " choosing card " + cardChoice, gameFlag);
     if (this.allSeatsFilled()) {
@@ -168,26 +257,27 @@ export class Game {
           this.atout = chosenCard.charAt(0);
           debugprint("Atout: " + this.atout, gameFlag);
         }
+        //TODO update players with played card and atout/sorteDemandee
 
         //check if four cards have been played
         if (this.table.get(0) && this.table.get(1) && this.table.get(2) && this.table.get(3)) {
-          //TODO do the whole thing when the round is over
-          //if yes check winning card and affect points to correct player
+          let winningSeat = this.getWinningSeat();
+          this.seats.get(winningSeat).points += this.getPointsOnTable();
+          debugprint("Seat " + winningSeat + " wins " + this.getPointsOnTable() + " points!", gameFlag);
+          debugprint(this.getTeamPoints(), gameFlag);
+          this.seatToPlay = winningSeat;
+          debugprint("It is seat " + winningSeat + "'s turn to play", gameFlag);
+
           //check if last round of game
           //    if yes announce winners of game
+          //    TODO send to players the winning of the game
           //    resetgame after delay
-          //set startingPlayer to winning player
+
           //start a timer for pausing the game so people can check their cards
-          //    this.sorteDemandee = null;
-          //    this.lastFourCards = this.table;
-          //    this.table = new Map([
-          //      [0, null],
-          //      [1, null],
-          //      [2, null],
-          //      [3, null]
-          //    ]);
+          this.gamePaused = true;
+          this.switchToNextCards();
         }else{
-          //TODO update players with new player to play and card that been played
+          //TODO update players with new player to play
           this.seatToPlay = (this.seatToPlay + 1) % 4;
           debugprint("It is now seat " + this.seatToPlay + "'s turn to play", gameFlag);
         }
