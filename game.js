@@ -22,6 +22,15 @@ export class Game {
       [2, null],
       [3, null]
     ]);
+    this.lastFourCards = new Map([
+      [0, null],
+      [1, null],
+      [2, null],
+      [3, null]
+    ]);
+
+    this.sorteDemandee = null;
+    this.atout = null;
 
     this.seatToBet = 0;
     this.highestBet = null;
@@ -96,6 +105,8 @@ export class Game {
         this.highestBet = amount;
         this.highestBetter = this.seatToBet;
         debugprint(amount + " is the new highest bet.", gameFlag);
+        if (amount === 100)
+          this.betters = [];    //if someone goes all in, betting over
       } else {
         //bet invalid, TODO send response to player
         debugprint(amount + " is an invalid bet amount.", gameFlag);
@@ -125,9 +136,17 @@ export class Game {
     }
   }
 
-  isOkToPlay(seatToPlay, cardChoice) {
+  isOkToPlay(cardChoice) {
     // TODO make sure that, according to the rules, the chosen card is chill to play
-    return false;
+    let chosenCard = this.seats.get(this.seatToPlay).hand[cardChoice];
+    if (!(this.sorteDemandee) || this.sorteDemandee === chosenCard.charAt(0)) {
+      return true;
+    } else {
+      //does the player not have cards of the same kind as what's asked?
+      return !(this.seats.get(this.seatToPlay).hand.reduce((does, card) => {
+        return does || this.sorteDemandee === card.charAt(0);
+      }, false));
+    }
   }
 
   playCard(uid, cardChoice) {
@@ -136,10 +155,19 @@ export class Game {
     //verify that player is allowed to play a card
     if (this.seats.get(this.seatToPlay).playerID === uid && this.betters.length === 0 && !this.gamePaused) {
       //verify played card choice is valid
-      if (cardChoice < this.seats.get(this.seatToPlay).hand.length && this.isOkToPlay(this.seatToPlay, cardChoice)) {
-        chosenCard = this.seats.get(this.seatToPlay).hand.splice(cardChoice,1);
+      if (cardChoice < this.seats.get(this.seatToPlay).hand.length && this.isOkToPlay(cardChoice)) {
+        let chosenCard = this.seats.get(this.seatToPlay).hand.splice(cardChoice,1)[0];
         debugprint("Seat " + this.seatToPlay + " plays " + chosenCard, gameFlag);
         this.table.set(this.seatToPlay, chosenCard);
+        debugprint(this.table, gameFlag);
+        if (!(this.sorteDemandee)) {
+          this.sorteDemandee = chosenCard.charAt(0);
+          debugprint("Sorte demandee: " + this.sorteDemandee, gameFlag);
+        }
+        if (!(this.atout)) {
+          this.atout = chosenCard.charAt(0);
+          debugprint("Atout: " + this.atout, gameFlag);
+        }
 
         //check if four cards have been played
         if (this.table.get(0) && this.table.get(1) && this.table.get(2) && this.table.get(3)) {
@@ -147,8 +175,17 @@ export class Game {
           //if yes check winning card and affect points to correct player
           //check if last round of game
           //    if yes announce winners of game
+          //    resetgame after delay
           //set startingPlayer to winning player
           //start a timer for pausing the game so people can check their cards
+          //    this.sorteDemandee = null;
+          //    this.lastFourCards = this.table;
+          //    this.table = new Map([
+          //      [0, null],
+          //      [1, null],
+          //      [2, null],
+          //      [3, null]
+          //    ]);
         }else{
           //TODO update players with new player to play and card that been played
           this.seatToPlay = (this.seatToPlay + 1) % 4;
@@ -156,7 +193,7 @@ export class Game {
         }
       } else {
         //TODO update player with fact they've played the wrong card
-        debugprint("Seat " + this.seatToPlay + " cannot play " + chosenCard, gameFlag);
+        debugprint("Seat " + this.seatToPlay + " cannot play the card they chose.", gameFlag);
       }
     } else {
       //TODO update player with fact it is not time for them to play
@@ -180,6 +217,14 @@ export class Game {
       [2, null],
       [3, null]
     ]);
+    this.lastFourCards = new Map([
+      [0, null],
+      [1, null],
+      [2, null],
+      [3, null]
+    ]);
+    this.sorteDemandee = null;
+    this.atout = null;
   }
 
   distributePlayingCards() {  //assigns playing cards randomly to four players
