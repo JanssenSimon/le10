@@ -83,8 +83,13 @@ export var joinGame = (uid, message, sockets, games) => {
     debugprint("New game given uid: " + gameid, gameFlag);
     //TODO send updated game list to all players
   } else {
-    sockets.get(uid).game = message.gamechoice;
-    debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
+    if (games.has(message.gamechoice)) {
+      sockets.get(uid).game = message.gamechoice;
+      debugprint("Socket " + uid + " joins game " + sockets.get(uid).game, gameFlag);
+    } else {
+      //TODO something when joining non existant game (create one?)
+      debugprint("Game does not exist", gameFlag);
+    }
   }
   games.get(sockets.get(uid).game).addPlayer(uid, sockets.get(uid).name);
 };
