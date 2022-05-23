@@ -155,31 +155,27 @@
       <label for="player-name">Nom</label>
       <input type="text" id="player-name" placeholder="Canard Malade" required>
     </div>
-    <ul class="table-select">
+    <ul class="table-select" id="table-list">
       <li>
         <h3>Table de Jérémie</h3>
         <output>3/4 joueurs</output>
-        <output class="secondary">Jérémie, Coralie, Marie</output>
+        <output>Jérémie, Coralie, Marie</output>
         <button class="button">Rejoindre</button>
       </li>
       <li>
         <h3>Table de Laurent</h3>
         <output>2/4 joueurs</output>
-        <output class="secondary">Laurent, Fred</output>
+        <output>Laurent, Fred</output>
         <button class="button">Rejoindre</button>
       </li>
       <li class="full">
         <h3>Table de Simon</h3>
         <output>4/4 joueurs</output>
-        <output class="secondary">Simon, Alexis, Florence, Marianne</output>
+        <output>Simon, Alexis, Florence, Marianne</output>
         <button class="button" disabled>Rejoindre</button>
       </li>
     </ul>
     <footer>
-      <div class="input-group">
-        <input type="checkbox" id="spectator-mode">
-        <label for="spectator-mode">Rejoindre en tant que spectateur.</label>
-      </div>
       <button class="button" id="newTable">Créer une nouvelle table</button>
     </footer>
   </dialog>

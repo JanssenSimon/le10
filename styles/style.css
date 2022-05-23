@@ -415,6 +415,9 @@ dialog>.close>svg {
 input, .button {
   background-color: var(--color-secondary);
   border-radius: 4px;
+}
+
+.button {
   user-select: none;
   transition: .2s ease filter;
 }
@@ -522,7 +525,7 @@ h3 {
   font-weight: bold;
 }
 
-.table-select .secondary {
+.table-select output:nth-of-type(2) {
   color: var(--color-grey);
 }
 
@@ -538,7 +541,7 @@ h3 {
 
 dialog>footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   gap: 2rem;
   margin-top: 1.5rem;
 }
