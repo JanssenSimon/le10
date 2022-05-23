@@ -1,4 +1,5 @@
 import { debugprint } from "./debug.js"
+import { sendToClients } from "./server.js"
 
 const gameFlag = true;
 
@@ -53,6 +54,19 @@ export class Game {
     return true;
   }
 
+  updateClientsPlayers() {
+    let clientsToUpdate = [];
+    let allPlayers = [];
+    let seatedPlayers = [];
+    this.players.forEach((player, uid) => {
+      allPlayers.push(player)
+      if (player.seat !== null)
+        seatedPlayers.push(player)
+      clientsToUpdate.push(uid)
+    })
+    sendToClients(clientsToUpdate, JSON.stringify({allplayers: allPlayers}));
+  }
+
   addPlayer(uid, name) {
     debugprint("Adding player " + uid + " to game", gameFlag);
     this.players.set(uid, {name: name, seat: null});
@@ -66,7 +80,9 @@ export class Game {
     debugprint("Current state of seats and players:", gameFlag);
     debugprint(this.seats, gameFlag);
     debugprint(this.players, gameFlag);
-    //TODO send message to all players containing updated players
+
+    //send message to all players containing updated players
+    this.updateClientsPlayers()
   }
 
   exits(uid) {
@@ -77,7 +93,8 @@ export class Game {
     debugprint(this.seats, gameFlag);
     debugprint(this.players, gameFlag);
     //TODO maybe replace exited player with someone from the spectators?
-    //TODO send message to all players containing updated players
+    //send message to all players containing updated players
+    this.updateClientsPlayers()
   }
 
   allSeatsFilled() {
