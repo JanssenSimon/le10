@@ -14,3 +14,22 @@
 4. ajouter plusieurs salles de jeu et fix la queue
 5. mettre à jour aria-descriptions (TRES IMPORTANT)
 6. penser à facon de joindre une salle spécifique.et de choisir un siege specifique
+
+
+
+
+receive a request to play a card                                        DONE
+validate if player can play a card at that moment                       DONE
+    if all four players are present                                     DONE
+    it is their turn to play a card                                     DONE
+    the delay after having played a round has finished is over          DONE
+    the betting process is over                                         DONE
+add card to table                                                       DONE
+check if four cards have been played                                    DONE
+    if yes check winning card and affect points to correct player
+    check if last round of game
+        if yes announce winners of game
+    set startingPlayer to winning player
+    start a timer for pausing the game so people can check their cards
+
+    if no, set playerTurn to next player                                DONE
