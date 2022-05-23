@@ -118,4 +118,4 @@ async function reqHandler(request) {
 //Start server
 // ----------------------------------------------------------------------------
 
-serve(reqHandler, { port: 5000 });
+serve(reqHandler, { port: 8002 });
