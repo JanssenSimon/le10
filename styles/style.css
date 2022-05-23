@@ -95,6 +95,11 @@ h1 {
   font-weight: bold;
 }
 
+h1 + p {
+  margin-top: 0;
+  color: var(--color-grey);
+}
+
 h1>em {
   color: var(--color-red);
 }
@@ -163,7 +168,10 @@ main {
 }
 
 main>:nth-child(1) { grid-area: 3 / 2; }
-main>:nth-child(2) { grid-area: 2 / 1; }
+main>:nth-child(2) {
+  grid-area: 2 / 1;
+  justify-self: start;
+}
 main>:nth-child(3) { grid-area: 1 / 2; }
 main>:nth-child(4) {
   grid-area: 2 / 3;
@@ -175,15 +183,15 @@ main>:nth-child(5) { grid-area: 2 / 2; }
 .player {
   display: grid;
   gap: .5rem 2rem;
-  grid-template-areas: "hand last-play"
-                       "name name";
 }
+
+.player>h2 { grid-area: 2 / 1; }
+#last-play { grid-area: 1 / 2; }
 
 h2 {
   position: relative;
   font-size: 1.5rem;
   font-weight: bold;
-  grid-area: name;
 }
 
 h2::before {
@@ -254,7 +262,6 @@ h2::before {
   margin-left: -2rem;
 }
 
-
 .card {
   position: relative;
   display: inline-block;
@@ -298,7 +305,7 @@ h2::before {
   top: 25%;
   left: 50%;
   transform: translate(-50%, -50%);
-  line-height: 1;
+  line-height: 0;
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--color-card-black);
@@ -306,7 +313,7 @@ h2::before {
 }
 
 .card.small::before {
-  font-size: .625rem;
+  font-size: .666rem;
   top: 50%;
 }
 
@@ -409,11 +416,16 @@ input, .button {
   background-color: var(--color-secondary);
   border-radius: 4px;
   user-select: none;
-  transition: .2s ease background-color;
+  transition: .2s ease filter;
 }
 
-.button:hover {
-  background-color: var(--color-tertiary);
+.button.primary {
+  background-color: var(--color-red);
+  color: var(--color-lightest);
+}
+
+.button:not(:disabled):hover {
+  filter: brightness(1.33);
 }
 
 dialog :is(input, .button) {
