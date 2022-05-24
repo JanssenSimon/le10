@@ -4,9 +4,7 @@ Une simple implémentation d'un jeu de mise que j'ai appris à l'université.
 
 ## Lancer le serveur
 
-La commande pour lancer le serveur : 
-
-`deno run --allow-net --allow-read server.js`
+Pour lancer le serveur il faut executer le script `start`
 
 ## Remerciements
 

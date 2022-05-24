@@ -57,7 +57,7 @@ async function reqHandler(request) {
         });
         break;
       }
-    } //TODO what about the favicon?
+    }
 
     return new Response(null, { status: 404 }); //invalid path
   }
