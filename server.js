@@ -72,9 +72,6 @@ async function reqHandler(request) {
   debugprint("Websocket given identifier " + identifier, websocketFlag);
   debugprint(sockets, websocketFlag);
 
-  //TODO send to socket initial info about what game exist
-  //TODO send to socket initial info about what state the client is on (choosing name)
-
   //dealing with messages from websocket
   websocket.onclose = () => {
     if (sockets.get(identifier).state === "InGame")
@@ -108,6 +105,12 @@ async function reqHandler(request) {
       socketState.error();
   }
 
+  websocket.onopen = () => {
+    //send to socket initial info about what game exist
+    state_machine.updateClientsGames(games, [identifier]);
+  }
+
+
   return response;
 }
 
@@ -117,7 +120,13 @@ async function reqHandler(request) {
 // ----------------------------------------------------------------------------
 
 export var sendToClients = (clientIDs, message) => {
-  clientIDs.forEach((uid) => {sockets.get(uid).socket.send(message)});
+  if (clientIDs === "everyone") {
+    clientIDs = []
+    sockets.forEach((socketobj, uid) => {clientIDs.push(uid);});
+  }
+  clientIDs.forEach((uid) => {
+      try {sockets.get(uid).socket.send(message)}
+      catch(e) {debugprint("Tried to send a message to closed socket.", websocketFlag);}}); //TODO fix this eventually I guess
 }
 
 

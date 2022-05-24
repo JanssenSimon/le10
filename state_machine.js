@@ -1,8 +1,9 @@
 import { debugprint } from "./debug.js"
 import { Game } from "./game.js";
+import { sendToClients } from "./server.js";
 
 const validationFlag = false;
-const gameFlag = true;
+const gameFlag = false;
 
 // ----------------------------------------------------------------------------
 // State machine
@@ -81,7 +82,6 @@ export var joinGame = (uid, message, sockets, games) => {
     sockets.get(uid).game = gameid;
     debugprint("Socket " + uid + " requested creation of new game", gameFlag);
     debugprint("New game given uid: " + gameid, gameFlag);
-    //TODO send updated game list to all players
   } else {
     if (games.has(message.gamechoice)) {
       sockets.get(uid).game = message.gamechoice;
@@ -92,6 +92,8 @@ export var joinGame = (uid, message, sockets, games) => {
     }
   }
   games.get(sockets.get(uid).game).addPlayer(uid, sockets.get(uid).name);
+  //Update all sockets about new games
+  updateClientsGames(games);
 };
 export var bet = (uid, message, sockets, games) => {
   message = JSON.parse(message);
@@ -103,8 +105,14 @@ export var playCard = (uid, message, sockets, games) => {
 };
 export var exitGame = (uid, message, sockets, games) => {
   message = JSON.parse(message);
-  debugprint("Socket " + uid + " exits from game " + sockets.get(uid).game, gameFlag);
-  games.get(sockets.get(uid).game).exits(uid);
+  let gameID = sockets.get(uid).game;
+  debugprint("Socket " + uid + " exits from game " + gameID, gameFlag);
+  games.get(gameID).exits(uid);
+  //if nobody's left in the room, delete game
+  if (games.get(gameID).players.size === 0)
+    games.delete(gameID);
+  //Update all sockets about new games
+  updateClientsGames(games);
 };
 
 // Error functions
@@ -171,3 +179,12 @@ export var STATES = new Map([
     error: inGameErrorFunction
   }]
 ]);
+
+//Client feedback methods
+export var updateClientsGames = (games, clients) => {
+  if (!clients) clients = "everyone";
+  let gamesInfo = [];
+  if (games)
+    games.forEach((game, uid) => {gamesInfo.push({name: game.name, uuid: uid, seatedplayers: game.getSeatedPlayers()});});
+  sendToClients(clients, JSON.stringify({games: gamesInfo}));
+}

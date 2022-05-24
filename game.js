@@ -1,7 +1,7 @@
 import { debugprint } from "./debug.js"
 import { sendToClients } from "./server.js"
 
-const gameFlag = true;
+const gameFlag = false;
 
 // ----------------------------------------------------------------------------
 // Game rules
@@ -9,6 +9,7 @@ const gameFlag = true;
 
 export class Game {
   constructor() {
+    this.name = "BRUH";
     this.seats = new Map([
       [0, {hand: null, playerID: null, points: 0}],
       [1, {hand: null, playerID: null, points: 0}],
@@ -57,11 +58,8 @@ export class Game {
   updateClientsPlayers() {
     let clientsToUpdate = [];
     let allPlayers = [];
-    let seatedPlayers = [];
     this.players.forEach((player, uid) => {
       allPlayers.push(player)
-      if (player.seat !== null)
-        seatedPlayers.push(player)
       clientsToUpdate.push(uid)
     })
     sendToClients(clientsToUpdate, JSON.stringify({allplayers: allPlayers}));
@@ -69,6 +67,8 @@ export class Game {
 
   addPlayer(uid, name) {
     debugprint("Adding player " + uid + " to game", gameFlag);
+    if (this.name === "BRUH")
+      this.name = "Table de " + name;
     this.players.set(uid, {name: name, seat: null});
     //sits new player if seat available
     for (const [key, seat] of this.seats.entries()) {
@@ -349,5 +349,14 @@ export class Game {
     debugprint("Distributed cards:", gameFlag);
     debugprint(arrs, gameFlag);
     this.seats.forEach((seat, key) => {seat.hand = arrs[key];});
+  }
+
+  getSeatedPlayers() {
+    let names = [];
+    this.seats.forEach((seat, seatid) => {
+      if (seat.playerID)
+        names.push(this.players.get(seat.playerID).name);
+    });
+    return names;
   }
 }
