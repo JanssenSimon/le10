@@ -55,14 +55,30 @@ export class Game {
     return true;
   }
 
-  updateClientsPlayers() {
-    let clientsToUpdate = [];
-    let allPlayers = [];
-    this.players.forEach((player, uid) => {
-      allPlayers.push(player)
-      clientsToUpdate.push(uid)
-    })
+  updatePlayersPlayers() {
+    let clientsToUpdate = Array.from(this.players, ([uid, player]) => (uid));
+    let allPlayers = Array.from(this.players, ([uid, player]) => (player));
     sendToClients(clientsToUpdate, JSON.stringify({allplayers: allPlayers}));
+  }
+
+  updatePlayersBidding() {
+    sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
+      bidding: (this.betters.length > 0 && this.allSeatsFilled())
+    }));
+  }
+  updatePlayersBids() {
+    let activePlayer = this.players.get(this.seats.get(this.seatToBet).playerID);
+    let currentBid = this.highestBet;
+    let currentBidWinner = this.players.get(this.seats.get(this.highestBetter).playerID);
+    let currentlyFolded = Array.from([0,1,2,3].filter(x => !(this.betters.includes(x))),
+                               (seatNum) => (this.players.get(this.seats.get(seatNum))));
+    console.log(currentlyFolded);
+    sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
+      activePlayer,
+      currentBid,
+      currentBidWinner,
+      currentlyFolded
+    }));
   }
 
   addPlayer(uid, name) {
@@ -81,8 +97,12 @@ export class Game {
     debugprint(this.seats, gameFlag);
     debugprint(this.players, gameFlag);
 
+    //TODO update joined player with state of game
+    this.updatePlayersBids();
+    this.updatePlayersBidding();
+
     //send message to all players containing updated players
-    this.updateClientsPlayers()
+    this.updatePlayersPlayers()
   }
 
   exits(uid) {
@@ -94,7 +114,7 @@ export class Game {
     debugprint(this.players, gameFlag);
     //TODO maybe replace exited player with someone from the spectators?
     //send message to all players containing updated players
-    this.updateClientsPlayers()
+    this.updatePlayersPlayers()
   }
 
   allSeatsFilled() {
@@ -125,8 +145,9 @@ export class Game {
         if (amount === 100)
           this.betters = [];    //if someone goes all in, betting over
       } else {
-        //bet invalid, TODO send response to player
+        //bet invalid, send response to player
         debugprint(amount + " is an invalid bet amount.", gameFlag);
+        sendToClients([uid], JSON.stringify({error: "Ta mise doit être supérieure à la précédente."}));
         return;
       }
       if (this.betters.length <= 1) { //betting over?
@@ -137,19 +158,21 @@ export class Game {
         debugprint("Betting is over.", gameFlag);
         debugprint("It is seat " + this.seatToPlay + "'s turn to play.", gameFlag);
         //TODO update everyone with the fact that the betting is over
-        //TODO update everyone with the fact that it's seatToPlay's turn to play
+        //and with the fact that it's seatToPlay's turn to play
+        this.updatePlayersBidding();
       } else {
         //if not update who's turn it is to bet
         this.seatToBet = this.betters[betrsIndx] === this.seatToBet ? this.betters[(betrsIndx + 1) % this.betters.length] : this.betters[(betrsIndx) % this.betters.length];
         debugprint("It is now seat " + this.seatToBet + "'s turn to bet.", gameFlag);
-        //TODO update everyone with who's turn it is to bet
       }
+      //update everyone with who's turn it is to bet
+      this.updatePlayersBids();
     } else {
-      //TODO update player with fact it is not time for them to bet
       debugprint("But it is not time for them to bet.", gameFlag);
+      sendToClients([uid], JSON.stringify({error: "Ce n'est pas à ton tour de miser."}));
     }} else {
-      //TODO update player with fact there aren't enough players for them to bet
       debugprint("There aren't enough seated players to allow betting.", gameFlag);
+      sendToClients([uid], JSON.stringify({error: "Il n'y a pas assez de joueurs pour miser."}));
     }
   }
 
