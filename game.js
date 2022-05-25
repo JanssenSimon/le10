@@ -71,8 +71,7 @@ export class Game {
     let currentBid = this.highestBet;
     let currentBidWinner = this.players.get(this.seats.get(this.highestBetter).playerID);
     let currentlyFolded = Array.from([0,1,2,3].filter(x => !(this.betters.includes(x))),
-                               (seatNum) => (this.players.get(this.seats.get(seatNum))));
-    console.log(currentlyFolded);
+                               (seatNum) => (this.players.get(this.seats.get(seatNum).playerID)));
     sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
       activePlayer,
       currentBid,
