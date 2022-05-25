@@ -60,23 +60,58 @@ export class Game {
     let allPlayers = Array.from(this.players, ([uid, player]) => (player));
     sendToClients(clientsToUpdate, JSON.stringify({allplayers: allPlayers}));
   }
-
-  updatePlayersBidding() {
-    sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
-      bidding: (this.betters.length > 0 && this.allSeatsFilled())
-    }));
-  }
   updatePlayersBids() {
+    let bidding = (this.betters.length > 0 && this.allSeatsFilled())
     let activePlayer = this.players.get(this.seats.get(this.seatToBet).playerID);
     let currentBid = this.highestBet;
     let currentBidWinner = this.players.get(this.seats.get(this.highestBetter).playerID);
     let currentlyFolded = Array.from([0,1,2,3].filter(x => !(this.betters.includes(x))),
                                (seatNum) => (this.players.get(this.seats.get(seatNum).playerID)));
     sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
+      bidding,
       activePlayer,
       currentBid,
       currentBidWinner,
       currentlyFolded
+    }));
+  }
+  updatePlayersThemselves() {
+    this.seats.forEach((seat, seatNum) => {
+      sendToClients([seat.playerID], JSON.stringify({
+        cardsInHand: seat.hand,
+        seat: seatNum,
+        team: seatNum % 2
+      }));
+    });
+  }
+  updatePlayersCards() {
+    let playing = (this.betters.length === 0 && this.allSeatsFilled())
+    let activePlayer = this.players.get(this.seats.get(this.seatToPlay).playerID);
+    let points = {0:this.seats.get(0).points+this.seats.get(2).points, 1:this.seats.get(1).points+this.seats.get(3).points}
+    let trump = this.atout
+    let sorteDemandee = this.sorteDemandee
+    let table = Object.fromEntries(this.table);
+    let lastFourCards = Object.fromEntries(this.lastFourCards);
+    let hands = Array.from(this.seats, ([seatNum, seat]) => ({[seatNum]: seat.hand.length}));
+    sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
+      playing,
+      activePlayer,
+      points,
+      trump,
+      sorteDemandee,
+      table,
+      lastFourCards,
+      hands
+    }));
+  }
+  updatePlayersTable() {
+    let sorteDemandee = this.sorteDemandee
+    let table = Object.fromEntries(this.table);
+    let lastFourCards = Object.fromEntries(this.lastFourCards);
+    sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
+      sorteDemandee,
+      table,
+      lastFourCards
     }));
   }
 
@@ -96,9 +131,10 @@ export class Game {
     debugprint(this.seats, gameFlag);
     debugprint(this.players, gameFlag);
 
-    //TODO update joined player with state of game
+    //update joined player with state of game
     this.updatePlayersBids();
-    this.updatePlayersBidding();
+    this.updatePlayersCards();
+    this.updatePlayersThemselves();
 
     //send message to all players containing updated players
     this.updatePlayersPlayers()
@@ -158,7 +194,6 @@ export class Game {
         debugprint("It is seat " + this.seatToPlay + "'s turn to play.", gameFlag);
         //TODO update everyone with the fact that the betting is over
         //and with the fact that it's seatToPlay's turn to play
-        this.updatePlayersBidding();
       } else {
         //if not update who's turn it is to bet
         this.seatToBet = this.betters[betrsIndx] === this.seatToBet ? this.betters[(betrsIndx + 1) % this.betters.length] : this.betters[(betrsIndx) % this.betters.length];
@@ -176,7 +211,7 @@ export class Game {
   }
 
   isOkToPlay(cardChoice) {
-    // TODO make sure that, according to the rules, the chosen card is chill to play
+    // make sure that, according to the rules, the chosen card is chill to play
     let chosenCard = this.seats.get(this.seatToPlay).hand[cardChoice];
     if (!(this.sorteDemandee) || this.sorteDemandee === chosenCard.charAt(0)) {
       return true;
@@ -268,9 +303,10 @@ export class Game {
           [2, null],
           [3, null]
         ]);
-        //TODO send to players updated table
+        //send to players updated table
+        this.updatePlayersTable();
         this.gamePaused = false;
-      }, 5000);               //give 5 seconds for players to acknowledge round
+      }, 1);               //give 1 milliseconds for players to acknowledge round
     });
   }
   async switchToNextCards() {    // async caller function
@@ -296,7 +332,6 @@ export class Game {
           this.atout = chosenCard.charAt(0);
           debugprint("Atout: " + this.atout, gameFlag);
         }
-        //TODO update players with played card and atout/sorteDemandee
 
         //check if four cards have been played
         if (this.table.get(0) && this.table.get(1) && this.table.get(2) && this.table.get(3)) {
@@ -316,20 +351,26 @@ export class Game {
           this.gamePaused = true;
           this.switchToNextCards();
         }else{
-          //TODO update players with new player to play
           this.seatToPlay = (this.seatToPlay + 1) % 4;
           debugprint("It is now seat " + this.seatToPlay + "'s turn to play", gameFlag);
         }
+
+        //update players with played card and atout/sorteDemandee and activeplayer
+        this.updatePlayersThemselves();
+        this.updatePlayersCards();
       } else {
-        //TODO update player with fact they've played the wrong card
+        //update player with fact they've played the wrong card
         debugprint("Seat " + this.seatToPlay + " cannot play the card they chose.", gameFlag);
+        sendToClients([uid], JSON.stringify({error: "Tu ne peux pas jouer cette carte en ce moment."}));
       }
     } else {
-      //TODO update player with fact it is not time for them to play
+      //update player with fact it is not time for them to play
       debugprint("But it is not time for them to play.", gameFlag);
+      sendToClients([uid], JSON.stringify({error: "Ce n'est pas à votre tour de jouer."}));
     }} else {
-      //TODO update player with fact there aren't enough players for them to play
+      //update player with fact there aren't enough players for them to play
       debugprint("There aren't enough seated players to play a card.", gameFlag);
+      sendToClients([uid], JSON.stringify({error: "Il n'y a pas assez de joueurs pour jouer."}));
     }
   }
 
