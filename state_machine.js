@@ -32,15 +32,15 @@ export var messageHasGameChoice = (message) => {
   }
 }
 export var messageHasBet = (message) => {
-  debugprint("Validating if message has bet", validationFlag);
+  debugprint("Validating if message has bid", validationFlag);
   try {
     message = JSON.parse(message);
-    return message.hasOwnProperty("bet") &&
-           ((Number.isFinite(message.bet) &&
-           message.bet >= 50 &&
-           message.bet <= 100 &&
-           (message.bet % 5 === 0)) || (
-           message.bet === "fold"));
+    return message.hasOwnProperty("bid") &&
+           ((Number.isFinite(message.bid) &&
+           message.bid >= 50 &&
+           message.bid <= 100 &&
+           (message.bid % 5 === 0)) || (
+           message.bid === "fold"));
   } catch (e) {
     return false;
   }
@@ -97,7 +97,7 @@ export var joinGame = (uid, message, sockets, games) => {
 };
 export var bet = (uid, message, sockets, games) => {
   message = JSON.parse(message);
-  games.get(sockets.get(uid).game).bet(uid, message.bet) //message contains amount
+  games.get(sockets.get(uid).game).bet(uid, message.bid) //message contains amount
 };
 export var playCard = (uid, message, sockets, games) => {
   message = JSON.parse(message);
@@ -125,7 +125,7 @@ export var gameSelectionErrorFunction = () => {
   //TODO send error to player
 }
 export var inGameErrorFunction = () => {
-  console.log("ERROR : Expected a bet, a card choice, or an exit request, received something else;");
+  console.log("ERROR : Expected a bid, a card choice, or an exit request, received something else;");
   //TODO send error to player
 }
 
