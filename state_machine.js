@@ -1,6 +1,7 @@
 import { debugprint } from "./debug.js"
 import { Game } from "./game.js";
 import { sendToClients } from "./server.js";
+import { sockets } from "./server.js";
 
 const validationFlag = false;
 const gameFlag = false;
@@ -181,10 +182,30 @@ export var STATES = new Map([
 ]);
 
 //Client feedback methods
-export var updateClientsGames = (games, clients) => {
-  if (!clients) clients = "everyone";
+export var updateClientsGames = (games, clients) => {       //TODO redo this whole function, maybe move it
   let gamesInfo = [];
-  if (games)
-    games.forEach((game, uid) => {gamesInfo.push({name: game.name, uuid: uid, seatedplayers: game.getSeatedPlayers()});});
-  sendToClients(clients, JSON.stringify({games: gamesInfo}));
+  let currentGameInfo = null;
+  if (!games) games = new Map();
+
+  games.forEach((game, uid) => {gamesInfo.push({name: game.name, uuid: uid, seatedplayers: game.getSeatedPlayers()});});
+
+  if (clients) {
+    clients.forEach((pid) => {
+      games.forEach((game, uid) => {
+        if (game.isInGame(pid))
+          currentGameInfo = {name: game.name, uuid: uid, seatedplayers: game.getSeatedPlayers()};
+      });
+      sendToClients([pid], JSON.stringify({games: gamesInfo,
+                                           currentGame: currentGameInfo}));
+    });
+  } else {
+    sockets.forEach((socket, pid) => {
+      games.forEach((game, uid) => {
+        if (game.isInGame(pid))
+          currentGameInfo = {name: game.name, uuid: uid, seatedplayers: game.getSeatedPlayers()};
+      });
+      sendToClients([pid], JSON.stringify({games: gamesInfo,
+                                           currentGame: currentGameInfo}));
+    });
+  }
 }

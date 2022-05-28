@@ -12,7 +12,7 @@ const socketstateFlag = false;
 // State
 // ----------------------------------------------------------------------------
 
-let sockets = new Map();    //contains objects with socket and state of socket
+export var sockets = new Map();    //contains objects with socket and state of socket
 let games = new Map();      //contains game objects
 
 

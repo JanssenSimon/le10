@@ -13,7 +13,7 @@ Merci aussi à Stefan et Laurier pour votre aide!
 
 ## Roadmap
 
-0. Refonte du code.
+0. Amélioration de l'API, ajout d'UI mobile.
 1. Choix de place, choix d'être spectateur ou non.
 2. Statistiques des jeux.
 3. BOTS.

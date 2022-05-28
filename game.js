@@ -78,7 +78,7 @@ export class Game {
   updatePlayersThemselves() {
     this.seats.forEach((seat, seatNum) => {
       sendToClients([seat.playerID], JSON.stringify({
-        cardsInHand: seat.hand,
+        cardsinhand: seat.hand,
         seat: seatNum,
         team: seatNum % 2
       }));
@@ -421,5 +421,8 @@ export class Game {
         names.push(this.players.get(seat.playerID).name);
     });
     return names;
+  }
+  isInGame(uid) {
+    return this.players.has(uid);
   }
 }
