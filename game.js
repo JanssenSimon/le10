@@ -40,6 +40,7 @@ export class Game {
     this.betters = [];  //players that can still bet, if empty not betting time
 
     this.seatToPlay = 3;
+    this.lastWinningSeat = null;
     this.gamePaused = false;
 
     this.resetGame();
@@ -87,6 +88,7 @@ export class Game {
   updatePlayersCards() {
     let playing = (this.betters.length === 0 && this.allSeatsFilled())
     let activePlayer = this.players.get(this.seats.get(this.seatToPlay).playerID);
+    let lastWinningPlayer = this.lastWinningSeat;
     let points = {0:this.seats.get(0).points+this.seats.get(2).points, 1:this.seats.get(1).points+this.seats.get(3).points}
     let trump = this.atout
     let sorteDemandee = this.sorteDemandee
@@ -96,6 +98,7 @@ export class Game {
     sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
       playing,
       activePlayer,
+      lastWinningPlayer,
       points,
       trump,
       sorteDemandee,
@@ -341,6 +344,7 @@ export class Game {
           debugprint(this.getTeamPoints(), gameFlag);
           this.seatToPlay = winningSeat;
           debugprint("It is seat " + winningSeat + "'s turn to play", gameFlag);
+          this.lastWinningSeat = winningSeat;
 
           //check if last round of game
           //    if yes announce winners of game
