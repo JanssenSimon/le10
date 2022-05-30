@@ -5,6 +5,7 @@ import { sockets } from "./server.js";
 
 const validationFlag = false;
 const gameFlag = false;
+const serrFlag = false;
 
 // ----------------------------------------------------------------------------
 // State machine
@@ -117,17 +118,17 @@ export var exitGame = (uid, message, sockets, games) => {
 };
 
 // Error functions
-export var nameSelectionErrorFunction = () => {
-  console.log("ERROR : Expected a name, received something else;");
-  //TODO send error to player, let them know they need to be named
+export var nameSelectionErrorFunction = (pid) => {
+  debugprint("STATE ERROR : Expected a name, received something else;", serrFlag);
+  sendToClients([pid], JSON.stringify({error: "Je m'attendais à recevoir un nom."}));
 }
-export var gameSelectionErrorFunction = () => {
-  console.log("ERROR : Expected a name or game choice, received something else;");
-  //TODO send error to player
+export var gameSelectionErrorFunction = (pid) => {
+  debugprint("STATE ERROR : Expected a name or game choice, received something else;", serrFlag);
+  sendToClients([pid], JSON.stringify({error: "Je m'attendais à recevoir un nom ou un choix de jeu."}));
 }
-export var inGameErrorFunction = () => {
-  console.log("ERROR : Expected a bid, a card choice, or an exit request, received something else;");
-  //TODO send error to player
+export var inGameErrorFunction = (pid) => {
+  debugprint("STATE ERROR : Expected a bid, a card choice, or an exit request, received something else;", serrFlag);
+  sendToClients([pid], JSON.stringify({error: "Je m'attendais à recevoir une mise, un choix de carte, ou une sortie."}));
 }
 
 export var STATES = new Map([

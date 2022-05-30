@@ -104,7 +104,7 @@ async function reqHandler(request) {
       }
     });
     if (socketState.methods.length === 0 || noMethodCalled)
-      socketState.error();
+      socketState.error(identifier);
   }
 
   websocket.onopen = () => {
