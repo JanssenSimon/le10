@@ -14,14 +14,14 @@
   <link href="styles/power.css" rel="stylesheet">
   <link href="styles/style.css" rel="stylesheet">
 
-  <script src="scripts/view.js" async></script>
+  <script src="scripts/view.js" defer></script>
   <script src="scripts/main.js" defer></script>
 </head>
 
 <body>
   <header>
     <h1>Le Jeu du <em>10</em></h1>
-    <p>Table de Jérémie</p>
+    <p id="table-name">Table de Jérémie</p>
   </header>
 
   <nav>
@@ -32,25 +32,25 @@
   <aside>
     <div class="trump-color">
       <label>Atout</label>
-      <div class="card medium diamonds"></div>
+      <div id="trump-card" class="card medium diamonds"></div>
     </div>
     <div class="score">
       <label for="points-home">Votre équipe</label>
       <output id="points-home">50 pts</output>
-      <div class="bid"></div>
+      <div class="bid" id="bid-home"></div>
     </div>
     <div class="score">
       <label for="points-away">Équipe adverse</label>
       <output id="points-away">50 pts</output>
-      <div class="bid">Mise: 65 pts</div>
+      <div class="bid" id="bid-away">Mise: 65 pts</div>
     </div>
   </aside>
 
   <main>
 
-    <section class="player current-turn">
-      <h2>Jérémie</h2>
-      <ol class="card-hand">
+    <section class="player current-turn" id="player0">
+      <h2 id="player0-name">Jérémie</h2>
+      <ol class="card-hand" id="player0-hand">
         <button class="card jack hearts"></button>
         <button class="card queen hearts"></button>
         <button class="card ace hearts"></button>
@@ -65,9 +65,9 @@
       <button class="card face-down" id="last-play"></button>
     </section>
 
-    <section class="player">
-      <h2>Marie</h2>
-      <ol class="card-hand">
+    <section class="player" id="player1">
+      <h2 id="player1-name">Marie</h2>
+      <ol class="card-hand" id="player1-hand">
         <div class="card face-down"></div>
         <div class="card face-down"></div>
         <div class="card face-down"></div>
@@ -81,9 +81,9 @@
       </ol>
     </section>
 
-    <section class="player">
-      <h2>Fred</h2>
-      <ol class="card-hand">
+    <section class="player" id="player2">
+      <h2 id="player2-name">Fred</h2>
+      <ol class="card-hand" id="player2-hand">
         <div class="card face-down"></div>
         <div class="card face-down"></div>
         <div class="card face-down"></div>
@@ -97,9 +97,9 @@
       </ol>
     </section>
 
-    <section class="player">
-      <h2>Coralie</h2>
-      <ol class="card-hand">
+    <section class="player" id="player3">
+      <h2 id="player3-name">Coralie</h2>
+      <ol class="card-hand" id="player3-hand">
         <div class="card face-down"></div>
         <div class="card face-down"></div>
         <div class="card face-down"></div>
@@ -115,10 +115,10 @@
 
     <section class="table-center">
       <p id="table-state">C’est votre tour</p>
-      <div class="card placeholder"></div>
-      <div class="card placeholder"></div>
-      <div class="card placeholder"></div>
-      <div class="card placeholder"></div>
+      <div class="card placeholder" id="table-center-card0"></div>
+      <div class="card placeholder" id="table-center-card1"></div>
+      <div class="card placeholder" id="table-center-card2"></div>
+      <div class="card placeholder" id="table-center-card3"></div>
     </section>
 
   </main>
@@ -176,14 +176,17 @@
       </li>
     </ul>
     <footer>
-      <button class="button" id="newTable">Créer une nouvelle table</button>
+      <button class="button" id="new-table">Créer une nouvelle table</button>
     </footer>
   </dialog>
 
   <dialog id="bid">
     <h2>Mise</h2>
     <input type="number" id="bid-amount" value="50" step="5" min="50" max="100" autofocus>
-    <button class="button">Suivre</button>
+    <footer>
+      <button class="button" id="bid-pass">Passer</button>
+      <button class="button" id="bid-confirm">Suivre</button>
+    </footer>
   </dialog>
 
 </body>

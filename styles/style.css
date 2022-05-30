@@ -207,11 +207,11 @@ h2::before {
   opacity: 0;
 }
 
-.current-turn h2 {
+.active h2 {
   color: var(--color-red);
 }
 
-.current-turn h2::before {
+.active h2::before {
   opacity: 1;
 }
 
@@ -498,8 +498,9 @@ input[type="checkbox"]:checked::before { opacity: 1; }
 
 .table-select {
   display: grid;
+  position: relative;
   align-content: start;
-  width: max-content;
+  min-width: 40em;
   height: 16rem;
   margin-top: 1.5rem;
   background-color: var(--color-background);
@@ -519,6 +520,13 @@ input[type="checkbox"]:checked::before { opacity: 1; }
 
 .table-select>li:nth-last-child(2n+1) {
   background-color: var(--color-tertiary);
+}
+
+.table-select>.no-games {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 h3 {
