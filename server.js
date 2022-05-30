@@ -26,8 +26,8 @@ async function reqHandler(request) {
     //Client is requesting static files
 
     let resourceFromPath = new Map([
-        [ /^\/$/, "./index.html"],              //detects root, a single "/"
-        [ /^\/favicon.ico$/, "./favicon.ico"], // Detects faviron.ico
+        [ /^\/$/, "./public/index.html"],          //detects root, a single "/"
+        [ /^\/favicon.ico$/, "./public/favicon.ico"], // Detects faviron.ico
         [ /^\/styles\/[\w\/-]+\.css$/, "PATH"], //matches css files in /styles/
         [ /^\/scripts\/[\w\/-]+\.js$/, "PATH"], //matches js files in /scripts/
         [ /^\/fonts\/[\w\/-]+\.woff2$/, "PATH"],//matches font files
@@ -48,7 +48,7 @@ async function reqHandler(request) {
     for (const key of resourceFromPath.keys()) {
       if (key.test(path)) {
         let resource = resourceFromPath.get(key);
-        resource = resource === "PATH" ? "."+path : resource;
+        resource = resource === "PATH" ? "./public/"+path : resource;
         let fileExtension = resource.match(/\.\w+$/)[0];
         const body = await Deno.readFile(resource);
         return new Response(body, {
