@@ -1,8 +1,0 @@
-1. envoyer des messages relevant à certains joueurs à des moments relevant
-   exemple: quand iel joue un carte illégale, envoyer un message comme quoi on peut pas
-                jouer cte carte la et pourquoi
-2. ajouter IAs
-3. Cleanup the stinky code (EW GROSS)
-4. ajouter plusieurs salles de jeu et fix la queue
-5. mettre à jour aria-descriptions (TRES IMPORTANT)
-6. penser à facon de joindre une salle spécifique.et de choisir un siege specifique

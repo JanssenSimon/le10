@@ -1,0 +1,37 @@
+/*---------------------------------------*/
+/*               power.css               */
+/*     A CSS Reset by Jérémie Dupuis     */
+/*     github.com/JeremieD/power.css     */
+/*---------------------------------------*/
+
+/* Remove any value set by the user-agent stylesheet. */
+*:not(svg, svg *), ::before, ::after {
+  all: unset;
+
+  /* Webkit quirks */
+  -webkit-text-emphasis-color: initial;
+  -webkit-text-fill-color: initial;
+
+  /* Chromium quirks */
+  color: inherit;
+
+  /* Slightly opinionated things. */
+  box-sizing: border-box;
+}
+
+/* Set display: none; elements. These should never appear. */
+head, base, link, meta, title, script, source, style, template, dialog {
+  display: none;
+}
+
+/* Set default block elements. Customize only for very general uses. */
+html, body,
+header, main, footer,
+nav, section, aside, article,
+h1, h2, h3, h4, h5, h6,
+div, p, hr,
+ul, ol, li,
+img, picture, video, svg
+figure, figcaption {
+  display: block;
+}

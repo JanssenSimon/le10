@@ -1,14 +1,20 @@
 # Le 10
 
-Une simple implémentation d'un jeu de mise que j'ai appris à l'université.
+Une simple implémentation d'un jeu de levées que j'ai appris à l'université.
 
 ## Lancer le serveur
 
-La commande pour lancer le serveur : 
-
-`deno run --allow-net --allow-read server.js`
+Pour lancer le serveur il faut executer le script `start`
 
 ## Remerciements
 
 Merci, Alexis Janssen et Jérémie Dupuis, pour votre aide indispensable.
 Merci aussi à Stefan et Laurier pour votre aide!
+
+## Roadmap
+
+0. Amélioration de l'API, ajout d'UI mobile.
+1. Choix de place, choix d'être spectateur ou non.
+2. Statistiques des jeux.
+3. BOTS.
+4. Ajout d'un *chat* qui pourra être désactivé ou non.
