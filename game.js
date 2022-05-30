@@ -403,7 +403,7 @@ export class Game {
 
   distributePlayingCards() {  //assigns playing cards randomly to four players
     let arrs = [[],[],[],[]];
-    const suits = ["♠","♡","♢","♣"];
+    const suits = ["♡","♣","♢","♠"];
     const values = ["5","6","7","8","9","10","J","Q","K","A"];
     suits.forEach((s) => {
       values.forEach((v) => {
