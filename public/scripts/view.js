@@ -120,7 +120,7 @@ whenDOMReady(() => {
  * *trap* is whether to allow automatic exit methods (escape key and background click)
  */
 function openModal(el, trap = false) {
-  el.show();
+  el.open = true;
 
   document.documentElement.classList.add("inert");
 
@@ -153,7 +153,7 @@ function closeModal(el) {
   el.abortCloseWithClick?.abort();
   el.abortCloseWithEscape?.abort();
   document.documentElement.classList.remove("inert");
-  el.close();
+  el.open = false;
 }
 
 
