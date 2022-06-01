@@ -2,6 +2,7 @@
 const ws = new WebSocket("ws://" + location.host);
 
 const savedState = {
+  phase: "waiting",
   user: {
     seat: undefined,
     team: undefined,
@@ -42,7 +43,7 @@ ws.onmessage = msg => {
       view.bidDialog.bidAmount.value = data.currentBid;
     }
 
-  } else if (data.bidding === false) {
+  } else if (data.bidding === false && savedState.phase !== "waiting") {
     savedState.phase = "playing";
     setActivePlayer(data.currentBidWinner.name);
 

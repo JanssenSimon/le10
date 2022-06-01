@@ -176,10 +176,17 @@ function newCard(index, interactive = false) {
   const newCard = document.createElement(tagName);
   newCard.classList.add("card");
 
-  const color = getColorFromIndex(index);
-  const rank = getRankFromIndex(index);
+  let className = [];
 
-  newCard.classList.add(rank, color);
+  if (index !== "face-down") {
+    className.push(getColorFromIndex(index));
+    className.push(getRankFromIndex(index));
+
+  } else {
+    className.push(index);
+  }
+
+  newCard.classList.add(...className);
 
   return newCard;
 }
@@ -313,7 +320,8 @@ function updateCardsInHand(hand) {
   view.game.players[0].hand.innerHTML = "";
 
   for (let i = 0; i < hand.length; i++) {
-    const cardElement = newCard(hand[i], true);
+    const cardIndex = savedState.phase !== "waiting" ? hand[i] : "face-down";
+    const cardElement = newCard(cardIndex, true);
     cardElement.addEventListener("click", () => {
       ws.send(JSON.stringify({ cardchoice: i }));
     });
