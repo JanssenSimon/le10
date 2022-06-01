@@ -65,6 +65,7 @@ aside {
 }
 
 aside output {
+  min-width: 6ch;
   height: 3rem;
   padding: .5rem;
   border: 2px solid var(--color-secondary);
@@ -72,6 +73,7 @@ aside output {
   font-size: 1.5rem;
   line-height: 1;
   font-weight: bold;
+  text-align: center;
 }
 
 .trump-color, .score {
@@ -98,6 +100,8 @@ h1 {
 h1 + p {
   margin-top: 0;
   color: var(--color-grey);
+  line-height: 1;
+  min-height: 1em;
 }
 
 h1>em {
@@ -163,7 +167,7 @@ main {
   align-items: center;
   justify-items: center;
   width: 100%;
-  height: calc(100% - 4rem);
+  height: calc(100% - 5.5rem);
   align-self: end;
 }
 
@@ -215,31 +219,32 @@ h2::before {
   opacity: 1;
 }
 
-.table-center {
+.table-center>ol {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: auto auto auto auto;
+  margin-top: 2em;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto auto auto;
+  justify-content: center;
   align-items: center;
   justify-items: center;
-  gap: 1rem;
+  gap: 0 1rem;
 }
 
 #table-state {
-  grid-area: 1 / 1 / 1 / -1;
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.table-center>:nth-child(2) {
-  grid-area: 4 / 2;
-  margin-top: -2.5rem;
+.table-center>ol>:nth-child(1) {
+  grid-area: 3 / 2;
+  margin-top: -1.5rem;
 }
-.table-center>:nth-child(3) { grid-area: 3 / 1; }
-.table-center>:nth-child(4) {
-  grid-area: 2 / 2;
-  margin-bottom: -2.5rem;
+.table-center>ol>:nth-child(2) { grid-area: 2 / 1; }
+.table-center>ol>:nth-child(3) {
+  grid-area: 1 / 2;
+  margin-bottom: -1.5rem;
 }
-.table-center>:nth-child(5) { grid-area: 3 / 3; }
+.table-center>ol>:nth-child(4) { grid-area: 2 / 3; }
 
 
 .card-hand {
@@ -250,7 +255,7 @@ h2::before {
   transition: .2s ease transform;
 }
 
-.card-hand>.card:hover {
+.card-hand>.card:not(.placeholder):hover {
   transform: translateY(-1rem);
 }
 
@@ -258,7 +263,7 @@ h2::before {
   margin-left: -1rem;
 }
 
-.card-hand>.card.face-down:not(:first-child) {
+.card-hand>.card:is(.face-down, .placeholder):not(:first-child) {
   margin-left: -2rem;
 }
 
