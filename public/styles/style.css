@@ -516,7 +516,7 @@ input[type="checkbox"]:checked::before { opacity: 1; }
 
 .table-select>li {
   display: grid;
-  grid-template-columns: minmax(12ch, 1fr) auto 1fr auto;
+  grid-template-columns: minmax(max-content, auto) max-content max-content min-content;
   gap: 2rem;
   align-items: center;
   height: 3.5rem;
