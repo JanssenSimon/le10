@@ -94,7 +94,7 @@ export class Game {
     let sorteDemandee = this.sorteDemandee
     let table = Object.fromEntries(this.table);
     let lastFourCards = Object.fromEntries(this.lastFourCards);
-    let hands = Array.from(this.seats, ([seatNum, seat]) => ({[seatNum]: seat.hand.length}));
+    let hands = Array.from(this.seats, ([seatNum, seat]) => (seat.hand.length));
     sendToClients(Array.from(this.players,([id,_])=>(id)), JSON.stringify({
       playing,
       activePlayer,
