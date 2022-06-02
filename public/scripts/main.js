@@ -47,6 +47,10 @@ ws.onmessage = msg => {
     savedState.phase = "playing";
     setActivePlayer(data.currentBidWinner.name);
 
+    const bidAmount = data.currentBid;
+    const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
+    setBid(bidAmount, attackingTeam);
+
     setStateText(`La partie commence. À ${data.currentBidWinner.name} de jouer.`);
   }
 

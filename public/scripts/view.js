@@ -332,3 +332,12 @@ function updateCardsInHand(hand) {
 function setStateText(text) {
   view.game.state.innerText = text;
 }
+
+function setBid(bid, team) {
+  if (team === 0) {
+    view.game.bidHome.innerText = `Mise: ${bid} pts`;
+
+  } else {
+    view.game.bidAway.innerText = `Mise: ${bid} pts`;
+  }
+}
