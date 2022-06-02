@@ -65,7 +65,7 @@ aside {
 }
 
 aside output {
-  min-width: 6ch;
+  min-width: 6.5ch;
   height: 3rem;
   padding: .5rem;
   border: 2px solid var(--color-secondary);
@@ -80,7 +80,6 @@ aside output {
   display: flex;
   flex-direction: column;
   gap: .25rem;
-  align-items: center;
 }
 
 .bid {
