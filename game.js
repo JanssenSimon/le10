@@ -423,7 +423,7 @@ export class Game {
   getSeatedPlayers() {
     let names = [];
     this.seats.forEach((seat, seatid) => {
-      if (seat.playerID)
+      if (seat.playerID && this.players.has(seat.playerID) && this.players.get(seat.playerID).name)
         names.push(this.players.get(seat.playerID).name);
     });
     return names;
