@@ -3,6 +3,7 @@ const ws = new WebSocket("ws://" + location.host);
 
 const savedState = {
   phase: "waiting",
+  currentBid: undefined,
   user: {
     seat: undefined,
     team: undefined,
@@ -38,16 +39,17 @@ ws.onmessage = msg => {
   if (data.bidding === true) {
     savedState.phase = "bidding";
 
-    view.bidDialog.bidAmount.min = data.currentBid ?? 50;
-    if (view.bidDialog.bidAmount.value < data.currentBid) {
-      view.bidDialog.bidAmount.value = data.currentBid;
+    savedState.bid = data.currentBid ?? 50;
+    view.bidDialog.bidAmount.min = savedState.bid;
+    if (view.bidDialog.bidAmount.value < savedState.bid) {
+      view.bidDialog.bidAmount.value = savedState.bid;
     }
 
   } else if (data.bidding === false && savedState.phase !== "waiting") {
     savedState.phase = "playing";
     setActivePlayer(data.currentBidWinner.name);
 
-    const bidAmount = data.currentBid;
+    const bidAmount = savedState.bid;
     const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
     setBid(bidAmount, attackingTeam);
 
@@ -61,6 +63,7 @@ ws.onmessage = msg => {
       if (data.activePlayer.name === savedState.user.name) {
         setStateText("C’est à vous de miser.");
         openModal(view.bidDialog.container, true);
+
       } else {
         setStateText(`C’est à ${data.activePlayer.name} de miser.`);
       }

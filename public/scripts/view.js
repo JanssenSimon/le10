@@ -101,6 +101,11 @@ whenDOMReady(() => {
     ws.send(JSON.stringify({ gamechoice: "newgame" }));
   });
 
+  view.bidDialog.bidAmount.addEventListener("change", () => {
+    const bidIncreased = view.bidDialog.bidAmount.value <= savedState.bid;
+    view.bidDialog.bidConfirm.disabled = bidIncreased;
+  });
+
   view.bidDialog.bidPass.addEventListener("click", () => {
     ws.send(JSON.stringify({ bid: "fold" }));
     closeModal(view.bidDialog.container);
