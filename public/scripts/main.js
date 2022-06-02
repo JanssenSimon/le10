@@ -53,7 +53,10 @@ ws.onmessage = msg => {
     const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
     setBid(bidAmount, attackingTeam);
 
-    setStateText(`La partie commence. À ${data.currentBidWinner.name} de jouer.`);
+    const userIsActivePlayer = data.currentBidWinner.name === savedState.user.name;
+    const adressee = userIsActivePlayer ? "vous" : data.currentBidWinner.name;
+
+    setStateText(`La partie commence. À ${adressee} de jouer.`);
   }
 
   if (data.hasOwnProperty("activePlayer")) {
