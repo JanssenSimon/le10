@@ -82,11 +82,11 @@ ws.onmessage = msg => {
     }
   }
 
-  if (data.hasOwnProperty("table")) {
+  if (data.hasOwnProperty("table") && data.playing === true) {
     updateTableCenter(data.table)
   }
 
-  if (data.hasOwnProperty("trump")) {
+  if (data.hasOwnProperty("trump") && data.playing === true) {
     let className = "placeholder";
     if (data.trump !== null) {
       className = getColorFromIndex(data.trump);
@@ -94,7 +94,7 @@ ws.onmessage = msg => {
     view.game.trumpCard.className = "card medium " + className;
   }
 
-  if (data.hasOwnProperty("points")) {
+  if (data.hasOwnProperty("points") && data.playing === true) {
     const homeTeam = savedState.user.team;
     const awayTeam = 1 - homeTeam;
     view.game.pointsHome.innerText = data.points[homeTeam] + " pts";
