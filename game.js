@@ -197,6 +197,7 @@ export class Game {
         debugprint("It is seat " + this.seatToPlay + "'s turn to play.", gameFlag);
         //TODO update everyone with the fact that the betting is over
         //and with the fact that it's seatToPlay's turn to play
+        this.updatePlayersCards();
       } else {
         //if not update who's turn it is to bet
         this.seatToBet = this.betters[betrsIndx] === this.seatToBet ? this.betters[(betrsIndx + 1) % this.betters.length] : this.betters[(betrsIndx) % this.betters.length];
