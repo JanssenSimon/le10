@@ -2,6 +2,8 @@
 const ws = new WebSocket("ws://" + location.host);
 
 const savedState = {
+  phase: "waiting",
+  currentBid: undefined,
   user: {
     seat: undefined,
     team: undefined,
@@ -37,40 +39,44 @@ ws.onmessage = msg => {
   if (data.bidding === true) {
     savedState.phase = "bidding";
 
-    view.bidDialog.bidAmount.min = data.currentBid ?? 50;
-    if (view.bidDialog.bidAmount.value < data.currentBid) {
-      view.bidDialog.bidAmount.value = data.currentBid;
+    savedState.bid = data.currentBid ?? 50;
+    view.bidDialog.bidAmount.min = savedState.bid;
+    if (view.bidDialog.bidAmount.value < savedState.bid) {
+      view.bidDialog.bidAmount.value = savedState.bid;
     }
 
-  } else if (data.bidding === false) {
+  } else if (data.bidding === false && savedState.phase !== "waiting") {
     savedState.phase = "playing";
     setActivePlayer(data.currentBidWinner.name);
 
-    view.game.state.innerText = "La partie peut commencer.";
+    const bidAmount = savedState.bid;
+    const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
+    setBid(bidAmount, attackingTeam);
+
+    setStateText(`La partie commence. À ${data.currentBidWinner.name} de jouer.`);
   }
 
   if (data.hasOwnProperty("activePlayer")) {
-    setActivePlayer(data.activePlayer.name);
+    if (data.bidding === true) {
+      setActivePlayer(data.activePlayer.name);
 
-    let stateText = "";
-
-    if (savedState.phase === "bidding") {
       if (data.activePlayer.name === savedState.user.name) {
-        stateText = "C’est à vous de miser.";
+        setStateText("C’est à vous de miser.");
         openModal(view.bidDialog.container, true);
+
       } else {
-        stateText = `C’est à ${data.activePlayer.name} de miser.`;
+        setStateText(`C’est à ${data.activePlayer.name} de miser.`);
       }
 
-    } else if (savedState.phase === "playing") {
+    } else if (data.playing === true) {
+      setActivePlayer(data.activePlayer.name);
+
       if (data.activePlayer.name === savedState.user.name) {
-        stateText = "C’est à vous de jouer une carte.";
+        setStateText("C’est à vous de jouer une carte.");
       } else {
-        stateText = `C’est à ${data.activePlayer.name} de jouer une carte.`;
+        setStateText(`C’est à ${data.activePlayer.name} de jouer une carte.`);
       }
     }
-
-    view.game.state.innerText = stateText;
   }
 
   if (data.hasOwnProperty("table")) {
@@ -97,6 +103,7 @@ ws.onmessage = msg => {
 ws.onopen = () => {
   const randomName = generateRandomName();
   view.tableSelectDialog.name.value = randomName;
+  savedState.user.name = randomName;
   ws.send(JSON.stringify({ name: randomName }));
 };
 

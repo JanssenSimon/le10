@@ -101,6 +101,11 @@ whenDOMReady(() => {
     ws.send(JSON.stringify({ gamechoice: "newgame" }));
   });
 
+  view.bidDialog.bidAmount.addEventListener("change", () => {
+    const bidIncreased = view.bidDialog.bidAmount.value <= savedState.bid;
+    view.bidDialog.bidConfirm.disabled = bidIncreased;
+  });
+
   view.bidDialog.bidPass.addEventListener("click", () => {
     ws.send(JSON.stringify({ bid: "fold" }));
     closeModal(view.bidDialog.container);
@@ -120,7 +125,7 @@ whenDOMReady(() => {
  * *trap* is whether to allow automatic exit methods (escape key and background click)
  */
 function openModal(el, trap = false) {
-  el.show();
+  el.open = true;
 
   document.documentElement.classList.add("inert");
 
@@ -153,7 +158,7 @@ function closeModal(el) {
   el.abortCloseWithClick?.abort();
   el.abortCloseWithEscape?.abort();
   document.documentElement.classList.remove("inert");
-  el.close();
+  el.open = false;
 }
 
 
@@ -176,10 +181,17 @@ function newCard(index, interactive = false) {
   const newCard = document.createElement(tagName);
   newCard.classList.add("card");
 
-  const color = getColorFromIndex(index);
-  const rank = getRankFromIndex(index);
+  let className = [];
 
-  newCard.classList.add(rank, color);
+  if (index !== "face-down") {
+    className.push(getColorFromIndex(index));
+    className.push(getRankFromIndex(index));
+
+  } else {
+    className.push(index);
+  }
+
+  newCard.classList.add(...className);
 
   return newCard;
 }
@@ -313,10 +325,24 @@ function updateCardsInHand(hand) {
   view.game.players[0].hand.innerHTML = "";
 
   for (let i = 0; i < hand.length; i++) {
-    const cardElement = newCard(hand[i], true);
+    const cardIndex = savedState.phase !== "waiting" ? hand[i] : "face-down";
+    const cardElement = newCard(cardIndex, true);
     cardElement.addEventListener("click", () => {
       ws.send(JSON.stringify({ cardchoice: i }));
     });
     view.game.players[0].hand.append(cardElement);
+  }
+}
+
+function setStateText(text) {
+  view.game.state.innerText = text;
+}
+
+function setBid(bid, team) {
+  if (team === 0) {
+    view.game.bidHome.innerText = `Mise: ${bid} pts`;
+
+  } else {
+    view.game.bidAway.innerText = `Mise: ${bid} pts`;
   }
 }
