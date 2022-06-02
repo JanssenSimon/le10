@@ -328,3 +328,7 @@ function updateCardsInHand(hand) {
     view.game.players[0].hand.append(cardElement);
   }
 }
+
+function setStateText(text) {
+  view.game.state.innerText = text;
+}

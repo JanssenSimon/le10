@@ -47,31 +47,29 @@ ws.onmessage = msg => {
     savedState.phase = "playing";
     setActivePlayer(data.currentBidWinner.name);
 
-    view.game.state.innerText = "La partie peut commencer.";
+    setStateText(`La partie commence. À ${data.currentBidWinner.name} de jouer.`);
   }
 
   if (data.hasOwnProperty("activePlayer")) {
-    setActivePlayer(data.activePlayer.name);
+    if (data.bidding === true) {
+      setActivePlayer(data.activePlayer.name);
 
-    let stateText = "";
-
-    if (savedState.phase === "bidding") {
       if (data.activePlayer.name === savedState.user.name) {
-        stateText = "C’est à vous de miser.";
+        setStateText("C’est à vous de miser.");
         openModal(view.bidDialog.container, true);
       } else {
-        stateText = `C’est à ${data.activePlayer.name} de miser.`;
+        setStateText(`C’est à ${data.activePlayer.name} de miser.`);
       }
 
-    } else if (savedState.phase === "playing") {
+    } else if (data.playing === true) {
+      setActivePlayer(data.activePlayer.name);
+
       if (data.activePlayer.name === savedState.user.name) {
-        stateText = "C’est à vous de jouer une carte.";
+        setStateText("C’est à vous de jouer une carte.");
       } else {
-        stateText = `C’est à ${data.activePlayer.name} de jouer une carte.`;
+        setStateText(`C’est à ${data.activePlayer.name} de jouer une carte.`);
       }
     }
-
-    view.game.state.innerText = stateText;
   }
 
   if (data.hasOwnProperty("table")) {
@@ -98,6 +96,7 @@ ws.onmessage = msg => {
 ws.onopen = () => {
   const randomName = generateRandomName();
   view.tableSelectDialog.name.value = randomName;
+  savedState.user.name = randomName;
   ws.send(JSON.stringify({ name: randomName }));
 };
 
