@@ -145,7 +145,8 @@ export class Game {
 
   exits(uid) {
     debugprint("Player " + uid + " exits game", gameFlag);
-    this.seats.get(this.players.get(uid).seat).playerID = null;
+    if (this.players.get(uid).seat)
+      this.seats.get(this.players.get(uid).seat).playerID = null;
     this.players.delete(uid);
     debugprint("Current state of seats and players:", gameFlag);
     debugprint(this.seats, gameFlag);
