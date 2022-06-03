@@ -27,22 +27,26 @@ whenDOMReady(() => {
     {
       container: document.getElementById("player0"),
       name: document.getElementById("player0-name"),
-      hand: document.getElementById("player0-hand")
+      hand: document.getElementById("player0-hand"),
+      lastPlay: document.getElementById("player0-last-play")
     },
     {
       container: document.getElementById("player1"),
       name: document.getElementById("player1-name"),
-      hand: document.getElementById("player1-hand")
+      hand: document.getElementById("player1-hand"),
+      lastPlay: document.getElementById("player1-last-play")
     },
     {
       container: document.getElementById("player2"),
       name: document.getElementById("player2-name"),
-      hand: document.getElementById("player2-hand")
+      hand: document.getElementById("player2-hand"),
+      lastPlay: document.getElementById("player2-last-play")
     },
     {
       container: document.getElementById("player3"),
       name: document.getElementById("player3-name"),
-      hand: document.getElementById("player3-hand")
+      hand: document.getElementById("player3-hand"),
+      lastPlay: document.getElementById("player3-last-play")
     }
   ];
   view.game.state = document.getElementById("table-state");
@@ -297,7 +301,7 @@ function updateTableList(tables) {
  */
 function updateSeatedPlayers(seatedPlayers) {
   for (let i = 0; i < 4; i++) {
-    playerSeat = (i + savedState.user.seat) % 4;
+    const playerSeat = (i + savedState.user.seat) % 4;
     const name = seatedPlayers.length - 1 >= playerSeat ? seatedPlayers[playerSeat] : "Vacant";
     view.game.players[i].name.innerText = name;
   }
@@ -305,18 +309,48 @@ function updateSeatedPlayers(seatedPlayers) {
 
 function updateTableCenter(cards) {
   for (let i = 0; i < 4; i++) {
-    playerSeat = (i - savedState.user.seat + 4) % 4;
+    const playerSeat = (i - savedState.user.seat + 4) % 4;
     let className = "card ";
     if (cards[i] !== null) {
       className += getColorFromIndex(cards[i]) + " ";
       className += getRankFromIndex(cards[i]);
     } else {
+      console.log("yes");
       className += "placeholder";
     }
     view.game.tableCenter[playerSeat].className = className;
   }
 }
 
+
+function updateLastFourCards(cards, winner) {
+  const winnerVisualSeat = (winner - savedState.user.seat + 4) % 4;
+  for (let i = 0; i < view.game.players.length; i++) {
+    if (i !== winnerVisualSeat) {
+      view.game.players[i].lastPlay.classList.remove("card");
+    } else {
+      view.game.players[i].lastPlay.classList.add("card");
+    }
+  }
+  const endRect = view.game.players[winnerVisualSeat].lastPlay.getBoundingClientRect();
+
+  for (let seat in cards) {
+    if (cards[seat] === null) continue;
+
+    const visualSeat = (seat - savedState.user.seat + 4) % 4;
+    const card = newCard(cards[seat]);
+    const startRect = view.game.tableCenter[visualSeat].getBoundingClientRect();
+    card.style.transform = `translate(${startRect.x}px, ${startRect.y}px)`;
+    document.body.append(card);
+    setTimeout(() => {
+      card.classList.add("animating");
+      card.style.transform = `translate(${endRect.x}px, ${endRect.y}px)`;
+      card.addEventListener("transitionend", () => {
+        card.remove();
+      })
+    }, 500);
+  }
+}
 
 /*
  * Draws the cards in the user's hand.
@@ -336,7 +370,6 @@ function updateCardsInHand(hand) {
 
 function updateNbOfCardsInHand(nbOfCards, player) {
   playerSeat = (player - savedState.user.seat + 4) % 4;
-  console.log(player, playerSeat);
   if (playerSeat === 0) return;
 
   view.game.players[playerSeat].hand.innerHTML = "";

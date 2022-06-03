@@ -82,8 +82,16 @@ ws.onmessage = msg => {
     }
   }
 
-  if (data.hasOwnProperty("table") && data.playing === true) {
+  if (data.hasOwnProperty("table") && savedState.phase === "playing") {
     updateTableCenter(data.table);
+  }
+
+  if (data.hasOwnProperty("lastWinningPlayer")) {
+    savedState.lastWinningPlayer = data.lastWinningPlayer;
+  }
+
+  if (data.hasOwnProperty("lastFourCards") && savedState.phase === "playing") {
+    updateLastFourCards(data.lastFourCards, savedState.lastWinningPlayer);
   }
 
   if (data.hasOwnProperty("trump") && data.playing === true) {

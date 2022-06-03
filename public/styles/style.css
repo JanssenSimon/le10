@@ -34,6 +34,9 @@
   background-color: var(--color-background);
 
   height: 100vh;
+}
+
+body, main {
   padding: var(--padding-page-top) var(--padding-page-sides);
 }
 
@@ -189,7 +192,7 @@ main>:nth-child(5) { grid-area: 2 / 2; }
 }
 
 .player>h2 { grid-area: 2 / 1; }
-#last-play { grid-area: 1 / 2; }
+.last-play { grid-area: 1 / 2; }
 
 h2 {
   position: relative;
@@ -232,6 +235,7 @@ h2::before {
 #table-state {
   font-size: 1.5rem;
   font-weight: bold;
+  text-align: center;
 }
 
 .table-center>ol>:nth-child(1) {
@@ -363,6 +367,14 @@ h2::before {
 .card.diamonds::after { background-image: url(../graphics/diamonds.svg); }
 .card.hearts::after { background-image: url(../graphics/hearts.svg); }
 .card.spades::after { background-image: url(../graphics/spades.svg); }
+
+.card.animating {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(0, 0);
+  transition: .5s ease transform;
+}
 
 
 .inert {
