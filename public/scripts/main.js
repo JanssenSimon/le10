@@ -5,7 +5,7 @@ const savedState = {
   phase: "waiting",
   currentBid: undefined,
   user: {
-    seat: undefined,
+    seat: 3, // Hack if player's seat is unavailable when drawing players' cards
     team: undefined,
     name: undefined
   }
@@ -83,7 +83,7 @@ ws.onmessage = msg => {
   }
 
   if (data.hasOwnProperty("table") && data.playing === true) {
-    updateTableCenter(data.table)
+    updateTableCenter(data.table);
   }
 
   if (data.hasOwnProperty("trump") && data.playing === true) {
@@ -99,6 +99,12 @@ ws.onmessage = msg => {
     const awayTeam = 1 - homeTeam;
     view.game.pointsHome.innerText = data.points[homeTeam] + " pts";
     view.game.pointsAway.innerText = data.points[awayTeam] + " pts";
+  }
+
+  if (data.hasOwnProperty("hands") && savedState.phase !== "waiting") {
+    for (let player in data.hands) {
+      updateNbOfCardsInHand(data.hands[player], player);
+    }
   }
 };
 

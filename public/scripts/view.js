@@ -334,6 +334,18 @@ function updateCardsInHand(hand) {
   }
 }
 
+function updateNbOfCardsInHand(nbOfCards, player) {
+  playerSeat = (player - savedState.user.seat + 4) % 4;
+  console.log(player, playerSeat);
+  if (playerSeat === 0) return;
+
+  view.game.players[playerSeat].hand.innerHTML = "";
+  for (let i = 0; i < nbOfCards; i++) {
+    const cardElement = newCard("face-down");
+    view.game.players[playerSeat].hand.append(cardElement);
+  }
+}
+
 function setStateText(text) {
   view.game.state.innerText = text;
 }
