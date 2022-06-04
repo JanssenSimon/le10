@@ -407,3 +407,28 @@ function setBid(bid, team) {
     view.game.bidAway.innerText = `Mise: ${bid} pts`;
   }
 }
+
+function updateScoreboard(points) {
+  const homeTeam = savedState.user.team;
+  const awayTeam = 1 - homeTeam;
+  view.game.pointsHome.innerText = points[homeTeam] + " pts";
+  view.game.pointsAway.innerText = points[awayTeam] + " pts";
+}
+
+function drawEndScreen(points) {
+  let attackingTeamWon = false;
+
+  if (points[savedState.attackingTeam] >= savedState.bid) {
+    attackingTeamWon = true;
+  }
+
+  const userTeamWon = savedState.attackingTeam === savedState.user.team ?
+                      attackingTeamWon : !attackingTeamWon;
+
+  if (userTeamWon) {
+    setStateText(`Votre équipe l’emporte avec ${points[savedState.user.team]} pts!`);
+  } else {
+    const awayTeam = 1 - savedState.user.team;
+    setStateText(`L’équipe adverse l’emporte avec ${points[awayTeam]} pts.`);
+  }
+}

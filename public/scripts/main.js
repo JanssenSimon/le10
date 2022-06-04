@@ -51,6 +51,7 @@ ws.onmessage = msg => {
 
     const bidAmount = savedState.bid;
     const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
+    savedState.attackingTeam = data.currentBidWinner.seat % 2;
     setBid(bidAmount, attackingTeam);
 
     const userIsActivePlayer = data.currentBidWinner.name === savedState.user.name;
@@ -107,15 +108,19 @@ ws.onmessage = msg => {
   }
 
   if (data.hasOwnProperty("points") && data.playing === true) {
-    const homeTeam = savedState.user.team;
-    const awayTeam = 1 - homeTeam;
-    view.game.pointsHome.innerText = data.points[homeTeam] + " pts";
-    view.game.pointsAway.innerText = data.points[awayTeam] + " pts";
+    updateScoreboard(data.points);
   }
 
   if (data.hasOwnProperty("hands") && savedState.phase !== "waiting") {
+    let totalNbOfCardsLeft = 0;
     for (let player in data.hands) {
       updateNbOfCardsInHand(data.hands[player], player);
+      totalNbOfCardsLeft += data.hands[player];
+    }
+
+    // Trigger end screen
+    if (totalNbOfCardsLeft === 0) {
+      drawEndScreen(data.points);
     }
   }
 };
