@@ -368,11 +368,14 @@ h2::before {
 .card.hearts::after { background-image: url(../graphics/hearts.svg); }
 .card.spades::after { background-image: url(../graphics/spades.svg); }
 
-.card.animating {
+.card.floating {
   position: absolute;
   top: 0;
   left: 0;
   transform: translate(0, 0);
+}
+
+.card.animating {
   transition: .5s ease transform;
 }
 

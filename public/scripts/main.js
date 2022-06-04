@@ -4,6 +4,7 @@ const ws = new WebSocket("ws://" + location.host);
 const savedState = {
   phase: "waiting",
   currentBid: undefined,
+  lastFourCards: undefined,
   user: {
     seat: 3, // Hack if player's seat is unavailable when drawing players' cards
     team: undefined,
@@ -91,7 +92,11 @@ ws.onmessage = msg => {
   }
 
   if (data.hasOwnProperty("lastFourCards") && savedState.phase === "playing") {
+    const serializedLastCards = JSON.stringify(data.lastFourCards);
+    if (serializedLastCards === savedState.lastFourCards) return;
+
     updateLastFourCards(data.lastFourCards, savedState.lastWinningPlayer);
+    savedState.lastFourCards = serializedLastCards;
   }
 
   if (data.hasOwnProperty("trump") && data.playing === true) {

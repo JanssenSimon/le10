@@ -315,7 +315,6 @@ function updateTableCenter(cards) {
       className += getColorFromIndex(cards[i]) + " ";
       className += getRankFromIndex(cards[i]);
     } else {
-      console.log("yes");
       className += "placeholder";
     }
     view.game.tableCenter[playerSeat].className = className;
@@ -325,30 +324,31 @@ function updateTableCenter(cards) {
 
 function updateLastFourCards(cards, winner) {
   const winnerVisualSeat = (winner - savedState.user.seat + 4) % 4;
-  for (let i = 0; i < view.game.players.length; i++) {
-    if (i !== winnerVisualSeat) {
-      view.game.players[i].lastPlay.classList.remove("card");
-    } else {
-      view.game.players[i].lastPlay.classList.add("card");
-    }
-  }
-  const endRect = view.game.players[winnerVisualSeat].lastPlay.getBoundingClientRect();
 
   for (let seat in cards) {
     if (cards[seat] === null) continue;
 
     const visualSeat = (seat - savedState.user.seat + 4) % 4;
+
     const card = newCard(cards[seat]);
     const startRect = view.game.tableCenter[visualSeat].getBoundingClientRect();
     card.style.transform = `translate(${startRect.x}px, ${startRect.y}px)`;
+    card.classList.add("floating");
     document.body.append(card);
+
+    card.addEventListener("transitionend", () => { card.remove(); });
+
     setTimeout(() => {
+      for (let i = 0; i < view.game.players.length; i++) {
+        view.game.players[i].lastPlay.classList.remove("card");
+        if (i === winnerVisualSeat) {
+          view.game.players[i].lastPlay.classList.add("card");
+        }
+      }
+      const endRect = view.game.players[winnerVisualSeat].lastPlay.getBoundingClientRect();
       card.classList.add("animating");
       card.style.transform = `translate(${endRect.x}px, ${endRect.y}px)`;
-      card.addEventListener("transitionend", () => {
-        card.remove();
-      })
-    }, 500);
+    }, 1500);
   }
 }
 
