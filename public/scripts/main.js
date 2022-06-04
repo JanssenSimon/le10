@@ -5,6 +5,8 @@ const savedState = {
   phase: "waiting",
   currentBid: undefined,
   lastFourCards: undefined,
+  attackingTeam: undefined,
+  attackingPlayer: undefined,
   user: {
     seat: 3, // Hack for if player's seat is unavailable when drawing players' cards
     team: undefined,
@@ -49,6 +51,7 @@ ws.onmessage = msg => {
 
     const bidAmount = savedState.bid;
     const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
+    savedState.attackingPlayer = data.currentBidWinner.seat;
     savedState.attackingTeam = data.currentBidWinner.seat % 2;
     drawBid(bidAmount, attackingTeam);
 
@@ -99,8 +102,8 @@ ws.onmessage = msg => {
 
 
   // Save round winner to state.
-  if (data.hasOwnProperty("lastWinningPlayer")) {
-    savedState.lastWinningPlayer = data.lastWinningPlayer;
+  if (data.hasOwnProperty("lastWinningPlayer") && data.lastWinningPlayer !== null) {
+    savedState.attackingPlayer = data.lastWinningPlayer;
   }
 
 
@@ -108,7 +111,7 @@ ws.onmessage = msg => {
   if (data.hasOwnProperty("lastFourCards") && savedState.phase === "playing") {
     const serializedLastCards = JSON.stringify(data.lastFourCards);
     if (serializedLastCards !== savedState.lastFourCards) {
-      updateLastFourCards(data.lastFourCards, savedState.lastWinningPlayer);
+      updateLastFourCards(data.lastFourCards, savedState.attackingPlayer);
       savedState.lastFourCards = serializedLastCards;
     }
   }

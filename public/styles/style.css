@@ -311,6 +311,11 @@ h2::before {
   border: none;
 }
 
+.card.highlight {
+  box-shadow: 0 0 0 2px var(--color-red),
+              0 0 0 4px var(--color-background);
+}
+
 .card.placeholder {
   background-color: var(--color-secondary);
   border-color: var(--color-highlight);

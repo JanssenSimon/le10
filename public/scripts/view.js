@@ -389,6 +389,9 @@ function updateTableCenter(cards) {
     if (cards[i] !== null) {
       className += getColorFromIndex(cards[i]) + " ";
       className += getRankFromIndex(cards[i]);
+      if (i === savedState.attackingPlayer) { // Emphasis on the requested color.
+        className += " highlight";
+      }
     } else {
       className += "placeholder";
     }
