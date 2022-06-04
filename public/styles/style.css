@@ -455,6 +455,8 @@ dialog>.close>svg {
   overflow: visible;
 }
 
+#tutorial { max-width: 70ch; }
+
 input, .button {
   background-color: var(--color-secondary);
   border-radius: 4px;
