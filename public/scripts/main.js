@@ -28,7 +28,6 @@ ws.onmessage = msg => {
     } else {
       openModal(view.tableSelectDialog.container, true);
     }
-
   }
 
   if (data.hasOwnProperty("cardsinhand")) {
@@ -93,10 +92,10 @@ ws.onmessage = msg => {
 
   if (data.hasOwnProperty("lastFourCards") && savedState.phase === "playing") {
     const serializedLastCards = JSON.stringify(data.lastFourCards);
-    if (serializedLastCards === savedState.lastFourCards) return;
-
-    updateLastFourCards(data.lastFourCards, savedState.lastWinningPlayer);
-    savedState.lastFourCards = serializedLastCards;
+    if (serializedLastCards !== savedState.lastFourCards) {
+      updateLastFourCards(data.lastFourCards, savedState.lastWinningPlayer);
+      savedState.lastFourCards = serializedLastCards;
+    }
   }
 
   if (data.hasOwnProperty("trump") && data.playing === true) {
