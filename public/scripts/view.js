@@ -101,6 +101,7 @@ whenDOMReady(() => {
   });
   view.quitDialog.confirmButton.addEventListener("click", () => {
     closeModal(view.quitDialog.container);
+    ws.send(JSON.stringify({ command: "EXIT" }));
     openModal(view.tableSelectDialog.container, true);
   });
 
