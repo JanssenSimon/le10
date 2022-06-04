@@ -57,6 +57,14 @@ whenDOMReady(() => {
     document.getElementById("table-center-card3")
   ];
 
+  for (let player of view.game.players) {
+    player.lastPlay.addEventListener("click", () => {
+      player.lastPlay.classList.toggle("open");
+      player.lastPlay.classList.toggle("face-down");
+      player.lastPlay.classList.toggle("blank");
+    });
+  }
+
   view.bidDialog.container = document.getElementById("bid");
   view.bidDialog.bidAmount = document.getElementById("bid-amount");
   view.bidDialog.bidPass = document.getElementById("bid-pass");
@@ -325,29 +333,37 @@ function updateTableCenter(cards) {
 function updateLastFourCards(cards, winner) {
   const winnerVisualSeat = (winner - savedState.user.seat + 4) % 4;
 
+  for (let i = 0; i < view.game.players.length; i++) {
+    view.game.players[i].lastPlay.innerHTML = "";
+    view.game.players[i].lastPlay.classList.remove("card");
+  }
+
   for (let seat in cards) {
     if (cards[seat] === null) continue;
 
     const visualSeat = (seat - savedState.user.seat + 4) % 4;
 
-    const card = newCard(cards[seat]);
+    const animatingCard = newCard(cards[seat]);
     const startRect = view.game.tableCenter[visualSeat].getBoundingClientRect();
-    card.style.transform = `translate(${startRect.x}px, ${startRect.y}px)`;
-    card.classList.add("floating");
-    document.body.append(card);
+    animatingCard.style.transform = `translate(${startRect.x}px, ${startRect.y}px)`;
+    animatingCard.classList.add("floating");
+    document.body.append(animatingCard);
 
-    card.addEventListener("transitionend", () => { card.remove(); });
+    animatingCard.addEventListener("transitionend", () => { animatingCard.remove(); });
+
+    const card = newCard(cards[seat]);
 
     setTimeout(() => {
-      for (let i = 0; i < view.game.players.length; i++) {
-        view.game.players[i].lastPlay.classList.remove("card");
-        if (i === winnerVisualSeat) {
-          view.game.players[i].lastPlay.classList.add("card");
-        }
+      view.game.players[winnerVisualSeat].lastPlay.classList.add("card");
+      if (visualSeat >= view.game.players[winnerVisualSeat].lastPlay.children.length) {
+        view.game.players[winnerVisualSeat].lastPlay.append(card);
+      } else {
+        view.game.players[winnerVisualSeat].lastPlay.insertBefore(card,
+          view.game.players[winnerVisualSeat].lastPlay.children[(visualSeat) % 4]);
       }
       const endRect = view.game.players[winnerVisualSeat].lastPlay.getBoundingClientRect();
-      card.classList.add("animating");
-      card.style.transform = `translate(${endRect.x}px, ${endRect.y}px)`;
+      animatingCard.classList.add("animating");
+      animatingCard.style.transform = `translate(${endRect.x}px, ${endRect.y}px)`;
     }, 1500);
   }
 }
