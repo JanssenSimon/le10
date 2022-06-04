@@ -324,12 +324,14 @@ function updateSeatedPlayers(seatedPlayers) {
 /*
  * Highlights the specified player.
  */
-function setActivePlayer(name) {
-  for (const player of view.game.players) {
-    if (name === player.name.innerText) {
-      player.container.classList.add("active");
+function setActivePlayer(seat) {
+  const visualSeat = (seat + savedState.user.seat) % 4;
+
+  for (let i = 0; i < view.game.players.length; i++) {
+    if (i === visualSeat) {
+      view.game.players[i].container.classList.add("active");
     } else {
-      player.container.classList.remove("active");
+      view.game.players[i].container.classList.remove("active");
     }
   }
 }

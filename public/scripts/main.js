@@ -45,7 +45,7 @@ ws.onmessage = msg => {
 
   } else if (data.bidding === false && savedState.phase !== "waiting") {
     savedState.phase = "playing";
-    setActivePlayer(data.currentBidWinner.name);
+    setActivePlayer(data.currentBidWinner.seat);
 
     const bidAmount = savedState.bid;
     const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
@@ -62,7 +62,7 @@ ws.onmessage = msg => {
   // Highlight the active player.
   if (data.hasOwnProperty("activePlayer")) {
     if (data.bidding === true) {
-      setActivePlayer(data.activePlayer.name);
+      setActivePlayer(data.activePlayer.seat);
 
       if (data.activePlayer.name === savedState.user.name) {
         updateStateText("C’est à vous de miser.");
@@ -73,7 +73,7 @@ ws.onmessage = msg => {
       }
 
     } else if (data.playing === true) {
-      setActivePlayer(data.activePlayer.name);
+      setActivePlayer(data.activePlayer.seat);
 
       if (data.activePlayer.name === savedState.user.name) {
         updateStateText("C’est à vous de jouer une carte.");
