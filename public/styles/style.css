@@ -193,12 +193,12 @@ main>:nth-child(5) { grid-area: 2 / 2; }
 
 .player>h2 { grid-area: 2 / 1; }
 
-.last-play {
+.last-round {
   grid-area: 1 / 2;
   position: relative;
 }
 
-.last-play>.card {
+.last-round>.card {
   position: absolute;
   top: 0;
   left: 0;
@@ -206,12 +206,12 @@ main>:nth-child(5) { grid-area: 2 / 2; }
   transition: .2s ease all;
 }
 
-.last-play.open>* { opacity: 1; }
+.last-round.open>* { opacity: 1; }
 
-.last-play.open>.card:nth-child(1) { transform: translateY(calc(50% + 1rem)); }
-.last-play.open>.card:nth-child(2) { transform: translateX(calc(-100% - 1rem)); }
-.last-play.open>.card:nth-child(3) { transform: translateY(calc(-50% - 1rem)); }
-.last-play.open>.card:nth-child(4) { transform: translateX(calc(100% + 1rem)); }
+.last-round.open>.card:nth-child(1) { transform: translateY(calc(50% + 1rem)); }
+.last-round.open>.card:nth-child(2) { transform: translateX(calc(-100% - 1rem)); }
+.last-round.open>.card:nth-child(3) { transform: translateY(calc(-50% - 1rem)); }
+.last-round.open>.card:nth-child(4) { transform: translateX(calc(100% + 1rem)); }
 
 h2 {
   position: relative;

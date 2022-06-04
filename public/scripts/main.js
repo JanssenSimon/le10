@@ -6,7 +6,7 @@ const savedState = {
   currentBid: undefined,
   lastFourCards: undefined,
   user: {
-    seat: 3, // Hack if player's seat is unavailable when drawing players' cards
+    seat: 3, // Hack for if player's seat is unavailable when drawing players' cards
     team: undefined,
     name: undefined
   }
@@ -17,6 +17,8 @@ ws.onmessage = msg => {
   data = JSON.parse(msg.data);
   console.log(data);
 
+
+  // Manage tables list.
   if (data.hasOwnProperty("games")) {
     updateTableList(data.games);
 
@@ -30,12 +32,8 @@ ws.onmessage = msg => {
     }
   }
 
-  if (data.hasOwnProperty("cardsinhand")) {
-    updateCardsInHand(data.cardsinhand);
-    savedState.user.seat = data.seat;
-    savedState.user.team = data.team;
-  }
 
+  // Manage bidding phase.
   if (data.bidding === true) {
     savedState.phase = "bidding";
 
@@ -52,45 +50,61 @@ ws.onmessage = msg => {
     const bidAmount = savedState.bid;
     const attackingTeam = (data.currentBidWinner.seat + savedState.user.seat) % 2;
     savedState.attackingTeam = data.currentBidWinner.seat % 2;
-    setBid(bidAmount, attackingTeam);
+    drawBid(bidAmount, attackingTeam);
 
     const userIsActivePlayer = data.currentBidWinner.name === savedState.user.name;
     const adressee = userIsActivePlayer ? "vous" : data.currentBidWinner.name;
 
-    setStateText(`La partie commence. À ${adressee} de jouer.`);
+    updateStateText(`La partie commence. À ${adressee} de jouer.`);
   }
 
+
+  // Highlight the active player.
   if (data.hasOwnProperty("activePlayer")) {
     if (data.bidding === true) {
       setActivePlayer(data.activePlayer.name);
 
       if (data.activePlayer.name === savedState.user.name) {
-        setStateText("C’est à vous de miser.");
+        updateStateText("C’est à vous de miser.");
         openModal(view.bidDialog.container, true);
 
       } else {
-        setStateText(`C’est à ${data.activePlayer.name} de miser.`);
+        updateStateText(`C’est à ${data.activePlayer.name} de miser.`);
       }
 
     } else if (data.playing === true) {
       setActivePlayer(data.activePlayer.name);
 
       if (data.activePlayer.name === savedState.user.name) {
-        setStateText("C’est à vous de jouer une carte.");
+        updateStateText("C’est à vous de jouer une carte.");
       } else {
-        setStateText(`C’est à ${data.activePlayer.name} de jouer une carte.`);
+        updateStateText(`C’est à ${data.activePlayer.name} de jouer une carte.`);
       }
     }
   }
 
+
+  // Update the user's own cards.
+  if (data.hasOwnProperty("cardsinhand")) {
+    updateCardsInHand(data.cardsinhand);
+    savedState.user.seat = data.seat;
+    savedState.user.team = data.team;
+  }
+
+
+  // Update cards in the table center.
   if (data.hasOwnProperty("table") && savedState.phase === "playing") {
     updateTableCenter(data.table);
   }
 
+
+  // Save round winner to state.
   if (data.hasOwnProperty("lastWinningPlayer")) {
     savedState.lastWinningPlayer = data.lastWinningPlayer;
   }
 
+
+  // Draw last four cards at the end of a round.
   if (data.hasOwnProperty("lastFourCards") && savedState.phase === "playing") {
     const serializedLastCards = JSON.stringify(data.lastFourCards);
     if (serializedLastCards !== savedState.lastFourCards) {
@@ -99,18 +113,20 @@ ws.onmessage = msg => {
     }
   }
 
+
+  // Set trump.
   if (data.hasOwnProperty("trump") && data.playing === true) {
-    let className = "placeholder";
-    if (data.trump !== null) {
-      className = getColorFromIndex(data.trump);
-    }
-    view.game.trumpCard.className = "card medium " + className;
+    updateTrump(data.trump);
   }
 
+
+  // Update scoreboard.
   if (data.hasOwnProperty("points") && data.playing === true) {
     updateScoreboard(data.points);
   }
 
+
+  // Update other players' hands.
   if (data.hasOwnProperty("hands") && savedState.phase !== "waiting") {
     let totalNbOfCardsLeft = 0;
     for (let player in data.hands) {
@@ -118,7 +134,7 @@ ws.onmessage = msg => {
       totalNbOfCardsLeft += data.hands[player];
     }
 
-    // Trigger end screen
+    // Trigger end screen when all hands are empty.
     if (totalNbOfCardsLeft === 0) {
       drawEndScreen(data.points);
     }

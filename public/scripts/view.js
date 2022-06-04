@@ -28,25 +28,25 @@ whenDOMReady(() => {
       container: document.getElementById("player0"),
       name: document.getElementById("player0-name"),
       hand: document.getElementById("player0-hand"),
-      lastPlay: document.getElementById("player0-last-play")
+      lastRound: document.getElementById("player0-last-round")
     },
     {
       container: document.getElementById("player1"),
       name: document.getElementById("player1-name"),
       hand: document.getElementById("player1-hand"),
-      lastPlay: document.getElementById("player1-last-play")
+      lastRound: document.getElementById("player1-last-round")
     },
     {
       container: document.getElementById("player2"),
       name: document.getElementById("player2-name"),
       hand: document.getElementById("player2-hand"),
-      lastPlay: document.getElementById("player2-last-play")
+      lastRound: document.getElementById("player2-last-round")
     },
     {
       container: document.getElementById("player3"),
       name: document.getElementById("player3-name"),
       hand: document.getElementById("player3-hand"),
-      lastPlay: document.getElementById("player3-last-play")
+      lastRound: document.getElementById("player3-last-round")
     }
   ];
   view.game.state = document.getElementById("table-state");
@@ -57,68 +57,28 @@ whenDOMReady(() => {
     document.getElementById("table-center-card3")
   ];
 
-  for (let player of view.game.players) {
-    player.lastPlay.addEventListener("click", () => {
-      player.lastPlay.classList.toggle("open");
-      player.lastPlay.classList.toggle("face-down");
-      player.lastPlay.classList.toggle("blank");
+  /*
+   * View last round buttons
+   */
+  for (const player of view.game.players) {
+    player.lastRound.addEventListener("click", () => {
+      player.lastRound.classList.toggle("open");
+      player.lastRound.classList.toggle("face-down");
+      player.lastRound.classList.toggle("blank");
     });
   }
 
+  /*
+   * Bid dialog
+   */
   view.bidDialog.container = document.getElementById("bid");
   view.bidDialog.bidAmount = document.getElementById("bid-amount");
   view.bidDialog.bidPass = document.getElementById("bid-pass");
   view.bidDialog.bidConfirm = document.getElementById("bid-confirm");
-
-  view.nav.tutorialLink = document.getElementById("nav-tutorial");
-  view.tutorialDialog.container = document.getElementById("tutorial");
-  view.tutorialDialog.closeButton = document.getElementById("tutorial-close");
-
-  view.nav.quitLink = document.getElementById("nav-quit");
-  view.quitDialog.container = document.getElementById("quit");
-  view.quitDialog.cancelButton = document.getElementById("quit-cancel");
-  view.quitDialog.confirmButton = document.getElementById("quit-confirm");
-
-  view.tableSelectDialog.container = document.getElementById("table-select");
-  view.tableSelectDialog.name = document.getElementById("player-name");
-  view.tableSelectDialog.spectator = document.getElementById("spctator-mode");
-  view.tableSelectDialog.newTable = document.getElementById("new-table");
-  view.tableSelectDialog.tableList = document.getElementById("table-list");
-
-
-  view.nav.tutorialLink.addEventListener("click", () => {
-    openModal(view.tutorialDialog.container);
-  });
-  view.tutorialDialog.closeButton.addEventListener("click", () => {
-    closeModal(view.tutorialDialog.container);
-  });
-
-  view.nav.quitLink.addEventListener("click", () => {
-    openModal(view.quitDialog.container);
-  });
-  view.quitDialog.cancelButton.addEventListener("click", () => {
-    closeModal(view.quitDialog.container);
-  });
-  view.quitDialog.confirmButton.addEventListener("click", () => {
-    closeModal(view.quitDialog.container);
-    ws.send(JSON.stringify({ command: "EXIT" }));
-    openModal(view.tableSelectDialog.container, true);
-  });
-
-  view.tableSelectDialog.name.addEventListener("change", () => {
-    const value = view.tableSelectDialog.name.value;
-    savedState.user.name = value;
-    ws.send(JSON.stringify({ name: value }));
-  });
-  view.tableSelectDialog.newTable.addEventListener("click", () => {
-    ws.send(JSON.stringify({ gamechoice: "newgame" }));
-  });
-
   view.bidDialog.bidAmount.addEventListener("change", () => {
     const bidIncreased = view.bidDialog.bidAmount.value <= savedState.bid;
     view.bidDialog.bidConfirm.disabled = bidIncreased;
   });
-
   view.bidDialog.bidPass.addEventListener("click", () => {
     ws.send(JSON.stringify({ bid: "fold" }));
     closeModal(view.bidDialog.container);
@@ -128,6 +88,58 @@ whenDOMReady(() => {
     closeModal(view.bidDialog.container);
   });
 
+  /*
+   * Tutorial dialog
+   */
+  view.tutorialDialog.container = document.getElementById("tutorial");
+  view.tutorialDialog.closeButton = document.getElementById("tutorial-close");
+  view.tutorialDialog.closeButton.addEventListener("click", () => {
+    closeModal(view.tutorialDialog.container);
+  });
+
+  /*
+   * Table selection dialog
+   */
+  view.tableSelectDialog.container = document.getElementById("table-select");
+  view.tableSelectDialog.name = document.getElementById("player-name");
+  view.tableSelectDialog.spectator = document.getElementById("spctator-mode");
+  view.tableSelectDialog.newTable = document.getElementById("new-table");
+  view.tableSelectDialog.tableList = document.getElementById("table-list");
+  view.tableSelectDialog.name.addEventListener("change", () => {
+    const value = view.tableSelectDialog.name.value;
+    savedState.user.name = value;
+    ws.send(JSON.stringify({ name: value }));
+  });
+  view.tableSelectDialog.newTable.addEventListener("click", () => {
+    ws.send(JSON.stringify({ gamechoice: "newgame" }));
+  });
+
+  /*
+   * Game quit confirmation dialog
+   */
+  view.quitDialog.container = document.getElementById("quit");
+  view.quitDialog.cancelButton = document.getElementById("quit-cancel");
+  view.quitDialog.confirmButton = document.getElementById("quit-confirm");
+  view.quitDialog.cancelButton.addEventListener("click", () => {
+    closeModal(view.quitDialog.container);
+  });
+  view.quitDialog.confirmButton.addEventListener("click", () => {
+    closeModal(view.quitDialog.container);
+    ws.send(JSON.stringify({ command: "EXIT" }));
+    openModal(view.tableSelectDialog.container, true);
+  });
+
+  /*
+   * Top right navigation
+   */
+  view.nav.tutorialLink = document.getElementById("nav-tutorial");
+  view.nav.quitLink = document.getElementById("nav-quit");
+  view.nav.tutorialLink.addEventListener("click", () => {
+    openModal(view.tutorialDialog.container);
+  });
+  view.nav.quitLink.addEventListener("click", () => {
+    openModal(view.quitDialog.container);
+  });
 });
 
 
@@ -175,17 +187,6 @@ function closeModal(el) {
 }
 
 
-function setActivePlayer(name) {
-  for (const player of view.game.players) {
-    if (name === player.name.innerText) {
-      player.container.classList.add("active");
-    } else {
-      player.container.classList.remove("active");
-    }
-  }
-}
-
-
 /*
  * Utility function to create a new playing card element.
  */
@@ -209,6 +210,7 @@ function newCard(index, interactive = false) {
   return newCard;
 }
 
+// Utility function to get the color from the card index.
 function getColorFromIndex(index) {
   let color = index.substring(0, 1);
   switch (color) {
@@ -228,6 +230,7 @@ function getColorFromIndex(index) {
   return color;
 }
 
+// Utility function to get the rank from the card index.
 function getRankFromIndex(index) {
   let rank = index.substring(1);
   switch (rank) {
@@ -265,8 +268,9 @@ function getRankFromIndex(index) {
   return rank;
 }
 
+
 /*
- * Utility function to create a new playing card element.
+ * Updates the list of tables.
  */
 function updateTableList(tables) {
   // Clear table list.
@@ -306,7 +310,7 @@ function updateTableList(tables) {
 
 
 /*
- * Draws names of seated players.
+ * Updates the names of seated players.
  */
 function updateSeatedPlayers(seatedPlayers) {
   for (let i = 0; i < 4; i++) {
@@ -316,6 +320,66 @@ function updateSeatedPlayers(seatedPlayers) {
   }
 }
 
+
+/*
+ * Highlights the specified player.
+ */
+function setActivePlayer(name) {
+  for (const player of view.game.players) {
+    if (name === player.name.innerText) {
+      player.container.classList.add("active");
+    } else {
+      player.container.classList.remove("active");
+    }
+  }
+}
+
+
+/*
+ * Updates the state text in the table center.
+ */
+function updateStateText(text) {
+  view.game.state.innerText = text;
+}
+
+
+/*
+ * Updates the trump card in the scoreboard section.
+ */
+function updateTrump(trump) {
+  let className = "placeholder";
+  if (trump !== null) className = getColorFromIndex(trump);
+  view.game.trumpCard.className = "card medium " + className;
+}
+
+
+/*
+ * Updates the scoreboard values.
+ */
+function updateScoreboard(points) {
+  const homeTeam = savedState.user.team;
+  const awayTeam = 1 - homeTeam;
+  view.game.pointsHome.innerText = points[homeTeam] + " pts";
+  view.game.pointsAway.innerText = points[awayTeam] + " pts";
+}
+
+
+/*
+ * Draws the specified bid below the scoreboard.
+ */
+function drawBid(bid, team) {
+  if (team === 0) {
+    view.game.bidHome.innerText = `Mise: ${bid} pts`;
+
+  } else {
+    view.game.bidAway.innerText = `Mise: ${bid} pts`;
+  }
+}
+
+
+/*
+ * Updates the cards in the table center.
+ */
 function updateTableCenter(cards) {
   for (let i = 0; i < 4; i++) {
     const playerSeat = (i - savedState.user.seat + 4) % 4;
@@ -331,15 +395,18 @@ function updateTableCenter(cards) {
 }
 
 
+/*
+ * Updates and animates the four cards at the end of a round.
+ */
 function updateLastFourCards(cards, winner) {
   const winnerVisualSeat = (winner - savedState.user.seat + 4) % 4;
 
   for (let i = 0; i < view.game.players.length; i++) {
-    view.game.players[i].lastPlay.innerHTML = "";
-    view.game.players[i].lastPlay.classList.remove("card");
+    view.game.players[i].lastRound.innerHTML = "";
+    view.game.players[i].lastRound.classList.remove("card");
   }
 
-  for (let seat in cards) {
+  for (const seat in cards) {
     if (cards[seat] === null) continue;
 
     const visualSeat = (seat - savedState.user.seat + 4) % 4;
@@ -355,22 +422,23 @@ function updateLastFourCards(cards, winner) {
     const card = newCard(cards[seat]);
 
     setTimeout(() => {
-      view.game.players[winnerVisualSeat].lastPlay.classList.add("card");
-      if (visualSeat >= view.game.players[winnerVisualSeat].lastPlay.children.length) {
-        view.game.players[winnerVisualSeat].lastPlay.append(card);
+      view.game.players[winnerVisualSeat].lastRound.classList.add("card");
+      if (visualSeat >= view.game.players[winnerVisualSeat].lastRound.children.length) {
+        view.game.players[winnerVisualSeat].lastRound.append(card);
       } else {
-        view.game.players[winnerVisualSeat].lastPlay.insertBefore(card,
-          view.game.players[winnerVisualSeat].lastPlay.children[(visualSeat) % 4]);
+        view.game.players[winnerVisualSeat].lastRound.insertBefore(card,
+          view.game.players[winnerVisualSeat].lastRound.children[(visualSeat) % 4]);
       }
-      const endRect = view.game.players[winnerVisualSeat].lastPlay.getBoundingClientRect();
+      const endRect = view.game.players[winnerVisualSeat].lastRound.getBoundingClientRect();
       animatingCard.classList.add("animating");
       animatingCard.style.transform = `translate(${endRect.x}px, ${endRect.y}px)`;
     }, 1500);
   }
 }
 
+
 /*
- * Draws the cards in the user's hand.
+ * Updates cards in the user's hand.
  */
 function updateCardsInHand(hand) {
   view.game.players[0].hand.innerHTML = "";
@@ -385,6 +453,10 @@ function updateCardsInHand(hand) {
   }
 }
 
+
+/*
+ * Updates cards in other players' hands.
+ */
 function updateNbOfCardsInHand(nbOfCards, player) {
   playerSeat = (player - savedState.user.seat + 4) % 4;
   if (playerSeat === 0) return;
@@ -396,40 +468,20 @@ function updateNbOfCardsInHand(nbOfCards, player) {
   }
 }
 
-function setStateText(text) {
-  view.game.state.innerText = text;
-}
 
-function setBid(bid, team) {
-  if (team === 0) {
-    view.game.bidHome.innerText = `Mise: ${bid} pts`;
-
-  } else {
-    view.game.bidAway.innerText = `Mise: ${bid} pts`;
-  }
-}
-
-function updateScoreboard(points) {
-  const homeTeam = savedState.user.team;
-  const awayTeam = 1 - homeTeam;
-  view.game.pointsHome.innerText = points[homeTeam] + " pts";
-  view.game.pointsAway.innerText = points[awayTeam] + " pts";
-}
-
+/*
+ * Determines the winning team and updates the state text.
+ */
 function drawEndScreen(points) {
-  let attackingTeamWon = false;
-
-  if (points[savedState.attackingTeam] >= savedState.bid) {
-    attackingTeamWon = true;
-  }
-
+  const attackingTeamWon = points[savedState.attackingTeam] >= savedState.bid;
   const userTeamWon = savedState.attackingTeam === savedState.user.team ?
                       attackingTeamWon : !attackingTeamWon;
 
   if (userTeamWon) {
-    setStateText(`Votre équipe l’emporte avec ${points[savedState.user.team]} pts!`);
+    updateStateText(`Votre équipe l’emporte avec ${points[savedState.user.team]} pts!`);
+
   } else {
     const awayTeam = 1 - savedState.user.team;
-    setStateText(`L’équipe adverse l’emporte avec ${points[awayTeam]} pts.`);
+    updateStateText(`L’équipe adverse l’emporte avec ${points[awayTeam]} pts.`);
   }
 }
