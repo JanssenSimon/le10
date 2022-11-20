@@ -27,7 +27,8 @@ async function reqHandler(request) {
 
     let resourceFromPath = new Map([
         [ /^\/$/, "./public/index.html"],          //detects root, a single "/"
-        [ /^\/favicon.ico$/, "./public/favicon.ico"], // Detects faviron.ico
+        [ /^\/favicon.ico$/, "./public/favicon.ico"], // Detects favicon.ico
+        [ /^\/favicon.svg/, "./public/favicon.svg"], // Detects favicon.svg
         [ /^\/styles\/[\w\/-]+\.css$/, "PATH"], //matches css files in /styles/
         [ /^\/scripts\/[\w\/-]+\.js$/, "PATH"], //matches js files in /scripts/
         [ /^\/fonts\/[\w\/-]+\.woff2$/, "PATH"],//matches font files
