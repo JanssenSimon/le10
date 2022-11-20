@@ -240,6 +240,15 @@ h2::before {
   opacity: 1;
 }
 
+@keyframes pulse {
+  from { outline: var(--color-red) solid 0; }
+  to { outline: rgba(238, 34, 68, 0) solid 96px; }
+}
+
+#player0.active h2::before {
+  animation: pulse 1.25s cubic-bezier(0, .25, .5, 1);
+}
+
 .table-center>ol {
   display: grid;
   margin-top: 2em;
