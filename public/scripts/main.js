@@ -1,5 +1,5 @@
 // Create WebSocket to communicate with server.
-const ws = new WebSocket("ws://" + location.host);
+const ws = new WebSocket("wss://" + location.host);
 
 const savedState = {
   phase: "waiting",
