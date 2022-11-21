@@ -159,9 +159,11 @@ openModal(view.tableSelectDialog.container, true);
 
 // Generates a random name.
 function generateRandomName() {
-  const firstNames = ["Marie", "Jean", "Jeanne", "Pierre", "Françoise", "Michel",
-                      "Monique", "André", "Catherine", "Philippe", "Nat", "Louis"];
-  const lastNames = ["Cool", "Bon", "Vière", "Bière", "Nice", "Bonne", "Arbre"];
+  const firstNames = ["André", "Catherine", "Coralie", "Françoise", "Jean",
+                      "Jeanne", "Jérémie", "Marie", "Louis", "Michel",
+                      "Monique", "Nat", "Philippe", "Pierre", "Wendy"];
+  const lastNames = ["Bière", "Bon", "Bonne", "Cool", "Nice", "Snuts",
+                     "Tamère", "Vière"];
   return firstNames[Math.floor(Math.random() * firstNames.length)] + " " +
          lastNames[Math.floor(Math.random() * lastNames.length)];
 }
