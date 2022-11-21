@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.138.0/http/mod.ts";
+import { serveTls } from "https://deno.land/std@0.138.0/http/server.ts";
 import { debugprint } from "./debug.js";
 import * as state_machine from "./state_machine.js";
 
@@ -137,4 +137,10 @@ export var sendToClients = (clientIDs, message) => {
 //Start server
 // ----------------------------------------------------------------------------
 
-serve(reqHandler, { port: 8002 });
+const serveOptions = {
+  port: 8002,
+  certFile: "./path/to/cert.pem",
+  keyFile: "./path/to/privkey.pem",
+};
+
+serveTls(reqHandler, serveOptions);
