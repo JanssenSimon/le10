@@ -137,10 +137,8 @@ export var sendToClients = (clientIDs, message) => {
 //Start server
 // ----------------------------------------------------------------------------
 
-const serveOptions = {
+serveTls(reqHandler, {
   port: 8002,
   certFile: "./path/to/cert.pem",
   keyFile: "./path/to/privkey.pem",
-};
-
-serveTls(reqHandler, serveOptions);
+});
