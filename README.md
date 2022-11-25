@@ -10,6 +10,7 @@ Pour lancer le serveur il faut executer le script `start`
 
 Merci, Alexis Janssen et Jérémie Dupuis, pour votre aide indispensable.
 Merci aussi à Stefan et Laurier pour votre aide!
+Merci à Mattéo pour tes contributions!
 
 ## Roadmap
 
