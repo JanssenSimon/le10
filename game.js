@@ -425,7 +425,10 @@ export class Game {
 
     const l = d.length/4;
     const arrs = [d.slice(0,l), d.slice(l,2*l), d.slice(2*l,3*l), d.slice(3*l)];
-    arrs.map(hand => hand.sort());
+    arrs.map(hand => hand.sort((a, b) => {
+        let val = (c) => suits.indexOf(c.charAt(0))*10+values.indexOf(c.slice(1));
+        return val(a)-val(b);
+    }));
 
     debugprint("Distributed cards:", gameFlag);
     debugprint(arrs, gameFlag);
