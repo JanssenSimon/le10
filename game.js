@@ -407,20 +407,28 @@ export class Game {
     this.atout = null;
   }
 
+  const shuffle = array => {
+    // see <https://en.wikipedia.org/wiki/fisher%e2%80%93yates_shuffle#the_modern_algorithm>
+    for (let i = array.length - 1; i > 0; --i) {
+      let j = math.floor(math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  };
+
   distributePlayingCards() {  //assigns playing cards randomly to four players
-    let arrs = [[],[],[],[]];
     const suits = ["♡","♣","♢","♠"];
     const values = ["5","6","7","8","9","10","J","Q","K","A"];
-    suits.forEach((s) => {
-      values.forEach((v) => {
-        do {
-          var selectedHand = Math.floor(Math.random() * arrs.length);
-        } while (arrs[selectedHand].length >= 10);
-        arrs[selectedHand].push(s+v);
-      });
-    });
+
+    const deck = [];
+    suits.forEach(s => values.forEach(v => deck.push(s+v)));
+    shuffle(deck);
+
+    const l = s.length/4;
+    const arrs = [s.slice(0,l), s.slice(l,2*l), s.slice(2*l,3*l), s.slice(3*l)];
+
     debugprint("Distributed cards:", gameFlag);
     debugprint(arrs, gameFlag);
+
     this.seats.forEach((seat, key) => {seat.hand = arrs[key];});
   }
 
