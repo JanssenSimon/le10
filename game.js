@@ -1,7 +1,8 @@
 import { debugprint } from "./debug.js"
 import { sendToClients } from "./server.js"
 
-const gameFlag = false;
+const gameFlag = true;
+const comparisonFlag = true;
 
 // ----------------------------------------------------------------------------
 // Game rules
@@ -261,6 +262,8 @@ export class Game {
         }
       default:
         console.log("ERROR, cannot compare cards");
+        debugprint("Card1 : " + card1 + "\tCard2 : " + card2, comparisonFlag);
+        debugprint("Sorte demandee : " + demandee + "\tAtout : " + atout, comparisonFlag);
     }
   }
 
