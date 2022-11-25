@@ -120,6 +120,7 @@ export class Game {
   }
 
   addPlayer(uid, name) {
+    name = name.substring(0, 21)
     debugprint("Adding player " + uid + " to game", gameFlag);
     if (this.name === "BRUH")
       this.name = "Table de " + name;
