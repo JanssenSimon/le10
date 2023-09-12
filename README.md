@@ -4,7 +4,7 @@ Une simple implémentation d'un jeu de levées que j'ai appris à l'université.
 
 ## Lancer le serveur
 
-Pour lancer le serveur il faut executer le script `start`
+Pour lancer le serveur il faut executer le script `start` et par défaut il faut se connecter à localhost:8002
 
 ## Remerciements
 
