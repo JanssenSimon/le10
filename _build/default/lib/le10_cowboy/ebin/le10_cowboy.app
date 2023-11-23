@@ -1,0 +1,10 @@
+{application,le10_cowboy,
+             [{description,"An OTP application"},
+              {vsn,"0.1.0"},
+              {registered,[]},
+              {mod,{le10_cowboy_app,[]}},
+              {applications,[kernel,stdlib,cowboy]},
+              {env,[]},
+              {modules,[game_list,le10_cowboy_app,le10_cowboy_sup,ws_handler]},
+              {licenses,["Apache-2.0"]},
+              {links,[]}]}.

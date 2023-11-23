@@ -1,21 +1,9 @@
-# Le 10
+le10_cowboy
+=====
 
-Une simple implémentation d'un jeu de levées que j'ai appris à l'université.
+An OTP webserver for an online version of a card game I learned at uni.
 
-## Lancer le serveur
+Build
+-----
 
-Pour lancer le serveur il faut executer le script `start` et par défaut il faut se connecter à localhost:8002
-
-## Remerciements
-
-Merci, Alexis Janssen et Jérémie Dupuis, pour votre aide indispensable.
-Merci aussi à Stefan et Laurier pour votre aide!
-Merci à Mattéo pour tes contributions!
-
-## Roadmap
-
-0. Amélioration de l'API, ajout d'UI mobile, ajout de fin de partie.
-1. Choix de place, choix d'être spectateur ou non.
-2. Statistiques des jeux.
-3. BOTS.
-4. Ajout d'un *chat* qui pourra être désactivé ou non.
+    $ rebar3 compile

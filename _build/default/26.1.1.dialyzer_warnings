@@ -1,0 +1,127 @@
+/home/mercuriata/Desktop/le10_cowboy/apps/le10_cowboy/src/le10_cowboy_app.erl:12:1: Function start/2 has no local return
+
+/home/mercuriata/Desktop/le10_cowboy/apps/le10_cowboy/src/le10_cowboy_app.erl:25:17: The call cowboy:start_clear
+         ('le10_listener',
+          TransOpts :: [{'port', 8080}, ...],
+          ProtoOpts ::
+              [{'env',
+                [{'dispatch', cowboy_router:dispatch_rules()}, ...]},
+               ...]) will never return since the success typing is 
+         (any(),
+          any(),
+          map()) -> 
+          any() and the contract is 
+          (ranch:ref(), ranch:opts(), opts()) ->
+             {'ok', pid()} | {'error', any()}
+
+/home/mercuriata/Desktop/le10_cowboy/apps/le10_cowboy/src/root_handler.erl:7:1: Function init/2 has no local return
+
+/home/mercuriata/Desktop/le10_cowboy/apps/le10_cowboy/src/root_handler.erl:10:9: The call cowboy_req:reply
+         (200,
+          [{<<99,111,110,116,101,110,116,45,116,121,112,101>>,
+            <<116,101,120,116,47,112,108,97,105,110>>}],
+          <<72,101,108,108,111,32,69,114,108,97,110,103,33>>,
+          Req :: any()) will never return since the success typing is 
+         (bitstring() | integer(),
+          map(),
+          binary() |
+          maybe_improper_list(binary() |
+                              maybe_improper_list(any(), binary() | []) |
+                              byte(),
+                              binary() | []) |
+          {'sendfile', _, integer(), _},
+          #{'body_length' := 'undefined' | non_neg_integer(),
+            'cert' := 'undefined' | binary(),
+            'has_body' := boolean(),
+            'headers' :=
+                #{binary() =>
+                      binary() |
+                      maybe_improper_list(binary() |
+                                          maybe_improper_list(any(),
+                                                              binary() |
+                                                              []) |
+                                          byte(),
+                                          binary() | [])},
+            'host' := binary(),
+            'method' := binary(),
+            'path' := binary(),
+            'peer' :=
+                {{byte(), byte(), byte(), byte()} |
+                 {char(),
+                  char(),
+                  char(),
+                  char(),
+                  char(),
+                  char(),
+                  char(),
+                  char()},
+                 char()},
+            'pid' := pid(),
+            'port' := char(),
+            'qs' := binary(),
+            'ref' := _,
+            'scheme' := binary(),
+            'sock' :=
+                {{byte(), byte(), byte(), byte()} |
+                 {char(),
+                  char(),
+                  char(),
+                  char(),
+                  char(),
+                  char(),
+                  char(),
+                  char()},
+                 char()},
+            'streamid' := _,
+            'version' := atom(),
+            'bindings' => #{atom() => _},
+            'charset' => 'undefined' | binary(),
+            'has_read_body' => 'true',
+            'has_sent_resp' => none(),
+            'host_info' => [binary()],
+            'language' => 'undefined' | binary(),
+            'media_type' => {binary(), binary(), [{_, _}]},
+            'multipart' => 'done' | {binary(), binary()},
+            'path_info' => [binary()],
+            'range' => {binary(), binary() | [neg_integer() | {_, _}]},
+            'resp_body' =>
+                binary() |
+                maybe_improper_list(binary() |
+                                    maybe_improper_list(any(),
+                                                        binary() | []) |
+                                    byte(),
+                                    binary() | []) |
+                {'sendfile',
+                 non_neg_integer(),
+                 non_neg_integer(),
+                 atom() | binary() | [atom() | [any()] | char()]},
+            'resp_cookies' =>
+                #{binary() |
+                  maybe_improper_list(binary() |
+                                      maybe_improper_list(any(),
+                                                          binary() | []) |
+                                      byte(),
+                                      binary() | []) =>
+                      binary() |
+                      maybe_improper_list(binary() |
+                                          maybe_improper_list(any(),
+                                                              binary() |
+                                                              []) |
+                                          byte(),
+                                          binary() | [])},
+            'resp_headers' =>
+                #{binary() =>
+                      binary() |
+                      maybe_improper_list(binary() |
+                                          maybe_improper_list(any(),
+                                                              binary() |
+                                                              []) |
+                                          byte(),
+                                          binary() | [])},
+            'websocket_version' => 7 | 8 | 13,
+            _ => _}) -> 
+          map() and the contract is 
+          (cowboy:http_status(), cowboy:http_headers(), resp_body(), Req) ->
+             Req
+             when Req :: req()
+
