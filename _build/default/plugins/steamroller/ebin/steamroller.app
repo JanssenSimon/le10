@@ -1,0 +1,13 @@
+{application,steamroller,
+             [{description,"An opinionated Erlang code formatter."},
+              {vsn,"0.14.3"},
+              {registered,[]},
+              {applications,[kernel,stdlib]},
+              {env,[]},
+              {modules,[steamroller,steamroller_algebra,steamroller_ast,
+                        steamroller_formatter,steamroller_prv,
+                        steamroller_utils,steamroller_worker,
+                        steamroller_worker_sup]},
+              {licenses,["Apache 2.0"]},
+              {links,[{"Github",
+                       "https://github.com/old-reliable/steamroller"}]}]}.
