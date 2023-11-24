@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Le Jeu du 10</title>
+  <meta name="author" content="Simon Janssen">
+  <meta name="description" content="Un simple jeu de mise que j’ai appris à l’université.">
+
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <link href="styles/power.css" rel="stylesheet">
+  <link href="styles/style.css" rel="stylesheet">
+
+  <script src="scripts/view.js" defer></script>
+  <script src="scripts/main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Le Jeu du <em>10</em></h1>
+    <p id="table-name"></p>
+  </header>
+
+  <nav>
+    <button class="link" id="nav-tutorial">Aide et infos</button>
+    <button class="link" id="nav-quit">Quitter la partie</button>
+  </nav>
+
+  <aside>
+    <div class="trump-color">
+      <label>Atout</label>
+      <div id="trump-card" class="card medium placeholder"></div>
+    </div>
+    <div class="score">
+      <label for="points-home">Votre équipe</label>
+      <output id="points-home">0 pt</output>
+      <div class="bid" id="bid-home"></div>
+    </div>
+    <div class="score">
+      <label for="points-away">Équipe adverse</label>
+      <output id="points-away">0 pt</output>
+      <div class="bid" id="bid-away"></div>
+    </div>
+  </aside>
+
+  <main>
+
+    <section class="player current-turn" id="player0">
+      <h2 id="player0-name">Jérémie</h2>
+      <ol class="card-hand" id="player0-hand">
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+        <button class="card placeholder"></button>
+      </ol>
+      <ul class="last-round face-down" id="player0-last-round"></ul>
+    </section>
+
+    <section class="player" id="player1">
+      <h2 id="player1-name">Marie</h2>
+      <ol class="card-hand" id="player1-hand">
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+      </ol>
+      <ul class="last-round face-down" id="player1-last-round"></ul>
+    </section>
+
+    <section class="player" id="player2">
+      <h2 id="player2-name">Fred</h2>
+      <ol class="card-hand" id="player2-hand">
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+      </ol>
+      <ul class="last-round face-down" id="player2-last-round"></ul>
+    </section>
+
+    <section class="player" id="player3">
+      <h2 id="player3-name">Coralie</h2>
+      <ol class="card-hand" id="player3-hand">
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+        <div class="card placeholder"></div>
+      </ol>
+      <ul class="last-round face-down" id="player3-last-round"></ul>
+    </section>
+
+    <section class="table-center">
+      <p id="table-state">En attente de joueurs...</p>
+      <ol>
+        <div class="card placeholder" id="table-center-card0"></div>
+        <div class="card placeholder" id="table-center-card1"></div>
+        <div class="card placeholder" id="table-center-card2"></div>
+        <div class="card placeholder" id="table-center-card3"></div>
+      </ol>
+    </section>
+
+  </main>
+
+  <dialog id="tutorial">
+    <button class="close" id="tutorial-close">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke=var(--color-text) stroke-width="1">
+        <line x2="12" y2="12"/>
+        <line x1="12" y2="12"/>
+      </svg>
+    </button>
+    <h2>Comment jouer</h2>
+    <p>Vous êtes en équipe avec la personne en face de vous.</p>
+    <p>Le but du jeu est d’atteindre le score que vous avez misé en début de partie. L’équipe qui fait plus de points que son adversaire, mais qui n’atteint pas sa mise, perd la partie.</p>
+    <p>La <em>mise</em> est déterminée en tour de table et le joueur avec la plus haute mise commence la partie.</p>
+    <p>Chaque tour, chacun des joueurs présente une carte aux autres. Le premier joueur détermine la <em>couleur demandée</em>. Les joueurs suivants doivent absolument jouer cette couleur s’ils peuvent. S’ils ne peuvent pas, ils doivent jouer n’importe quelle autre couleur.</p>
+    <p>Celui qui a la carte la plus haute remporte la manche et gagne tous les points en&nbsp;jeu. Les <span class="card small five"></span> valent 5&nbsp;points. Les <span class="card small ten"></span> et <span class="card small ace"></span> valent 10&nbsp;points.</p>
+    <p>L’<em>atout</em> de la partie est la couleur de la toute première carte jouée. Il remporte sur toutes les autres couleurs. Lorsqu’un joueur n’a pas de carte de la couleur demandée et qu’il joue de&nbsp;l’atout à la place, on dit qu’il&nbsp;<em>coupe</em>.</p>
+    <footer class="colophon"><p>Le <em>Jeu du 10</em> vient de la famille de Charles. Cette version web réalisée par <a href="https://simonjanssen.space">Simon&nbsp;Janssen</a> et <a href="https://jeremiedupuis.com">Jérémie&nbsp;Dupuis</a> est sous <a href="https://github.com/JanssenSimon/le10/blob/main/LICENSE">licence libre</a> et son code source est disponible sur <a href="https://github.com/JanssenSimon/le10">GitHub</a>.</p></footer>
+  </dialog>
+
+  <dialog id="quit">
+    <h2>Voulez-vous vraiment quitter la table?</h2>
+    <footer>
+      <button class="button" id="quit-cancel">Annuler</button>
+      <button class="button primary" id="quit-confirm">Quitter la table</button>
+    </footer>
+  </dialog>
+
+  <dialog id="table-select">
+    <h2>Rejoindre une partie</h2>
+    <p>Choisissez votre nom et sélectionnez une table.</p>
+    <div class="input-group">
+      <label for="player-name">Nom</label>
+      <input type="text" id="player-name" placeholder="Votre nom" required>
+    </div>
+    <ul class="table-select" id="table-list"></ul>
+    <footer>
+      <button class="button" id="new-table">Créer une nouvelle table</button>
+    </footer>
+  </dialog>
+
+  <dialog id="bid">
+    <h2>Mise</h2>
+    <input type="number" id="bid-amount" value="50" step="5" min="50" max="100" autofocus autocomplete="off">
+    <footer>
+      <button class="button" id="bid-pass">Passer</button>
+      <button class="button" id="bid-confirm" disabled>Augmenter la mise</button>
+    </footer>
+  </dialog>
+
+</body>
+
+</html>
